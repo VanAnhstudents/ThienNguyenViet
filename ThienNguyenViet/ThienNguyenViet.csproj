@@ -69,7 +69,7 @@
   <ItemGroup>
     <Content Include="Admin\BaoCao.aspx" />
     <Content Include="Admin\FormChienDich.aspx" />
-    <Content Include="Admin\LichSuQuyenGop.aspx" />
+    <Content Include="Admin\TongQuan.aspx" />
     <Content Include="Admin\QuanLyChienDich.aspx" />
     <Content Include="Admin\QuanLyNguoiDung.aspx" />
     <Content Include="Admin\QuanLyQuyenGop.aspx" />
@@ -115,12 +115,12 @@
     <Compile Include="Admin\FormChienDich.aspx.designer.cs">
       <DependentUpon>FormChienDich.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Admin\LichSuQuyenGop.aspx.cs">
-      <DependentUpon>LichSuQuyenGop.aspx</DependentUpon>
+    <Compile Include="Admin\TongQuan.aspx.cs">
+      <DependentUpon>TongQuan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Admin\LichSuQuyenGop.aspx.designer.cs">
-      <DependentUpon>LichSuQuyenGop.aspx</DependentUpon>
+    <Compile Include="Admin\TongQuan.aspx.designer.cs">
+      <DependentUpon>TongQuan.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\QuanLyChienDich.aspx.cs">
       <DependentUpon>QuanLyChienDich.aspx</DependentUpon>
