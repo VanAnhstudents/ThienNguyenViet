@@ -416,3 +416,20 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# ==============================================
+# Thiện Nguyện Việt — tuỳ chỉnh thêm cho dự án
+# Cấu trúc thư mục:
+#   Thư mục gốc Git : D:\HanoiOpenUniversity\LAP TRINH WEB\ThienNguyenViet\
+#   Thư mục project : D:\HanoiOpenUniversity\LAP TRINH WEB\ThienNguyenViet\ThienNguyenViet\
+# ==============================================
+
+# Ảnh do người dùng tải lên — không lưu trên Git
+ThienNguyenViet/TaiLen/ChienDich/*
+ThienNguyenViet/TaiLen/TinTuc/*
+ThienNguyenViet/TaiLen/XacNhanChuyenKhoan/*
+
+# Giữ lại cấu trúc thư mục TaiLen (không push ảnh nhưng vẫn giữ thư mục)
+!ThienNguyenViet/TaiLen/ChienDich/.gitkeep
+!ThienNguyenViet/TaiLen/TinTuc/.gitkeep
+!ThienNguyenViet/TaiLen/XacNhanChuyenKhoan/.gitkeep
