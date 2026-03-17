@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ThienNguyenViet
+namespace ThienNguyenViet.Admin
 {
 
 

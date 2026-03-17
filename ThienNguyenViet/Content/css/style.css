@@ -1,2 +1,120 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Màu chủ đạo — xanh lá ấm */
+    --mau-chinh: #2D7A4F;
+    --mau-chinh-hover: #3D9962;
+    --mau-chinh-nen: #EAF5EE;
+    --mau-chinh-nhat: #B7DEC6;
+    /* Màu nhấn — cam ấm */
+    --mau-cam: #C0651A;
+    --mau-cam-hover: #D97B2A;
+    --mau-cam-nen: #FDF1E7;
+    --mau-cam-nhat: #F5C892;
+    /* Trung tính */
+    --nen-trang: #F8F9FA;
+    --vien: #E2E8F0;
+    --chu-chinh: #2D3748;
+    --chu-than: #4A5568;
+    --chu-phu: #718096;
+    /* Ngữ nghĩa */
+    --mau-loi: #E53E3E;
+    --mau-thanh-cong: #38A169;
+    --mau-canh-bao: #D69E2E;
+    --mau-thong-tin: #3182CE;
+    /* Typography */
+    --font: 'Be Vietnam Pro', sans-serif;
+    /* Border radius */
+    --r-xs: 4px; /* badge, input */
+    --r-sm: 8px; /* nút, card nhỏ */
+    --r-md: 12px; /* card chiến dịch */
+    --r-lg: 16px; /* section box */
+    --r-pill: 999px; /* pill, avatar */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--chu-than);
+    background-color: var(--nen-trang);
+}
+
+h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--chu-chinh);
+    line-height: 1.25;
+}
+
+h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--chu-chinh);
+    line-height: 1.35;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--chu-chinh);
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--chu-chinh);
+}
+
+/* Nút chính */
+.btn-chinh {
+    background-color: var(--mau-chinh);
+    color: #fff;
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+    .btn-chinh:hover {
+        background-color: var(--mau-chinh-hover);
+    }
+
+/* Nút quyên góp */
+.btn-quyen-gop {
+    background-color: var(--mau-cam);
+    color: #fff;
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+    .btn-quyen-gop:hover {
+        background-color: var(--mau-cam-hover);
+    }
+
+/* Progress bar */
+.progress-nen {
+    background-color: var(--mau-chinh-nhat);
+    border-radius: var(--r-pill);
+    height: 10px;
+    overflow: hidden;
+}
+
+.progress-thanh {
+    background-color: var(--mau-chinh);
+    height: 100%;
+    border-radius: var(--r-pill);
+    transition: width .4s ease;
 }

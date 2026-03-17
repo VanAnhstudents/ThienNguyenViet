@@ -1,2 +1,210 @@
-﻿body {
+﻿@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Sidebar & Header */
+    --admin-sidebar: #1A365D;
+    --admin-sidebar-hover: #2A4A7F;
+    --admin-sidebar-active: rgba(255,255,255,.12);
+    --admin-accent: #63B3ED;
+    /* Vùng nội dung */
+    --admin-nen: #F0F4F8;
+    --admin-card: #FFFFFF;
+    --admin-thead: #F7FAFC;
+    --admin-vien: #E2E8F0;
+    --admin-chu-chinh: #2D3748;
+    --admin-chu-phu: #718096;
+    /* Ngữ nghĩa — dùng chung với frontend */
+    --admin-thanh-cong: #38A169;
+    --admin-canh-bao: #D69E2E;
+    --admin-loi: #E53E3E;
+    --admin-trung-lap: #718096;
+    /* Stat cards */
+    --stat-xanh-nen: #EBF8FF;
+    --stat-xanh-vien: #3182CE;
+    --stat-xanh-chu: #1A365D;
+    --stat-cam-nen: #FEEBC8;
+    --stat-cam-vien: #D69E2E;
+    --stat-tim-nen: #E9D8FD;
+    --stat-tim-vien: #805AD5;
+    /* Font & radius */
+    --font: 'Be Vietnam Pro', sans-serif;
+    --r-badge: 4px;
+    --r-nut: 6px;
+    --r-card: 8px;
+}
+
+/* Layout tổng thể */
+body.admin-body {
+    font-family: var(--font);
+    font-size: 14px;
+    background-color: var(--admin-nen);
+    color: var(--admin-chu-chinh);
+    margin: 0;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    width: 220px;
+    background: var(--admin-sidebar);
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.admin-sidebar-logo {
+    padding: 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+    .admin-sidebar-logo h2 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        margin: 0;
+    }
+
+    .admin-sidebar-logo span {
+        font-size: 11px;
+        color: #90CDF4;
+    }
+
+.admin-menu-item {
+    display: block;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #A0AEC0;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all .15s;
+}
+
+    .admin-menu-item:hover {
+        background: var(--admin-sidebar-hover);
+        color: #fff;
+    }
+
+    .admin-menu-item.active {
+        background: var(--admin-sidebar-active);
+        color: #fff;
+        font-weight: 500;
+        border-left-color: var(--admin-accent);
+    }
+
+    .admin-menu-item.danger {
+        color: #FC8181;
+    }
+
+/* Vùng nội dung */
+.admin-content {
+    margin-left: 220px;
+    padding: 24px;
+    min-height: 100vh;
+}
+
+/* Card */
+.admin-card {
+    background: var(--admin-card);
+    border-radius: var(--r-card);
+    border: 0.5px solid var(--admin-vien);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Bảng dữ liệu */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+    .admin-table thead tr {
+        background: var(--admin-thead);
+    }
+
+    .admin-table thead th {
+        padding: 10px 14px;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--admin-chu-phu);
+        text-transform: uppercase;
+        letter-spacing: .05em;
+        text-align: left;
+        border-bottom: 1px solid var(--admin-vien);
+    }
+
+    .admin-table tbody td {
+        padding: 10px 14px;
+        border-bottom: 0.5px solid var(--admin-vien);
+        color: var(--admin-chu-chinh);
+        vertical-align: middle;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #EBF8FF;
+    }
+
+/* Badge trạng thái */
+.badge-admin {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: var(--r-badge);
+    font-weight: 500;
+    display: inline-block;
+}
+
+.badge-thanh-cong {
+    background: #C6F6D5;
+    color: #276749;
+}
+
+.badge-cho-duyet {
+    background: #FEEBC8;
+    color: #C05621;
+}
+
+.badge-tu-choi {
+    background: #FED7D7;
+    color: #C53030;
+}
+
+.badge-tam-dung {
+    background: #EDF2F7;
+    color: #718096;
+}
+
+.badge-nhap {
+    background: #BEE3F8;
+    color: #2B6CB0;
+}
+
+/* Nút hành động trong bảng */
+.btn-sua {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: var(--r-nut);
+    background: #EBF8FF;
+    color: #2B6CB0;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-xoa {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: var(--r-nut);
+    background: #FED7D7;
+    color: #C53030;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-duyet {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: var(--r-nut);
+    background: #C6F6D5;
+    color: #276749;
+    border: none;
+    cursor: pointer;
 }

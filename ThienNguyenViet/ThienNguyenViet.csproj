@@ -69,11 +69,12 @@
   <ItemGroup>
     <Content Include="Admin\BaoCao.aspx" />
     <Content Include="Admin\FormChienDich.aspx" />
-    <Content Include="Admin\TongQuan.aspx" />
+    <Content Include="Admin\FormTinTuc.aspx" />
     <Content Include="Admin\QuanLyChienDich.aspx" />
     <Content Include="Admin\QuanLyNguoiDung.aspx" />
     <Content Include="Admin\QuanLyQuyenGop.aspx" />
     <Content Include="Admin\QuanLyTinTuc.aspx" />
+    <Content Include="Admin\TongQuan.aspx" />
     <Content Include="ChiTietChienDich.aspx" />
     <Content Include="ChiTietTinTuc.aspx" />
     <Content Include="Content\css\admin.css" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Admin.Master.cs">
       <DependentUpon>Admin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Admin.Master.designer.cs">
       <DependentUpon>Admin.Master</DependentUpon>
@@ -115,12 +117,12 @@
     <Compile Include="Admin\FormChienDich.aspx.designer.cs">
       <DependentUpon>FormChienDich.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Admin\TongQuan.aspx.cs">
-      <DependentUpon>TongQuan.aspx</DependentUpon>
+    <Compile Include="Admin\FormTinTuc.aspx.cs">
+      <DependentUpon>FormTinTuc.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Admin\TongQuan.aspx.designer.cs">
-      <DependentUpon>TongQuan.aspx</DependentUpon>
+    <Compile Include="Admin\FormTinTuc.aspx.designer.cs">
+      <DependentUpon>FormTinTuc.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\QuanLyChienDich.aspx.cs">
       <DependentUpon>QuanLyChienDich.aspx</DependentUpon>
@@ -149,6 +151,13 @@
     </Compile>
     <Compile Include="Admin\QuanLyTinTuc.aspx.designer.cs">
       <DependentUpon>QuanLyTinTuc.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\TongQuan.aspx.cs">
+      <DependentUpon>TongQuan.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\TongQuan.aspx.designer.cs">
+      <DependentUpon>TongQuan.aspx</DependentUpon>
     </Compile>
     <Compile Include="ChiTietChienDich.aspx.cs">
       <DependentUpon>ChiTietChienDich.aspx</DependentUpon>
@@ -229,6 +238,7 @@
     </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
