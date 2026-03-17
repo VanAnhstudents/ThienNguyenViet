@@ -425,11 +425,13 @@ FodyWeavers.xsd
 # ==============================================
 
 # Ảnh do người dùng tải lên — không lưu trên Git
-ThienNguyenViet/TaiLen/ChienDich/*
-ThienNguyenViet/TaiLen/TinTuc/*
-ThienNguyenViet/TaiLen/XacNhanChuyenKhoan/*
+ThienNguyenViet/Uploads/ChienDich/*
+ThienNguyenViet/Uploads/TinTuc/*
+ThienNguyenViet/Uploads/XacNhanChuyenKhoan/*
+ThienNguyenViet/Content/images/*
+ThienNguyenViet/Uploads/XacNhanThanhToan/*
 
-# Giữ lại cấu trúc thư mục TaiLen (không push ảnh nhưng vẫn giữ thư mục)
-!ThienNguyenViet/TaiLen/ChienDich/.gitkeep
-!ThienNguyenViet/TaiLen/TinTuc/.gitkeep
-!ThienNguyenViet/TaiLen/XacNhanChuyenKhoan/.gitkeep
+# Giữ lại cấu trúc thư mục Uploads (không push ảnh nhưng vẫn giữ thư mục)
+!ThienNguyenViet/Uploads/ChienDich/.gitkeep
+!ThienNguyenViet/Uploads/TinTuc/.gitkeep
+!ThienNguyenViet/Uploads/XacNhanThanhToan/.gitkeep

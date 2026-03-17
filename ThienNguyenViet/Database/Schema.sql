@@ -283,55 +283,96 @@ GO
 
 -- SP1: Lấy danh sách chiến dịch (có phân trang, lọc)
 CREATE OR ALTER PROCEDURE dbo.SP_LayDanhSachChienDich
-    @MaDanhMuc      INT     = NULL,     -- NULL = tất cả danh mục
-    @TrangThai      TINYINT = NULL,     -- NULL = tất cả trạng thái
+    @MaDanhMuc      INT     = NULL,
+    @TrangThai      TINYINT = NULL,
     @TuKhoa         NVARCHAR(200) = NULL,
     @SapXepTheo     NVARCHAR(50)  = N'NgayTao',  -- NgayTao | MucTieu | SoTienDaQuyen | NgayKetThuc
     @TrangHienTai   INT = 1,
     @SoDoiMoiTrang  INT = 9
 AS
 BEGIN
-    SET NOCOUNT ON
+    SET NOCOUNT ON;
 
-    DECLARE @BatDauTu INT = (@TrangHienTai - 1) * @SoDoiMoiTrang
+    DECLARE @BatDauTu INT = (@TrangHienTai - 1) * @SoDoiMoiTrang;
 
-    SELECT
-        cd.MaChienDich,
-        cd.TenChienDich,
-        cd.MoTaNgan,
-        cd.AnhBia,
-        cd.MucTieu,
-        cd.SoTienDaQuyen,
-        CASE
-            WHEN cd.MucTieu = 0 THEN 0
-            ELSE CAST(cd.SoTienDaQuyen * 100.0 / cd.MucTieu AS DECIMAL(5,1))
-        END                             AS PhanTramHoanThanh,
-        cd.NgayBatDau,
-        cd.NgayKetThuc,
-        DATEDIFF(DAY, GETDATE(), cd.NgayKetThuc) AS SoNgayCon,
-        cd.TrangThai,
-        cd.NoiBat,
-        dm.TenDanhMuc,
-        dm.MauSac                       AS MauDanhMuc,
-        COUNT(qg.MaQuyenGop)            AS SoLuotQuyenGop
-    FROM        dbo.ChienDich           cd
-    INNER JOIN  dbo.DanhMucChienDich    dm  ON cd.MaDanhMuc  = dm.MaDanhMuc
-    LEFT JOIN   dbo.QuyenGop            qg  ON cd.MaChienDich = qg.MaChienDich
-                                           AND qg.TrangThai   = 1  -- chỉ đếm đã duyệt
-    WHERE
-        (@MaDanhMuc IS NULL OR cd.MaDanhMuc = @MaDanhMuc)
-        AND (@TrangThai IS NULL OR cd.TrangThai = @TrangThai)
-        AND (@TuKhoa    IS NULL OR cd.TenChienDich LIKE N'%' + @TuKhoa + N'%')
-    GROUP BY
-        cd.MaChienDich, cd.TenChienDich, cd.MoTaNgan, cd.AnhBia,
-        cd.MucTieu, cd.SoTienDaQuyen, cd.NgayBatDau, cd.NgayKetThuc,
-        cd.TrangThai, cd.NoiBat, dm.TenDanhMuc, dm.MauSac
+    ;WITH ChienDichBase AS
+    (
+        SELECT
+            cd.MaChienDich,
+            cd.TenChienDich,
+            cd.MoTaNgan,
+            cd.AnhBia,
+            cd.MucTieu,
+            cd.SoTienDaQuyen,
+            cd.NgayBatDau,
+            cd.NgayKetThuc,
+            cd.NgayTao,
+            cd.TrangThai,
+            cd.NoiBat,
+            cd.MaDanhMuc
+        FROM dbo.ChienDich cd
+        WHERE
+            (@MaDanhMuc IS NULL OR cd.MaDanhMuc = @MaDanhMuc)
+            AND (@TrangThai IS NULL OR cd.TrangThai = @TrangThai)
+            AND (
+                @TuKhoa IS NULL 
+                OR cd.TenChienDich LIKE N'%' + @TuKhoa + N'%'
+            )
+    ),
+    QuyenGopAgg AS
+    (
+        SELECT
+            qg.MaChienDich,
+            COUNT(*) AS SoLuotQuyenGop
+        FROM dbo.QuyenGop qg
+        WHERE qg.TrangThai = 1
+        GROUP BY qg.MaChienDich
+    ),
+    FinalData AS
+    (
+        SELECT
+            cd.MaChienDich,
+            cd.TenChienDich,
+            cd.MoTaNgan,
+            cd.AnhBia,
+            cd.MucTieu,
+            cd.SoTienDaQuyen,
+
+            CASE
+                WHEN cd.MucTieu = 0 THEN 0
+                ELSE CAST(cd.SoTienDaQuyen * 100.0 / cd.MucTieu AS DECIMAL(5,1))
+            END AS PhanTramHoanThanh,
+
+            cd.NgayBatDau,
+            cd.NgayKetThuc,
+            DATEDIFF(DAY, GETDATE(), cd.NgayKetThuc) AS SoNgayCon,
+
+            cd.TrangThai,
+            cd.NoiBat,
+
+            dm.TenDanhMuc,
+            dm.MauSac AS MauDanhMuc,
+
+            ISNULL(qg.SoLuotQuyenGop, 0) AS SoLuotQuyenGop,
+
+            cd.NgayTao
+        FROM ChienDichBase cd
+        INNER JOIN dbo.DanhMucChienDich dm 
+            ON cd.MaDanhMuc = dm.MaDanhMuc
+        LEFT JOIN QuyenGopAgg qg 
+            ON cd.MaChienDich = qg.MaChienDich
+    )
+
+    SELECT *
+    FROM FinalData
     ORDER BY
-        CASE WHEN @SapXepTheo = N'NgayKetThuc'    THEN CAST(cd.NgayKetThuc   AS SQL_VARIANT) END ASC,
-        CASE WHEN @SapXepTheo = N'SoTienDaQuyen'  THEN CAST(cd.SoTienDaQuyen AS SQL_VARIANT) END DESC,
-        CASE WHEN @SapXepTheo = N'MucTieu'        THEN CAST(cd.MucTieu       AS SQL_VARIANT) END DESC,
-        cd.NgayTao DESC
-    OFFSET @BatDauTu ROWS FETCH NEXT @SoDoiMoiTrang ROWS ONLY
+        CASE WHEN @SapXepTheo = N'NgayKetThuc'   THEN NgayKetThuc END ASC,
+        CASE WHEN @SapXepTheo = N'SoTienDaQuyen' THEN SoTienDaQuyen END DESC,
+        CASE WHEN @SapXepTheo = N'MucTieu'       THEN MucTieu END DESC,
+        CASE WHEN @SapXepTheo = N'NgayTao'       THEN NgayTao END DESC,
+        NgayTao DESC -- fallback
+    OFFSET @BatDauTu ROWS
+    FETCH NEXT @SoDoiMoiTrang ROWS ONLY;
 END
 GO
 
