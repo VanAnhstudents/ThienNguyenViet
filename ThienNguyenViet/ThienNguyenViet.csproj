@@ -154,7 +154,6 @@
     </Compile>
     <Compile Include="Admin\TongQuan.aspx.cs">
       <DependentUpon>TongQuan.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Admin\TongQuan.aspx.designer.cs">
       <DependentUpon>TongQuan.aspx</DependentUpon>
@@ -250,7 +249,6 @@
     <Compile Include="TrangChu.aspx.designer.cs">
       <DependentUpon>TrangChu.aspx</DependentUpon>
     </Compile>
-    <Content Include="App_Code\KetNoiDB.cs" />
     <Content Include="App_Code\ChienDichDAO.cs" />
     <Content Include="App_Code\QuyenGopDAO.cs" />
     <Content Include="App_Code\NguoiDungDAO.cs" />
