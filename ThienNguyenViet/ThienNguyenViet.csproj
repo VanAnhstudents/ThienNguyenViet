@@ -159,6 +159,7 @@
     <Compile Include="Admin\TongQuan.aspx.designer.cs">
       <DependentUpon>TongQuan.aspx</DependentUpon>
     </Compile>
+    <Content Include="App_Code\KetNoiDB.cs" />
     <Compile Include="ChiTietChienDich.aspx.cs">
       <DependentUpon>ChiTietChienDich.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
