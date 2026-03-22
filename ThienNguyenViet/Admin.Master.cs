@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Web.UI;
 
 namespace ThienNguyenViet.Admin
@@ -15,11 +16,10 @@ namespace ThienNguyenViet.Admin
         /// </summary>
         protected string IsActive(string pageName)
         {
-            string currentPage = System.IO.Path.GetFileNameWithoutExtension(
-                                     Request.Url.AbsolutePath);
-            return currentPage.Equals(pageName, StringComparison.OrdinalIgnoreCase)
-                   ? "active"
-                   : string.Empty;
+            string currentPage = Path.GetFileNameWithoutExtension(Request.AppRelativeCurrentExecutionFilePath);
+            return currentPage != null && currentPage.Equals(pageName, StringComparison.OrdinalIgnoreCase)
+                ? "active"
+                : string.Empty;
         }
     }
 }
