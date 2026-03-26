@@ -13,5 +13,22 @@ namespace ThienNguyenViet
         {
 
         }
+        protected void btnGui_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                string hoTen = txtHoTen.Text;
+                string email = txtEmail.Text;
+                string chuDe = ddlChuDe.SelectedValue;
+                string noiDung = txtNoiDung.Text;
+
+                // Demo: chỉ hiển thị thông báo
+                lblThongBao.Text = "Gửi liên hệ thành công! Chúng tôi sẽ phản hồi sớm.";
+
+                // TODO:
+                // - Lưu DB (bảng liên hệ)
+                // - Hoặc gửi email SMTP
+            }
+        }
     }
 }
