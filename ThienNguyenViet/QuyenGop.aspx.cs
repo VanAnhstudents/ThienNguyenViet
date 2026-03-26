@@ -11,7 +11,12 @@ namespace ThienNguyenViet
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
         }
+
+        protected void btnConfirm_Click(object sender, EventArgs e)
+        {
+            Response.Write("<script>alert('Xác nhận chuyển khoản thành công!');</script>");
+        }
+    
     }
 }
