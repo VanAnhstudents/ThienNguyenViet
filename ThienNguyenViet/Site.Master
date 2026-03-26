@@ -1,19 +1,403 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="ThienNguyenViet.Site" %>
 
 <!DOCTYPE html>
-
-<html>
+<html lang="vi">
 <head runat="server">
-    <title></title>
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thiện Nguyện Việt — Chung tay vì cộng đồng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/css/style.css") %>" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+
+    <style>
+        /* ═══════════════════════════════════════════════════════
+           SITE-WIDE: HEADER
+        ═══════════════════════════════════════════════════════ */
+        :root {
+            --header-h: 68px;
+        }
+
+        /* Urgency banner */
+        .urgent-banner {
+            background: linear-gradient(90deg, #B7550A, #C0651A, #B7550A);
+            background-size: 200% 100%;
+            animation: bannerShimmer 4s linear infinite;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            padding: 9px 20px;
+            letter-spacing: .03em;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        @keyframes bannerShimmer {
+            0%   { background-position: 0% 50%;   }
+            100% { background-position: 200% 50%; }
+        }
+        .urgent-banner a { color: #FDEFD8; text-decoration: underline; margin-left: 6px; }
+        .urgent-close {
+            background: none; border: none; color: rgba(255,255,255,.7);
+            cursor: pointer; font-size: 17px; line-height: 1;
+            margin-left: 16px; padding: 0 4px; transition: color .15s;
+        }
+        .urgent-close:hover { color: #fff; }
+
+        /* Header */
+        .site-header {
+            position: sticky; top: 0; z-index: 200;
+            background: rgba(255,255,255,.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(45,122,79,.12);
+            height: var(--header-h);
+            display: flex; align-items: center;
+            transition: box-shadow .2s;
+        }
+        .site-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.09); }
+
+        .header-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            width: 100%;
+            display: flex; align-items: center; gap: 32px;
+        }
+
+        /* Logo */
+        .site-logo {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; flex-shrink: 0;
+        }
+        .site-logo-icon {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: linear-gradient(135deg, #2D7A4F, #3D9962);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 2px 8px rgba(45,122,79,.35);
+        }
+        .site-logo-text { line-height: 1.1; }
+        .site-logo-text strong {
+            display: block; font-family: 'Playfair Display', serif;
+            font-size: 16px; font-weight: 700; color: #1A3D28;
+            letter-spacing: -.01em;
+        }
+        .site-logo-text span { font-size: 10px; color: #718096; font-weight: 500; }
+
+        /* Nav */
+        .site-nav {
+            display: flex; align-items: center; gap: 2px;
+            flex: 1; list-style: none; margin: 0; padding: 0;
+        }
+        .site-nav a {
+            display: flex; align-items: center;
+            padding: 8px 14px; border-radius: 8px;
+            font-size: 13.5px; font-weight: 500;
+            color: #4A5568; text-decoration: none;
+            transition: all .18s; white-space: nowrap;
+        }
+        .site-nav a:hover  { background: #EAF5EE; color: var(--mau-chinh); }
+        .site-nav a.active { background: #EAF5EE; color: var(--mau-chinh); font-weight: 600; }
+
+        /* Header actions */
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+        .btn-header-login {
+            height: 36px; padding: 0 18px;
+            border: 1.5px solid var(--mau-chinh);
+            border-radius: 8px; color: var(--mau-chinh);
+            background: transparent; font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: var(--font);
+            text-decoration: none; display: inline-flex; align-items: center;
+            transition: all .18s;
+        }
+        .btn-header-login:hover { background: var(--mau-chinh); color: #fff; }
+
+        .btn-header-donate {
+            height: 36px; padding: 0 18px;
+            background: linear-gradient(135deg, #C0651A, #D97B2A);
+            border: none; border-radius: 8px;
+            color: #fff; font-size: 13px; font-weight: 700;
+            cursor: pointer; font-family: var(--font);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+            box-shadow: 0 2px 8px rgba(192,101,26,.35);
+            transition: all .18s;
+        }
+        .btn-header-donate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(192,101,26,.45);
+            color: #fff;
+        }
+
+        /* User avatar */
+        .header-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, #2D7A4F, #3D9962);
+            color: #fff; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 2px solid #EAF5EE;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           SITE-WIDE: FOOTER
+        ═══════════════════════════════════════════════════════ */
+        .site-footer {
+            background: #132B1A;
+            color: rgba(255,255,255,.75);
+            padding: 64px 0 0;
+            margin-top: 80px;
+        }
+
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+            gap: 40px;
+        }
+
+        .footer-brand .footer-logo {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+        }
+        .footer-brand .footer-logo-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: linear-gradient(135deg, #2D7A4F, #3D9962);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .footer-brand .footer-logo strong {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px; color: #fff; font-weight: 700;
+        }
+        .footer-brand p { font-size: 13px; line-height: 1.75; margin-bottom: 18px; }
+
+        .footer-social { display: flex; gap: 8px; }
+        .footer-social a {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: rgba(255,255,255,.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; text-decoration: none;
+            transition: background .18s;
+        }
+        .footer-social a:hover { background: var(--mau-chinh); }
+
+        .footer-col h4 {
+            font-size: 12px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .1em; color: rgba(255,255,255,.5); margin-bottom: 16px;
+        }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a {
+            font-size: 13px; color: rgba(255,255,255,.7);
+            text-decoration: none; transition: color .15s;
+        }
+        .footer-col ul li a:hover { color: #4CAF50; }
+
+        .footer-contact-item {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 13px; margin-bottom: 12px;
+        }
+        .footer-contact-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+        /* Newsletter */
+        .footer-newsletter { }
+        .footer-newsletter p { font-size: 13px; margin-bottom: 14px; }
+        .newsletter-form {
+            display: flex; gap: 8px;
+            background: rgba(255,255,255,.07);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 10px; padding: 6px 6px 6px 14px;
+        }
+        .newsletter-input {
+            flex: 1; background: none; border: none; outline: none;
+            color: #fff; font-size: 13px; font-family: var(--font);
+        }
+        .newsletter-input::placeholder { color: rgba(255,255,255,.35); }
+        .newsletter-btn {
+            height: 32px; padding: 0 14px; border-radius: 7px;
+            background: var(--mau-chinh); color: #fff;
+            border: none; font-size: 12px; font-weight: 600;
+            cursor: pointer; font-family: var(--font);
+            white-space: nowrap; transition: background .15s;
+        }
+        .newsletter-btn:hover { background: var(--mau-chinh-hover); }
+
+        /* Footer bottom */
+        .footer-bottom {
+            max-width: 1200px; margin: 40px auto 0;
+            padding: 18px 24px;
+            border-top: 1px solid rgba(255,255,255,.08);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px;
+        }
+        .footer-bottom span { font-size: 12px; color: rgba(255,255,255,.4); }
+        .footer-bottom a { color: rgba(255,255,255,.5); font-size: 12px; text-decoration: none; }
+        .footer-bottom a:hover { color: rgba(255,255,255,.8); }
+        .footer-bottom-links { display: flex; gap: 20px; }
+
+        /* Scroll to top */
+        .scroll-top-btn {
+            position: fixed; bottom: 28px; right: 28px;
+            width: 42px; height: 42px; border-radius: 12px;
+            background: var(--mau-chinh);
+            border: none; cursor: pointer; color: #fff; font-size: 16px;
+            box-shadow: 0 4px 16px rgba(45,122,79,.4);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translateY(12px);
+            transition: all .25s; z-index: 999;
+        }
+        .scroll-top-btn.visible { opacity: 1; transform: translateY(0); }
+        .scroll-top-btn:hover { transform: translateY(-2px); background: var(--mau-chinh-hover); }
+
+        /* Page content offset */
+        .page-content { min-height: 60vh; }
+    </style>
 </head>
 <body>
-    <form id="form1" runat="server">
-        <div>
-            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
-            </asp:ContentPlaceHolder>
+<form id="form1" runat="server">
+
+    <%-- ══ Urgent Banner ══ --%>
+    <div class="urgent-banner" id="urgentBanner">
+        <span>🚨</span>
+        <span>Lũ lụt miền Trung: Khẩn cấp cần sự hỗ trợ của bạn!</span>
+        <a href="/DanhSachChienDich.aspx">Quyên góp ngay →</a>
+        <button class="urgent-close" onclick="document.getElementById('urgentBanner').remove()">✕</button>
+    </div>
+
+    <%-- ══ Header ══ --%>
+    <header class="site-header" id="siteHeader">
+        <div class="header-inner">
+
+            <a href="<%= ResolveUrl("~/TrangChu.aspx") %>" class="site-logo">
+                <div class="site-logo-icon">🌿</div>
+                <div class="site-logo-text">
+                    <strong>Thiện Nguyện Việt</strong>
+                    <span>Chung tay vì cộng đồng</span>
+                </div>
+            </a>
+
+            <ul class="site-nav">
+                <li><a href="<%= ResolveUrl("~/TrangChu.aspx") %>">Trang chủ</a></li>
+                <li><a href="<%= ResolveUrl("~/DanhSachChienDich.aspx") %>">Chiến dịch</a></li>
+                <li><a href="<%= ResolveUrl("~/DanhSachTinTuc.aspx") %>">Tin tức</a></li>
+                <li><a href="<%= ResolveUrl("~/GioiThieu.aspx") %>">Giới thiệu</a></li>
+                <li><a href="<%= ResolveUrl("~/LienHe.aspx") %>">Liên hệ</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <a href="<%= ResolveUrl("~/DangNhap.aspx") %>" class="btn-header-login">Đăng nhập</a>
+                <a href="<%= ResolveUrl("~/DanhSachChienDich.aspx") %>" class="btn-header-donate">❤ Quyên góp</a>
+            </div>
+
         </div>
-    </form>
+    </header>
+
+    <%-- ══ Page Content ══ --%>
+    <div class="page-content">
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+    </div>
+
+    <%-- ══ Footer ══ --%>
+    <footer class="site-footer">
+        <div class="footer-inner">
+
+            <%-- Cột 1: Brand --%>
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <div class="footer-logo-icon">🌿</div>
+                    <strong>Thiện Nguyện Việt</strong>
+                </div>
+                <p>Kết nối trái tim, chia sẻ yêu thương — chúng tôi hoạt động minh bạch vì một Việt Nam tốt đẹp hơn.</p>
+                <div class="footer-social">
+                    <a href="#" title="Facebook">🔵</a>
+                    <a href="#" title="YouTube">🔴</a>
+                    <a href="#" title="TikTok">⚫</a>
+                    <a href="#" title="Zalo">🟢</a>
+                </div>
+            </div>
+
+            <%-- Cột 2: Liên kết nhanh --%>
+            <div class="footer-col">
+                <h4>Liên kết nhanh</h4>
+                <ul>
+                    <li><a href="/TrangChu.aspx">Trang chủ</a></li>
+                    <li><a href="/DanhSachChienDich.aspx">Tất cả chiến dịch</a></li>
+                    <li><a href="/DanhSachTinTuc.aspx">Tin tức & Sự kiện</a></li>
+                    <li><a href="/GioiThieu.aspx">Về chúng tôi</a></li>
+                    <li><a href="/LienHe.aspx">Liên hệ hỗ trợ</a></li>
+                    <li><a href="/DangKy.aspx">Đăng ký tình nguyện viên</a></li>
+                </ul>
+            </div>
+
+            <%-- Cột 3: Liên hệ --%>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-icon">📍</span>
+                    <span>123 Nguyễn Trãi, Quận 1, TP. Hồ Chí Minh</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-icon">📧</span>
+                    <span>contact@thiennguyen.vn</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-icon">📞</span>
+                    <span>1800 1234 (Miễn phí)</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-icon">🕘</span>
+                    <span>Thứ 2 – Thứ 6: 8:00 – 17:30</span>
+                </div>
+            </div>
+
+            <%-- Cột 4: Newsletter --%>
+            <div class="footer-newsletter">
+                <h4>Nhận thông tin mới nhất</h4>
+                <p>Đăng ký để nhận cập nhật về các chiến dịch, tin tức thiện nguyện hàng tuần.</p>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Email của bạn..." />
+                    <button class="newsletter-btn" onclick="return false;">Đăng ký</button>
+                </div>
+                <p style="font-size:11px;margin-top:10px;color:rgba(255,255,255,.35)">
+                    🔒 Thông tin của bạn được bảo mật tuyệt đối
+                </p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 Thiện Nguyện Việt. Mọi quyền được bảo lưu.</span>
+            <div class="footer-bottom-links">
+                <a href="#">Chính sách bảo mật</a>
+                <a href="#">Điều khoản sử dụng</a>
+                <a href="#">Cookie</a>
+            </div>
+        </div>
+    </footer>
+
+    <%-- Scroll to top --%>
+    <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <%-- Global scripts --%>
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function () {
+            var h = document.getElementById('siteHeader');
+            if (window.scrollY > 30) h.classList.add('scrolled');
+            else h.classList.remove('scrolled');
+
+            var btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 400) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        });
+
+        // Active nav
+        (function () {
+            var path = window.location.pathname.toLowerCase();
+            document.querySelectorAll('.site-nav a').forEach(function (a) {
+                if (a.getAttribute('href') && path.includes(a.getAttribute('href').split('/').pop().toLowerCase().replace('.aspx', ''))) {
+                    a.classList.add('active');
+                }
+            });
+        })();
+    </script>
+
+</form>
 </body>
 </html>
