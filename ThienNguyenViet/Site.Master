@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thiện Nguyện Việt — Chung tay vì cộng đồng</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/Content/css/style.css") %>" rel="stylesheet" />
+    <link href="Content/css/style.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server" />
 
     <style>
@@ -251,6 +252,7 @@
 </head>
 <body>
 <form id="form1" runat="server">
+    <asp:ScriptManager runat="server"></asp:ScriptManager>
 
     <%-- ══ Urgent Banner ══ --%>
     <div class="urgent-banner" id="urgentBanner">

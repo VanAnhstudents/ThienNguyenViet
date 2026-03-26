@@ -1,132 +1,191 @@
-﻿<%@ Page Title="Liên hệ" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="LienHe.aspx.cs" Inherits="ThienNguyenViet.LienHe" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="LienHe.aspx.cs" Inherits="ThienNguyenViet.LienHe" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .section {
+            padding: 60px 0;
+        }
 
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+        .container {
+            width: 1100px;
+            margin: 0 auto;
+        }
 
-<style>
-    .container {
-        width: 1200px;
-        margin: auto;
-    }
+        .lienhe-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+        }
 
-    .row {
-        display: flex;
-        gap: 30px;
-    }
+        .form-box {
+            background: #fff;
+            padding: 24px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--vien);
+        }
 
-    .col-left {
-        flex: 2;
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-    }
+        .info-box {
+            background: var(--mau-chinh-nen);
+            padding: 24px;
+            border-radius: var(--r-md);
+        }
 
-    .col-right {
-        flex: 1;
-        background: #f9f9f9;
-        padding: 20px;
-        border-radius: 10px;
-    }
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
 
-    .form-group label {
-        font-weight: bold;
-    }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--vien);
+        }
 
-    .form-control {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
+        textarea {
+            height: 120px;
+            resize: none;
+        }
 
-    .btn-submit {
-        background: #e53935;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }
+        .error {
+            color: var(--mau-loi);
+            font-size: 13px;
+        }
 
-    iframe {
-        width: 100%;
-        height: 200px;
-        border: 0;
-        margin-top: 10px;
-    }
-</style>
+        iframe {
+            width: 100%;
+            border-radius: var(--r-sm);
+            margin-top: 10px;
+        }
+    </style>
 
-<div class="container">
-    <h2>Liên hệ với chúng tôi</h2>
-
-    <div class="row">
-
-        <!-- LEFT: FORM -->
-        <div class="col-left">
-
-            <div class="form-group">
-                <label>Họ tên</label>
-                <asp:TextBox ID="txtHoTen" runat="server" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ControlToValidate="txtHoTen" ErrorMessage="* Bắt buộc" ForeColor="Red" runat="server" />
-            </div>
-
-            <div class="form-group">
-                <label>Email</label>
-                <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ControlToValidate="txtEmail" ErrorMessage="* Bắt buộc" ForeColor="Red" runat="server" />
-                <asp:RegularExpressionValidator 
-                    ControlToValidate="txtEmail"
-                    ValidationExpression="\w+@\w+\.\w+"
-                    ErrorMessage="Email không hợp lệ"
-                    ForeColor="Red"
-                    runat="server" />
-            </div>
-
-            <div class="form-group">
-                <label>Chủ đề</label>
-                <asp:DropDownList ID="ddlChuDe" runat="server" CssClass="form-control">
-                    <asp:ListItem Text="-- Chọn chủ đề --" Value=""></asp:ListItem>
-                    <asp:ListItem Text="Hỗ trợ quyên góp" />
-                    <asp:ListItem Text="Hợp tác" />
-                    <asp:ListItem Text="Phản hồi" />
-                </asp:DropDownList>
-            </div>
-
-            <div class="form-group">
-                <label>Nội dung</label>
-                <asp:TextBox ID="txtNoiDung" runat="server" TextMode="MultiLine" Rows="5" CssClass="form-control"></asp:TextBox>
-                <asp:RequiredFieldValidator ControlToValidate="txtNoiDung" ErrorMessage="* Bắt buộc" ForeColor="Red" runat="server" />
-            </div>
-
-            <asp:Button ID="btnGui" runat="server" Text="Gửi liên hệ" CssClass="btn-submit" OnClick="btnGui_Click" />
-
-            <br /><br />
-            <asp:Label ID="lblThongBao" runat="server" ForeColor="Green"></asp:Label>
-
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <section class="section">
+        <div class="container">
+            <h1>Liên hệ với chúng tôi</h1>
+            <p>Hãy gửi thông tin, chúng tôi sẽ phản hồi sớm nhất</p>
         </div>
+    </section>
 
-        <!-- RIGHT: INFO -->
-        <div class="col-right">
+    <!-- ===== MAIN ===== -->
+    <section class="section">
+    <div class="container">
 
-            <h3>Thông tin liên hệ</h3>
+        <div class="lienhe-grid">
 
-            <p><b>Địa chỉ:</b> Hà Nội, Việt Nam</p>
-            <p><b>Hotline:</b> 0123 456 789</p>
-            <p><b>Email:</b> contact@thiennguyenviet.vn</p>
+            <!-- ===== LEFT: FORM ===== -->
+            <div class="form-box">
+                <h2>Gửi liên hệ</h2>
 
-            <h4>Bản đồ</h4>
-            <iframe src="https://maps.google.com/maps?q=ha%20noi&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+                <!-- Validation Summary -->
+                <asp:ValidationSummary 
+                    runat="server" 
+                    CssClass="error" 
+                    HeaderText="Vui lòng kiểm tra lại thông tin:" />
 
-            <h4>Giờ làm việc</h4>
-            <p>Thứ 2 - Thứ 6: 8h - 17h</p>
-            <p>Thứ 7: 8h - 12h</p>
+                <!-- Họ tên -->
+                <div class="form-group">
+                    <label for="txtHoTen">Họ tên</label>
+                    <asp:TextBox ID="txtHoTen" runat="server" CssClass="input" />
+
+                    <asp:RequiredFieldValidator 
+                        ControlToValidate="txtHoTen"
+                        ErrorMessage="* Nhập họ tên"
+                        CssClass="error"
+                        Display="Dynamic"
+                        runat="server" />
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="txtEmail">Email</label>
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="input" />
+
+                    <asp:RequiredFieldValidator 
+                        ControlToValidate="txtEmail"
+                        ErrorMessage="* Nhập email"
+                        CssClass="error"
+                        Display="Dynamic"
+                        runat="server" />
+
+                    <asp:RegularExpressionValidator
+                        ControlToValidate="txtEmail"
+                        ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                        ErrorMessage="* Email không hợp lệ"
+                        CssClass="error"
+                        Display="Dynamic"
+                        runat="server" />
+                </div>
+
+                <!-- Chủ đề -->
+                <div class="form-group">
+                    <label for="ddlChuDe">Chủ đề</label>
+                    <asp:DropDownList ID="ddlChuDe" runat="server" CssClass="input">
+                        <asp:ListItem Text="-- Chọn chủ đề --" Value="" />
+                        <asp:ListItem Text="Hỗ trợ" Value="HoTro" />
+                        <asp:ListItem Text="Hợp tác" Value="HopTac" />
+                        <asp:ListItem Text="Góp ý" Value="GopY" />
+                    </asp:DropDownList>
+
+                    <asp:RequiredFieldValidator
+                        ControlToValidate="ddlChuDe"
+                        InitialValue=""
+                        ErrorMessage="* Chọn chủ đề"
+                        CssClass="error"
+                        Display="Dynamic"
+                        runat="server" />
+                </div>
+
+                <!-- Nội dung -->
+                <div class="form-group">
+                    <label for="txtNoiDung">Nội dung</label>
+                    <asp:TextBox ID="txtNoiDung" runat="server" 
+                                 TextMode="MultiLine" CssClass="input" Rows="4" />
+
+                    <asp:RequiredFieldValidator 
+                        ControlToValidate="txtNoiDung"
+                        ErrorMessage="* Nhập nội dung"
+                        CssClass="error"
+                        Display="Dynamic"
+                        runat="server" />
+                </div>
+
+                <!-- Button -->
+                <asp:Button 
+                    ID="btnGui" 
+                    runat="server" 
+                    Text="Gửi liên hệ" 
+                    CssClass="btn-chinh"
+                    OnClick="BtnGui_Click" />
+
+            </div>
+
+            <!-- ===== RIGHT: INFO ===== -->
+            <div class="info-box">
+                <h2>Thông tin liên hệ</h2>
+
+                <p><strong>📍 Địa chỉ:</strong> Hà Nội, Việt Nam</p>
+                <p><strong>📞 Hotline:</strong> 0123 456 789</p>
+                <p><strong>📧 Email:</strong> support@thiennguyenviet.vn</p>
+                <p><strong>🕘 Giờ làm việc:</strong> 08:00 - 17:30 (T2 - T6)</p>
+
+                <iframe 
+                    src="https://www.google.com/maps?q=Hà Nội&output=embed"
+                    height="220"
+                    loading="lazy">
+                </iframe>
+            </div>
 
         </div>
 
     </div>
-</div>
+</section>
 
 </asp:Content>
