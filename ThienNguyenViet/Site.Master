@@ -280,6 +280,7 @@
                 <li><a href="<%= ResolveUrl("~/DanhSachTinTuc.aspx") %>">Tin tức</a></li>
                 <li><a href="<%= ResolveUrl("~/GioiThieu.aspx") %>">Giới thiệu</a></li>
                 <li><a href="<%= ResolveUrl("~/LienHe.aspx") %>">Liên hệ</a></li>
+                <li><a href="<%= ResolveUrl("~/HoSo.aspx") %>">Hồ sơ</a></li>
             </ul>
 
             <div class="header-actions">

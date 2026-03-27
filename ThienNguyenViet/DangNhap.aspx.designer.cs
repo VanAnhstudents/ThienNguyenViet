@@ -60,15 +60,6 @@ namespace ThienNguyenViet
         protected global::System.Web.UI.WebControls.CheckBox chkRemember;
 
         /// <summary>
-        /// btnDangNhap control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDangNhap;
-
-        /// <summary>
         /// lnkQuenMK control.
         /// </summary>
         /// <remarks>
@@ -78,12 +69,12 @@ namespace ThienNguyenViet
         protected global::System.Web.UI.WebControls.HyperLink lnkQuenMK;
 
         /// <summary>
-        /// lnkDangKy control.
+        /// btnDangNhap control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkDangKy;
+        protected global::System.Web.UI.WebControls.Button btnDangNhap;
     }
 }

@@ -70,16 +70,6 @@
             position: relative;
         }
 
-        .timeline-dot {
-            width: 12px;
-            height: 12px;
-            background: var(--mau-chinh);
-            border-radius: 50%;
-            position: absolute;
-            left: -7px;
-            top: 5px;
-        }
-
         /* ===== Counter ===== */
         .counter {
             background: var(--mau-chinh);
@@ -137,19 +127,16 @@
 
             <div class="timeline">
                 <div class="timeline-item">
-                    <div class="timeline-dot"></div>
                     <h3>2020</h3>
                     <p>Thành lập tổ chức Thiện Nguyện Việt.</p>
                 </div>
 
                 <div class="timeline-item">
-                    <div class="timeline-dot"></div>
                     <h3>2022</h3>
                     <p>Triển khai hơn 50 chiến dịch thiện nguyện.</p>
                 </div>
 
                 <div class="timeline-item">
-                    <div class="timeline-dot"></div>
                     <h3>2024</h3>
                     <p>Đạt 10.000+ nhà hảo tâm tham gia.</p>
                 </div>
