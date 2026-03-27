@@ -14,26 +14,42 @@ namespace ThienNguyenViet
             if (!IsPostBack)
             {
                 lblError.Visible = false;
+
+                if (Session["RegisterSuccess"] != null)
+                {
+                    lblError.Text = Session["RegisterSuccess"].ToString();
+                    lblError.Visible = true;
+                    Session.Remove("RegisterSuccess");
+                }
             }
         }
 
         protected void btnDangNhap_Click(object sender, EventArgs e)
         {
-            // Demo - bạn có thể thay bằng kiểm tra Database sau này
-            string email = txtEmail.Text.Trim();
-            string pass = txtPassword.Text.Trim();
+            string user = txtEmail.Text.Trim().ToLower();
+            string pass = txtPassword.Text;
 
-            if (email == "user@example.com" && pass == "123456")
+            // Test accounts: admin/admin -> Admin dashboard | user/user -> Homepage
+            if (user == "admin" && pass == "admin")
             {
-                Session["UserEmail"] = email;
                 Session["IsLoggedIn"] = true;
-                Response.Redirect("Default.aspx"); // ← Thay bằng trang chủ của bạn
+                Session["UserEmail"] = "admin";
+                Session["UserRole"] = "Admin";
+                Response.Redirect("~/Admin/TongQuan.aspx");
+                return;
             }
-            else
+
+            if (user == "user" && pass == "user")
             {
-                lblError.Text = "Email hoặc mật khẩu không đúng!";
-                lblError.Visible = true;
+                Session["IsLoggedIn"] = true;
+                Session["UserEmail"] = "user";
+                Session["UserRole"] = "User";
+                Response.Redirect("~/TrangChu.aspx");
+                return;
             }
+
+            lblError.Text = "Ten dang nhap hoac mat khau khong dung!";
+            lblError.Visible = true;
         }
     }
 }﻿
