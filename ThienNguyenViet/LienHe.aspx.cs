@@ -13,5 +13,21 @@ namespace ThienNguyenViet
         {
 
         }
+        protected void BtnGui_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                // xử lý gửi
+                Response.Write("<script>alert('Gửi thành công!');</script>");
+                Clear_Form();
+            }
+        }
+        private void Clear_Form()
+        {
+            txtHoTen.Text = "";
+            txtEmail.Text = "";
+            txtNoiDung.Text = "";
+            ddlChuDe.SelectedIndex = 0; // reset về "-- Chọn chủ đề --"
+        }
     }
 }
