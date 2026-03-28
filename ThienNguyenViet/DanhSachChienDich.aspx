@@ -524,7 +524,7 @@ input[type="range"]::-webkit-slider-thumb {
                     <span class="checkbox-label">
                         <span class="checkbox-dot" style="background:#E53E3E"></span>
                         Thiên tai &amp; Khẩn cấp
-                        <span class="checkbox-count">18</span>
+                        <span class="checkbox-count">0</span>
                     </span>
                 </label>
                 <label class="filter-checkbox-item">
@@ -533,7 +533,7 @@ input[type="range"]::-webkit-slider-thumb {
                     <span class="checkbox-label">
                         <span class="checkbox-dot" style="background:#3182CE"></span>
                         Giáo dục &amp; Học bổng
-                        <span class="checkbox-count">34</span>
+                        <span class="checkbox-count">0</span>
                     </span>
                 </label>
                 <label class="filter-checkbox-item">
@@ -542,7 +542,7 @@ input[type="range"]::-webkit-slider-thumb {
                     <span class="checkbox-label">
                         <span class="checkbox-dot" style="background:#38A169"></span>
                         Môi trường &amp; Sinh thái
-                        <span class="checkbox-count">27</span>
+                        <span class="checkbox-count">2</span>
                     </span>
                 </label>
                 <label class="filter-checkbox-item">
@@ -551,7 +551,7 @@ input[type="range"]::-webkit-slider-thumb {
                     <span class="checkbox-label">
                         <span class="checkbox-dot" style="background:#D69E2E"></span>
                         Y tế &amp; Sức khỏe
-                        <span class="checkbox-count">49</span>
+                        <span class="checkbox-count">1</span>
                     </span>
                 </label>
             </div>
