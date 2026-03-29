@@ -92,7 +92,7 @@ CREATE TABLE dbo.ChienDich (
     CONSTRAINT FK_ChienDich_NguoiTao    FOREIGN KEY (MaNguoiTao)  REFERENCES dbo.NguoiDung        (MaNguoiDung),
     CONSTRAINT CK_ChienDich_TrangThai   CHECK (TrangThai IN (0, 1, 2, 3)),
     CONSTRAINT CK_ChienDich_MucTieu     CHECK (MucTieu >= 0),
-    CONSTRAINT CK_ChienDich_NgayHopLe  CHECK (NgayKetThuc > NgayBatDau)
+    CONSTRAINT CK_ChienDich_NgayHopLe   CHECK (NgayKetThuc > NgayBatDau)
 )
 GO
 
@@ -657,8 +657,3 @@ BEGIN
     ORDER BY TongTienDaQuyen DESC
 END
 GO
-
-PRINT N'Tạo database ThienNguyenViet thành công!'
-PRINT N'Tổng số bảng : 10'
-PRINT N'Tổng số stored procedure: 10'
-PRINT N'Tổng số index: 11'
