@@ -1,423 +1,797 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
 
+/* ══════════════════════════════════════════════════════════
+   BIẾN CSS
+══════════════════════════════════════════════════════════ */
 :root {
-    /* Sidebar & Header */
-    --admin-sidebar: #1A365D;
-    --admin-sidebar-hover: #2A4A7F;
-    --admin-sidebar-active: rgba(255,255,255,.12);
-    --admin-accent: #63B3ED;
-    /* Vùng nội dung */
-    --admin-nen: #F0F4F8;
-    --admin-card: #FFFFFF;
-    --admin-thead: #F7FAFC;
-    --admin-vien: #E2E8F0;
-    --admin-chu-chinh: #2D3748;
-    --admin-chu-phu: #718096;
-    /* Ngữ nghĩa */
-    --admin-thanh-cong: #38A169;
-    --admin-canh-bao: #D69E2E;
-    --admin-loi: #E53E3E;
-    --admin-trung-lap: #718096;
-    /* Stat cards */
-    --stat-xanh-nen: #EBF8FF;
-    --stat-xanh-vien: #3182CE;
-    --stat-xanh-chu: #1A365D;
-    --stat-cam-nen: #FEEBC8;
-    --stat-cam-vien: #D69E2E;
-    --stat-cam-chu: #7B4E12;
-    --stat-tim-nen: #E9D8FD;
-    --stat-tim-vien: #805AD5;
-    --stat-tim-chu: #44337A;
-    /* Font & radius */
+    --sidebar-bg: #1A365D;
+    --sidebar-active-bg: rgba(255,255,255,.10);
+    --sidebar-hover-bg: #243f6e;
+    --sidebar-w: 210px;
+    --accent: #3182CE;
+    --accent-light: #EBF8FF;
+    --bg: #F0F4F8;
+    --card: #FFFFFF;
+    --thead: #F7FAFC;
+    --border: #E2E8F0;
+    --txt: #2D3748;
+    --txt-sub: #718096;
+    --ok: #38A169;
+    --ok-bg: #C6F6D5;
+    --ok-txt: #276749;
+    --warn: #D69E2E;
+    --warn-bg: #FEEBC8;
+    --warn-txt: #C05621;
+    --err: #E53E3E;
+    --err-bg: #FED7D7;
+    --err-txt: #C53030;
+    --info-bg: #BEE3F8;
+    --info-txt: #2B6CB0;
+    --stat-blue-bg: #EBF8FF;
+    --stat-blue: #3182CE;
+    --stat-orange-bg: #FEEBC8;
+    --stat-orange: #D69E2E;
+    --stat-purple-bg: #E9D8FD;
+    --stat-purple: #805AD5;
+    --stat-green-bg: #C6F6D5;
+    --stat-green: #38A169;
     --font: 'Be Vietnam Pro', sans-serif;
-    --r-badge: 4px;
-    --r-nut: 6px;
+    --r: 6px;
     --r-card: 8px;
 }
 
-/* ── Reset ─────────────────────────────────────────────────── */
+/* ══ Reset ══════════════════════════════════════════════ */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* ── Body ──────────────────────────────────────────────────── */
-body.admin-body {
+body.adm-body {
     font-family: var(--font);
-    font-size: 14px;
-    background-color: var(--admin-nen);
-    color: var(--admin-chu-chinh);
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--txt);
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    SIDEBAR
-══════════════════════════════════════════════════════════════ */
-.admin-sidebar {
-    width: 220px;
-    background: var(--admin-sidebar);
-    min-height: 100vh;
+══════════════════════════════════════════════════════════ */
+.adm-sidebar {
+    width: var(--sidebar-w);
+    background: var(--sidebar-bg);
     position: fixed;
     top: 0;
     left: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     z-index: 100;
+    overflow-y: auto;
 }
 
-.admin-sidebar-logo {
-    padding: 20px 16px 16px;
-    border-bottom: 1px solid rgba(255,255,255,.1);
+/* Logo vùng trên */
+.adm-logo {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-    .admin-sidebar-logo .logo-icon {
-        width: 34px;
-        height: 34px;
-        background: var(--admin-accent);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        margin-bottom: 8px;
-    }
-
-    .admin-sidebar-logo h2 {
-        font-size: 14px;
+    .adm-logo h2 {
+        font-size: 13px;
         font-weight: 700;
         color: #fff;
-        line-height: 1.3;
-        margin: 0;
+        line-height: 1.35;
     }
 
-    .admin-sidebar-logo span {
-        font-size: 11px;
+    .adm-logo span {
+        font-size: 10px;
         color: #90CDF4;
     }
 
-/* Section label phân nhóm menu */
-.sidebar-section-label {
+/* Nhóm menu */
+.adm-menu-group {
     font-size: 10px;
     font-weight: 600;
     color: #4A6FA5;
-    letter-spacing: .08em;
+    letter-spacing: .07em;
     text-transform: uppercase;
-    padding: 18px 16px 6px;
+    padding: 16px 16px 5px;
 }
 
-.admin-menu-item {
+/* Menu item */
+.adm-menu-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    font-size: 13px;
+    gap: 8px;
+    padding: 9px 16px;
+    font-size: 12px;
     color: #A0AEC0;
     text-decoration: none;
     border-left: 3px solid transparent;
-    transition: all .15s;
 }
 
-    .admin-menu-item .menu-icon {
-        font-size: 15px;
-        width: 18px;
-        text-align: center;
-    }
-
-    .admin-menu-item:hover {
-        background: var(--admin-sidebar-hover);
+    .adm-menu-item:hover {
+        background: var(--sidebar-hover-bg);
         color: #fff;
     }
 
-    .admin-menu-item.active {
-        background: var(--admin-sidebar-active);
+    .adm-menu-item.active {
+        background: var(--sidebar-active-bg);
         color: #fff;
-        font-weight: 500;
-        border-left-color: var(--admin-accent);
+        font-weight: 600;
+        border-left-color: var(--accent);
     }
 
-    .admin-menu-item.danger {
+    .adm-menu-item.danger {
         color: #FC8181;
     }
 
-        .admin-menu-item.danger:hover {
+        .adm-menu-item.danger:hover {
             background: rgba(229,62,62,.15);
             color: #FC8181;
         }
 
 /* Footer sidebar */
-.sidebar-footer {
+.adm-sidebar-footer {
     margin-top: auto;
-    border-top: 1px solid rgba(255,255,255,.08);
-    padding: 12px 16px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+    .adm-sidebar-footer .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--sidebar-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+
+    .adm-sidebar-footer .info strong {
+        display: block;
+        font-size: 11px;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 130px;
+    }
+
+    .adm-sidebar-footer .info small {
+        font-size: 10px;
+        color: #90CDF4;
+    }
+
+/* ══════════════════════════════════════════════════════════
+   TOP BAR
+══════════════════════════════════════════════════════════ */
+.adm-topbar {
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 52px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    gap: 14px;
+    z-index: 90;
+}
+
+.adm-topbar-title {
+    flex: 1;
+}
+
+    .adm-topbar-title h1 {
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .adm-topbar-title p {
+        font-size: 11px;
+        color: var(--txt-sub);
+        margin-top: 1px;
+    }
+
+.adm-topbar-right {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-    .sidebar-footer .avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: var(--admin-accent);
-        color: var(--admin-sidebar);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 13px;
-        flex-shrink: 0;
-    }
-
-    .sidebar-footer .info {
-        flex: 1;
-        overflow: hidden;
-    }
-
-        .sidebar-footer .info strong {
-            display: block;
-            font-size: 12px;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .sidebar-footer .info small {
-            font-size: 10px;
-            color: #90CDF4;
-        }
-
-/* ══════════════════════════════════════════════════════════════
-   TOP BAR
-══════════════════════════════════════════════════════════════ */
-.admin-topbar {
-    position: fixed;
-    top: 0;
-    left: 220px;
-    right: 0;
-    height: 56px;
-    background: var(--admin-card);
-    border-bottom: 1px solid var(--admin-vien);
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    gap: 16px;
-    z-index: 90;
-}
-
-.topbar-title {
-    flex: 1;
-}
-
-    .topbar-title h1 {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--admin-chu-chinh);
-        line-height: 1;
-    }
-
-    .topbar-title p {
-        font-size: 11px;
-        color: var(--admin-chu-phu);
-        margin-top: 2px;
-    }
-
-.topbar-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.topbar-date {
-    font-size: 12px;
-    color: var(--admin-chu-phu);
-    background: var(--admin-nen);
-    border: 1px solid var(--admin-vien);
-    border-radius: var(--r-nut);
-    padding: 5px 10px;
+.adm-date {
+    font-size: 11px;
+    color: var(--txt-sub);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 4px 9px;
     white-space: nowrap;
 }
 
-.topbar-notif {
+/* Nút thông báo */
+.adm-notif-btn {
     position: relative;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--admin-nen);
-    border: 1px solid var(--admin-vien);
-    border-radius: var(--r-nut);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
+    color: var(--txt-sub);
+    text-decoration: none;
 }
 
-    .topbar-notif .notif-dot {
+    .adm-notif-btn .dot {
         position: absolute;
-        top: 7px;
-        right: 7px;
-        width: 7px;
-        height: 7px;
-        background: var(--admin-loi);
+        top: 6px;
+        right: 6px;
+        width: 6px;
+        height: 6px;
+        background: var(--err);
         border-radius: 50%;
-        border: 2px solid var(--admin-card);
+        border: 2px solid var(--card);
     }
 
-.topbar-avatar {
-    width: 34px;
-    height: 34px;
-    background: var(--admin-accent);
-    color: var(--admin-sidebar);
+/* Avatar topbar */
+.adm-topbar-av {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
 }
 
-/* ══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════
    VÙNG NỘI DUNG
-══════════════════════════════════════════════════════════════ */
-.admin-content {
-    margin-left: 220px;
-    padding: 80px 24px 32px;
+══════════════════════════════════════════════════════════ */
+.adm-content {
+    margin-left: var(--sidebar-w);
+    padding: 70px 22px 30px;
     min-height: 100vh;
 }
 
-/* ── Card ──────────────────────────────────────────────────── */
-.admin-card {
-    background: var(--admin-card);
+/* ══ Card ═══════════════════════════════════════════════ */
+.adm-card {
+    background: var(--card);
     border-radius: var(--r-card);
-    border: 0.5px solid var(--admin-vien);
-    padding: 20px;
-    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    padding: 18px 20px;
+    margin-bottom: 18px;
 }
 
-/* ── Bảng dữ liệu ──────────────────────────────────────────── */
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
+/* ══ Tiêu đề card ════════════════════════════════════════ */
+.adm-card-hd {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
 }
 
-    .admin-table thead tr {
-        background: var(--admin-thead);
+    .adm-card-hd h3 {
+        font-size: 13px;
+        font-weight: 600;
     }
 
-    .admin-table thead th {
-        padding: 10px 14px;
+    .adm-card-hd .sub {
         font-size: 11px;
-        font-weight: 500;
-        color: var(--admin-chu-phu);
+        color: var(--txt-sub);
+        margin-top: 2px;
+    }
+
+/* ══ Bảng dữ liệu ════════════════════════════════════════ */
+.adm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+    .adm-table thead tr {
+        background: var(--thead);
+    }
+
+    .adm-table thead th {
+        padding: 9px 12px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--txt-sub);
         text-transform: uppercase;
         letter-spacing: .05em;
         text-align: left;
-        border-bottom: 1px solid var(--admin-vien);
+        border-bottom: 1px solid var(--border);
     }
 
-    .admin-table tbody td {
-        padding: 10px 14px;
-        border-bottom: 0.5px solid var(--admin-vien);
-        color: var(--admin-chu-chinh);
+    .adm-table tbody td {
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--txt);
         vertical-align: middle;
     }
 
-    .admin-table tbody tr:last-child td {
+    .adm-table tbody tr:last-child td {
         border-bottom: none;
     }
 
-    .admin-table tbody tr:hover {
-        background: #EBF8FF;
+    .adm-table tbody tr:hover {
+        background: var(--accent-light);
     }
 
-/* ── Badges ────────────────────────────────────────────────── */
-.badge-admin {
+/* ══ Badge ═══════════════════════════════════════════════ */
+.badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.badge-ok {
+    background: var(--ok-bg);
+    color: var(--ok-txt);
+}
+
+.badge-wait {
+    background: var(--warn-bg);
+    color: var(--warn-txt);
+}
+
+.badge-reject {
+    background: var(--err-bg);
+    color: var(--err-txt);
+}
+
+.badge-done {
+    background: var(--ok-bg);
+    color: var(--ok-txt);
+}
+
+.badge-info {
+    background: var(--info-bg);
+    color: var(--info-txt);
+}
+
+/* ══ Nút thao tác ════════════════════════════════════════ */
+.btn-approve {
     font-size: 11px;
     padding: 3px 9px;
-    border-radius: var(--r-badge);
-    font-weight: 500;
-    display: inline-block;
-}
-
-.badge-thanh-cong {
-    background: #C6F6D5;
-    color: #276749;
-}
-
-.badge-cho-duyet {
-    background: #FEEBC8;
-    color: #C05621;
-}
-
-.badge-tu-choi {
-    background: #FED7D7;
-    color: #C53030;
-}
-
-.badge-tam-dung {
-    background: #EDF2F7;
-    color: #718096;
-}
-
-.badge-nhap {
-    background: #BEE3F8;
-    color: #2B6CB0;
-}
-
-.badge-hoan-thanh {
-    background: #C6F6D5;
-    color: #276749;
-}
-
-/* ── Nút hành động trong bảng ─────────────────────────────── */
-.btn-sua {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: var(--r-nut);
-    background: #EBF8FF;
-    color: #2B6CB0;
+    border-radius: var(--r);
+    background: var(--ok-bg);
+    color: var(--ok-txt);
     border: none;
     cursor: pointer;
     font-family: var(--font);
 }
 
-.btn-xoa {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: var(--r-nut);
-    background: #FED7D7;
-    color: #C53030;
+.btn-reject {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: var(--r);
+    background: var(--err-bg);
+    color: var(--err-txt);
     border: none;
     cursor: pointer;
     font-family: var(--font);
 }
 
-.btn-duyet {
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: var(--r-nut);
-    background: #C6F6D5;
-    color: #276749;
+.btn-edit {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: var(--r);
+    background: var(--info-bg);
+    color: var(--info-txt);
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+}
+
+.btn-delete {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: var(--r);
+    background: var(--err-bg);
+    color: var(--err-txt);
     border: none;
     cursor: pointer;
     font-family: var(--font);
 }
 
 .btn-primary {
-    font-size: 13px;
-    padding: 8px 16px;
-    border-radius: var(--r-nut);
-    background: var(--stat-xanh-vien);
+    font-size: 12px;
+    padding: 7px 14px;
+    border-radius: var(--r);
+    background: var(--accent);
     color: #fff;
     border: none;
     cursor: pointer;
     font-family: var(--font);
     font-weight: 500;
-    transition: opacity .15s;
 }
 
     .btn-primary:hover {
-        opacity: .88;
+        background: #2b6cb0;
     }
+
+.btn-outline {
+    font-size: 11px;
+    padding: 5px 11px;
+    border-radius: var(--r);
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--txt-sub);
+    cursor: pointer;
+    font-family: var(--font);
+}
+
+    .btn-outline:hover {
+        background: var(--bg);
+        color: var(--txt);
+    }
+
+/* ══ Toast thông báo ════════════════════════════════════ */
+#adm-toast-wrap {
+    position: fixed;
+    top: 60px;
+    right: 18px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.adm-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--r-card);
+    padding: 10px 14px;
+    min-width: 260px;
+    max-width: 340px;
+    pointer-events: all;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+    .adm-toast.toast-ok {
+        border-left-color: var(--ok);
+    }
+
+    .adm-toast.toast-err {
+        border-left-color: var(--err);
+    }
+
+    .adm-toast.toast-warn {
+        border-left-color: var(--warn);
+    }
+
+    .adm-toast .t-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--txt);
+    }
+
+    .adm-toast .t-msg {
+        font-size: 11px;
+        color: var(--txt-sub);
+        margin-top: 2px;
+    }
+
+    .adm-toast .t-close {
+        margin-left: auto;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--txt-sub);
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .adm-toast.hiding {
+        opacity: 0;
+    }
+
+/* ══ Stat cards (TongQuan) ══════════════════════════════ */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.stat-card {
+    background: var(--card);
+    border-radius: var(--r-card);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+}
+
+.stat-card-top {
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--txt-sub);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--txt);
+    line-height: 1;
+}
+
+.stat-sub {
+    font-size: 11px;
+    color: var(--txt-sub);
+}
+
+    .stat-sub .up {
+        color: var(--ok);
+        font-weight: 600;
+    }
+
+    .stat-sub .down {
+        color: var(--err);
+        font-weight: 600;
+    }
+
+/* màu sắc stat theo loại */
+.s-blue .stat-value {
+    color: var(--stat-blue);
+}
+
+.s-orange .stat-value {
+    color: var(--stat-orange);
+}
+
+.s-purple .stat-value {
+    color: var(--stat-purple);
+}
+
+.s-green .stat-value {
+    color: var(--stat-green);
+}
+
+/* ══ Layout chính TongQuan ══════════════════════════════ */
+.main-row {
+    display: grid;
+    grid-template-columns: 1fr 290px;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.chart-wrap {
+    position: relative;
+    height: 230px;
+}
+
+/* Campaign progress */
+.campaign-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.c-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.c-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--txt);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 185px;
+}
+
+.c-pct {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--stat-blue);
+}
+
+.progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: var(--accent);
+}
+
+.c-item-bot {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+}
+
+    .c-item-bot span {
+        font-size: 10px;
+        color: var(--txt-sub);
+    }
+
+/* Summary row */
+.summary-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 14px 16px;
+}
+
+    .summary-card strong {
+        display: block;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--txt);
+    }
+
+    .summary-card span {
+        font-size: 11px;
+        color: var(--txt-sub);
+    }
+
+/* Table footer */
+.tbl-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+}
+
+    .tbl-footer span {
+        font-size: 11px;
+        color: var(--txt-sub);
+    }
+
+    .tbl-footer a {
+        font-size: 11px;
+        color: var(--accent);
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .tbl-footer a:hover {
+            text-decoration: underline;
+        }
+
+/* Donor cell */
+.donor-cell {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.donor-av {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: var(--stat-blue-bg);
+    color: var(--stat-blue);
+}
+
+.donor-name {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.donor-email {
+    font-size: 10px;
+    color: var(--txt-sub);
+}
+
+.amount-pos {
+    color: var(--ok);
+    font-weight: 600;
+}
+
+/* ══ Loading skeleton ═══════════════════════════════════ */
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f0f4f8 50%, #e2e8f0 75%);
+    background-size: 400% 100%;
+    border-radius: 4px;
+    height: 14px;
+    animation: skel 1.2s infinite;
+}
+
+@keyframes skel {
+    0% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ══ Overlay confirm ════════════════════════════════════ */
+.adm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.35);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+    .adm-overlay.open {
+        display: flex;
+    }
+
+.adm-dialog {
+    background: var(--card);
+    border-radius: var(--r-card);
+    border: 1px solid var(--border);
+    padding: 22px 24px;
+    min-width: 300px;
+    max-width: 420px;
+    width: 90%;
+}
+
+    .adm-dialog h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .adm-dialog p {
+        font-size: 12px;
+        color: var(--txt-sub);
+        margin-bottom: 16px;
+    }
+
+.adm-dialog-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}

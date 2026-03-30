@@ -5,114 +5,138 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin — Thiện Nguyện Việt</title>
-
-    <%-- Font --%>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-    <%-- CSS chung của Admin (Content/css/admin.css theo cấu trúc dự án) --%>
     <link href="<%= ResolveUrl("~/Content/css/admin.css") %>" rel="stylesheet" />
-
-    <%-- Placeholder để từng trang con nhúng thêm CSS riêng nếu cần --%>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
-<body class="admin-body">
+<body class="adm-body">
 <form id="form1" runat="server">
 
-    <%-- ══════════ SIDEBAR ══════════ --%>
-    <aside class="admin-sidebar">
-        <div class="admin-sidebar-logo">
-            <div class="logo-icon">🌿</div>
+    <%-- ══ SIDEBAR ══════════════════════════════════════════ --%>
+    <aside class="adm-sidebar">
+        <div class="adm-logo">
             <h2>Thiện Nguyện Việt</h2>
             <span>Hệ thống quản trị</span>
         </div>
 
-        <div class="sidebar-section-label">Tổng quan</div>
         <a href="<%= ResolveUrl("~/Admin/TongQuan.aspx") %>"
-           class="admin-menu-item <%= IsActive("TongQuan") %>">
-            <span class="menu-icon">📊</span> Bảng điều khiển
-        </a>
+           class="adm-menu-item <%= IsActive("TongQuan") %>">Tổng quan</a>
 
-        <div class="sidebar-section-label">Quản lý</div>
         <a href="<%= ResolveUrl("~/Admin/QuanLyChienDich.aspx") %>"
-           class="admin-menu-item <%= IsActive("QuanLyChienDich") %>">
-            <span class="menu-icon">🎯</span> Chiến dịch
-        </a>
+           class="adm-menu-item <%= IsActive("QuanLyChienDich") %>">Chiến dịch</a>
+
         <a href="<%= ResolveUrl("~/Admin/QuanLyNguoiDung.aspx") %>"
-           class="admin-menu-item <%= IsActive("QuanLyNguoiDung") %>">
-            <span class="menu-icon">👥</span> Người dùng
-        </a>
+           class="adm-menu-item <%= IsActive("QuanLyNguoiDung") %>">Người dùng</a>
+
         <a href="<%= ResolveUrl("~/Admin/QuanLyQuyenGop.aspx") %>"
-           class="admin-menu-item <%= IsActive("QuanLyQuyenGop") %>">
-            <span class="menu-icon">💰</span> Quyên góp
-        </a>
+           class="adm-menu-item <%= IsActive("QuanLyQuyenGop") %>">Quyên góp</a>
+
         <a href="<%= ResolveUrl("~/Admin/QuanLyTinTuc.aspx") %>"
-           class="admin-menu-item <%= IsActive("QuanLyTinTuc") %>">
-            <span class="menu-icon">📰</span> Tin tức
-        </a>
+           class="adm-menu-item <%= IsActive("QuanLyTinTuc") %>">Tin tức</a>
 
-        <div class="sidebar-section-label">Phân tích</div>
         <a href="<%= ResolveUrl("~/Admin/BaoCao.aspx") %>"
-           class="admin-menu-item <%= IsActive("BaoCao") %>">
-            <span class="menu-icon">📈</span> Báo cáo &amp; Thống kê
-        </a>
+           class="adm-menu-item <%= IsActive("BaoCao") %>">Báo cáo & Thống kê</a>
 
-        <div class="sidebar-section-label">Hệ thống</div>
-        <a href="#" class="admin-menu-item">
-            <span class="menu-icon">⚙️</span> Cài đặt
-        </a>
-        <a href="<%= ResolveUrl("~/DangNhap.aspx") %>" class="admin-menu-item danger">
-            <span class="menu-icon">🚪</span> Đăng xuất
-        </a>
+        <a href="<%= ResolveUrl("~/DangXuat.aspx") %>" class="adm-menu-item danger">Đăng xuất</a>
 
-        <div class="sidebar-footer">
-            <div class="avatar">A</div>
+        <div class="adm-sidebar-footer">
+            <div class="avatar" id="sidebarAv">A</div>
             <div class="info">
-                <strong>Nguyễn Văn Anh</strong>
+            <%-- <strong id="sidebarName"><%= LayTenAdmin() %></strong> --%>
+                
                 <small>Quản trị viên</small>
             </div>
         </div>
     </aside>
 
-    <%-- ══════════ TOP BAR ══════════ --%>
-    <header class="admin-topbar">
-        <div class="topbar-title">
-            <%-- Trang con sẽ override tiêu đề này --%>
+    <%-- ══ TOP BAR ═════════════════════════════════════════ --%>
+    <header class="adm-topbar">
+        <div class="adm-topbar-title">
             <asp:ContentPlaceHolder ID="TopBarTitle" runat="server">
                 <h1>Bảng điều khiển</h1>
-                <p>Chào mừng trở lại, Admin!</p>
+                <p>Tổng quan hệ thống</p>
             </asp:ContentPlaceHolder>
         </div>
-        <div class="topbar-actions">
-            <span class="topbar-date" id="topbarDate"></span>
-            <div class="topbar-notif" title="Thông báo">
-                🔔
-                <span class="notif-dot"></span>
-            </div>
-            <div class="topbar-avatar">A</div>
+        <div class="adm-topbar-right">
+            <span class="adm-date" id="admDate"></span>
+            <%-- <div class="adm-topbar-av" title="<%= LayTenAdmin() %>">
+                <%= LayKyTuAdmin() %>
+            </div> --%>
+            
         </div>
     </header>
 
-    <%-- ══════════ MAIN CONTENT ══════════ --%>
-    <div class="admin-content">
+    <%-- ══ NỘI DUNG ════════════════════════════════════════ --%>
+    <main class="adm-content">
         <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
-    </div>
+    </main>
 
-    <%-- Script chung: hiển thị ngày --%>
+    <%-- ══ TOAST CONTAINER ════════════════════════════════ --%>
+    <div id="adm-toast-wrap"></div>
+
+    <%-- ══ SCRIPT CHUNG ═══════════════════════════════════ --%>
     <script>
+        // Hiển thị ngày
         (function () {
+            var el = document.getElementById('admDate');
+            if (!el) return;
             var d = new Date();
-            var opts = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
-            var el = document.getElementById('topbarDate');
-            if (el) el.textContent = d.toLocaleDateString('vi-VN', opts);
+            el.textContent = d.toLocaleDateString('vi-VN', {
+                weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric'
+            });
         })();
+
+        // ── Toast system ──────────────────────────────────────
+        // Usage: admToast('Duyệt thành công', 'Giao dịch #123 đã được duyệt.', 'ok')
+        // type: 'ok' | 'err' | 'warn' | 'info'
+        window.admToast = function (title, msg, type) {
+            type = type || 'info';
+            var wrap = document.getElementById('adm-toast-wrap');
+            var div = document.createElement('div');
+            div.className = 'adm-toast toast-' + type;
+            div.innerHTML =
+                '<div><div class="t-title">' + (title || '') + '</div>' +
+                '<div class="t-msg">' + (msg || '') + '</div></div>' +
+                '<span class="t-close" onclick="this.parentNode.remove()">&#10005;</span>';
+            wrap.appendChild(div);
+            setTimeout(function () {
+                div.classList.add('hiding');
+                setTimeout(function () { div.remove(); }, 300);
+            }, 4000);
+        };
+
+        // ── Confirm dialog ────────────────────────────────────
+        // admConfirm({ title, msg, onOk, okLabel, okClass })
+        window.admConfirm = function (opts) {
+            var ov = document.getElementById('adm-confirm-overlay');
+            var ttl = document.getElementById('adm-confirm-title');
+            var msg = document.getElementById('adm-confirm-msg');
+            var btn = document.getElementById('adm-confirm-ok');
+            ttl.textContent = opts.title || 'Xác nhận';
+            msg.textContent = opts.msg || '';
+            btn.textContent = opts.okLabel || 'Xác nhận';
+            btn.className = 'btn-primary ' + (opts.okClass || '');
+            btn.onclick = function () { closeConfirm(); if (opts.onOk) opts.onOk(); };
+            ov.classList.add('open');
+        };
+        window.closeConfirm = function () {
+            document.getElementById('adm-confirm-overlay').classList.remove('open');
+        };
     </script>
 
-    <%-- JS chung của Admin (Scripts/admin.js) --%>
-    <script src="<%= ResolveUrl("~/Scripts/admin.js") %>"></script>
+    <%-- Confirm dialog markup (dùng chung toàn admin) --%>
+    <div class="adm-overlay" id="adm-confirm-overlay">
+        <div class="adm-dialog">
+            <h4 id="adm-confirm-title">Xác nhận</h4>
+            <p  id="adm-confirm-msg"></p>
+            <div class="adm-dialog-actions">
+                <button class="btn-outline" onclick="closeConfirm()">Huỷ</button>
+                <button class="btn-primary" id="adm-confirm-ok">Xác nhận</button>
+            </div>
+        </div>
+    </div>
 
-    <%-- Placeholder để trang con nhúng thêm script riêng --%>
     <asp:ContentPlaceHolder ID="ScriptContent" runat="server" />
-
 </form>
 </body>
 </html>
