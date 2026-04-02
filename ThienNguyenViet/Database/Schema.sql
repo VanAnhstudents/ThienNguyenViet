@@ -657,3 +657,117 @@ BEGIN
     ORDER BY TongTienDaQuyen DESC
 END
 GO
+
+-- Quản lý Quyên góp
+CREATE OR ALTER PROCEDURE dbo.SP_LayDanhSachQuyenGop
+    @TrangThai      TINYINT = NULL,
+    @TuKhoa         NVARCHAR(100) = NULL,
+    @TrangHienTai   INT = 1,
+    @SoDong         INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Start INT = (@TrangHienTai-1)*@SoDong;
+
+    SELECT 
+        qg.MaQuyenGop, qg.MaChienDich, cd.TenChienDich,
+        ISNULL(nd.HoTen, N'Ẩn danh') AS HoTen, qg.SoTien,
+        qg.LoiNhan, qg.AnDanh, qg.AnhXacNhan,
+        qg.TrangThai, qg.LyDoTuChoi, qg.NgayTao
+    FROM dbo.QuyenGop qg
+    INNER JOIN dbo.ChienDich cd ON qg.MaChienDich = cd.MaChienDich
+    LEFT JOIN dbo.NguoiDung nd ON qg.MaNguoiDung = nd.MaNguoiDung
+    WHERE (@TrangThai IS NULL OR qg.TrangThai = @TrangThai)
+      AND (@TuKhoa IS NULL OR cd.TenChienDich LIKE N'%'+@TuKhoa+N'%' OR nd.HoTen LIKE N'%'+@TuKhoa+N'%')
+    ORDER BY qg.NgayTao DESC
+    OFFSET @Start ROWS FETCH NEXT @SoDong ROWS ONLY;
+END
+GO
+
+-- Quản lý Người dùng
+CREATE OR ALTER PROCEDURE dbo.SP_LayDanhSachNguoiDung
+    @TuKhoa         NVARCHAR(100) = NULL,
+    @TrangThai      TINYINT = NULL,
+    @VaiTro         TINYINT = NULL,
+    @TrangHienTai   INT = 1,
+    @SoDong         INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Start INT = (@TrangHienTai-1)*@SoDong;
+
+    SELECT 
+        nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai, nd.NgayTao,
+        nd.VaiTro, nd.TrangThai,
+        ISNULL(SUM(CASE WHEN qg.TrangThai=1 THEN qg.SoTien ELSE 0 END),0) AS TongGop,
+        COUNT(qg.MaQuyenGop) AS SoLanGop
+    FROM dbo.NguoiDung nd
+    LEFT JOIN dbo.QuyenGop qg ON nd.MaNguoiDung = qg.MaNguoiDung
+    WHERE (@TrangThai IS NULL OR nd.TrangThai = @TrangThai)
+      AND (@VaiTro IS NULL OR nd.VaiTro = @VaiTro)
+      AND (@TuKhoa IS NULL OR nd.HoTen LIKE N'%'+@TuKhoa+N'%' OR nd.Email LIKE N'%'+@TuKhoa+N'%')
+    GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai, nd.NgayTao, nd.VaiTro, nd.TrangThai
+    ORDER BY nd.NgayTao DESC
+    OFFSET @Start ROWS FETCH NEXT @SoDong ROWS ONLY;
+END
+GO
+
+-- Quản lý Tin tức
+CREATE OR ALTER PROCEDURE dbo.SP_LayDanhSachTinTuc
+    @TrangThai      TINYINT = NULL,
+    @MaDanhMuc      INT = NULL,
+    @TuKhoa         NVARCHAR(200) = NULL,
+    @TrangHienTai   INT = 1,
+    @SoDong         INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @Start INT = (@TrangHienTai-1)*@SoDong;
+
+    SELECT 
+        tt.MaTinTuc, tt.TieuDe, tt.TomTat, tt.AnhBia, tt.LuotXem, tt.TrangThai,
+        tt.NgayDang, nd.HoTen AS NguoiDang, dm.TenDanhMuc
+    FROM dbo.TinTuc tt
+    INNER JOIN dbo.DanhMucTinTuc dm ON tt.MaDanhMuc = dm.MaDanhMuc
+    INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung
+    WHERE (@TrangThai IS NULL OR tt.TrangThai = @TrangThai)
+      AND (@MaDanhMuc IS NULL OR tt.MaDanhMuc = @MaDanhMuc)
+      AND (@TuKhoa IS NULL OR tt.TieuDe LIKE N'%'+@TuKhoa+N'%')
+    ORDER BY tt.NgayDang DESC
+    OFFSET @Start ROWS FETCH NEXT @SoDong ROWS ONLY;
+END
+GO
+
+-- Quản lý Chiến dịch (bổ sung lưu)
+CREATE OR ALTER PROCEDURE dbo.SP_LuuChienDich
+    @MaChienDich INT = NULL, @TenChienDich NVARCHAR(200), @MaDanhMuc INT,
+    @MoTaNgan NVARCHAR(300), @NoiDungChiTiet NVARCHAR(MAX), @AnhBia NVARCHAR(255),
+    @MucTieu DECIMAL(18,0), @TrangThai TINYINT, @NoiBat BIT,
+    @NgayBatDau DATE, @NgayKetThuc DATE, @ToChuc NVARCHAR(200),
+    @NganHang NVARCHAR(100), @STK NVARCHAR(50), @ChuTK NVARCHAR(100),
+    @MaNguoiTao INT
+AS
+BEGIN
+    IF @MaChienDich IS NULL
+    BEGIN
+        INSERT INTO ChienDich (TenChienDich,MaDanhMuc,MoTaNgan,NoiDungChiTiet,AnhBia,
+            MucTieu,TrangThai,NoiBat,NgayBatDau,NgayKetThuc,ToChucChuTri,
+            TenNganHang,SoTaiKhoan,TenChuTaiKhoan,MaNguoiTao)
+        VALUES (@TenChienDich,@MaDanhMuc,@MoTaNgan,@NoiDungChiTiet,@AnhBia,
+                @MucTieu,@TrangThai,@NoiBat,@NgayBatDau,@NgayKetThuc,@ToChuc,
+                @NganHang,@STK,@ChuTK,@MaNguoiTao);
+        SELECT SCOPE_IDENTITY() AS MaChienDichMoi;
+    END
+    ELSE
+    BEGIN
+        UPDATE ChienDich SET 
+            TenChienDich=@TenChienDich, MaDanhMuc=@MaDanhMuc, MoTaNgan=@MoTaNgan,
+            NoiDungChiTiet=@NoiDungChiTiet, AnhBia=@AnhBia, MucTieu=@MucTieu,
+            TrangThai=@TrangThai, NoiBat=@NoiBat, NgayBatDau=@NgayBatDau,
+            NgayKetThuc=@NgayKetThuc, ToChucChuTri=@ToChuc, TenNganHang=@NganHang,
+            SoTaiKhoan=@STK, TenChuTaiKhoan=@ChuTK, NgayCapNhat=GETDATE()
+        WHERE MaChienDich = @MaChienDich;
+        SELECT @MaChienDich AS MaChienDichMoi;
+    END
+END
+GO
