@@ -249,7 +249,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: false,          // tắt animation
+                animation: false,          
                 plugins: {
                     legend: { display: false },
                     tooltip: {
