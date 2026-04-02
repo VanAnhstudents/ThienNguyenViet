@@ -27,6 +27,17 @@ VALUES
     (8,           N'Hoàng Văn Tú',       'tu.hoang@gmail.com',   '8ded46825e5b0a5c34d1c07451bb7474', '0901000008', NULL,       0,      0,         '2026-02-15')   -- tài khoản bị khóa để test
 GO
 
+-- Sửa Admin
+UPDATE dbo.NguoiDung 
+SET MatKhau = '0e7517141fb53f21ee439b355b5a1d0a'
+WHERE Email = 'admin@thiennguyen.vn';
+
+-- Sửa User
+UPDATE dbo.NguoiDung 
+SET MatKhau = '448ddd517d3abb70045aea6929f02367'
+WHERE Email = 'user@thiennguyen.vn';
+
+
 SET IDENTITY_INSERT dbo.NguoiDung OFF
 GO
 
