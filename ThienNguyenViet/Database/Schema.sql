@@ -771,3 +771,14 @@ BEGIN
     END
 END
 GO
+
+CREATE OR ALTER PROCEDURE dbo.SP_XoaChienDich
+    @MaChienDich INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.ChienDich 
+    WHERE MaChienDich = @MaChienDich;
+    -- Các bảng con (AnhChienDich, CapNhatTienDo) sẽ tự xóa nhờ ON DELETE CASCADE
+END
+GO
