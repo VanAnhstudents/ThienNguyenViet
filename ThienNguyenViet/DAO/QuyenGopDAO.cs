@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -89,6 +90,77 @@ SELECT COUNT(*) FROM dbo.ChienDich
 WHERE SoTienDaQuyen >= MucTieu AND TrangThai IN (1, 3)";
             object val = KetNoiDB.ExecuteScalar(sql, CommandType.Text);
             return val == DBNull.Value ? 0 : Convert.ToInt32(val);
+        }
+
+        // ─────────────────────────────────────────────
+        //  QuanLyQuyenGop — lấy danh sách + phân trang
+        // ─────────────────────────────────────────────
+
+        /// <summary>
+        /// Thống kê 5 số cho trang QuanLyQuyenGop (dùng SP_ThongKeQuyenGopTongQuan).
+        /// </summary>
+        public static DataRow LayThongKeTrangQuanLy()
+        {
+            DataTable dt = KetNoiDB.GetDataTable("SP_ThongKeQuyenGopTongQuan",
+                CommandType.StoredProcedure);
+            return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+        }
+
+        /// <summary>
+        /// Lấy danh sách chiến dịch để bind dropdown lọc.
+        /// </summary>
+        public static DataTable LayChienDichDropdown()
+        {
+            return KetNoiDB.GetDataTable("SP_LayDanhSachChienDichDropdown",
+                CommandType.StoredProcedure);
+        }
+
+        /// <summary>
+        /// Lấy danh sách quyên góp có lọc + phân trang.
+        /// Trả về DataTable và gán totalRows qua output param.
+        /// </summary>
+        public static DataTable LayQuyenGopCoLoc(
+            int? trangThai,
+            int? maChienDich,
+            string tuKhoa,
+            int trangHienTai,
+            int soDong,
+            out int tongSoDong)
+        {
+            tongSoDong = 0;
+
+            var pTongSo = new SqlParameter("@TongSoDong", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            var prms = new List<SqlParameter>
+            {
+                KetNoiDB.P("@TrangThai",    trangThai.HasValue   ? (object)trangThai.Value   : DBNull.Value),
+                KetNoiDB.P("@MaChienDich",  maChienDich.HasValue ? (object)maChienDich.Value : DBNull.Value),
+                KetNoiDB.P("@TuKhoa",       string.IsNullOrWhiteSpace(tuKhoa) ? (object)DBNull.Value : tuKhoa.Trim()),
+                KetNoiDB.P("@TrangHienTai", trangHienTai),
+                KetNoiDB.P("@SoDong",       soDong),
+                pTongSo
+            };
+
+            DataTable dt;
+            using (var conn = KetNoiDB.MoKetNoi())
+            using (var cmd = new SqlCommand("SP_LayQuyenGopCoLoc", conn)
+            { CommandType = CommandType.StoredProcedure })
+            {
+                cmd.Parameters.AddRange(prms.ToArray());
+                using (var da = new System.Data.SqlClient.SqlDataAdapter(cmd))
+                {
+                    dt = new DataTable();
+                    da.Fill(dt);
+                }
+            }
+
+            if (pTongSo.Value != DBNull.Value)
+                tongSoDong = Convert.ToInt32(pTongSo.Value);
+
+            return dt;
         }
 
         // ─────────────────────────────────────────────
