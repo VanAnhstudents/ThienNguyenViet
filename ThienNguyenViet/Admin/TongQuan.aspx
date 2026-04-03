@@ -6,8 +6,6 @@
 <%-- ── CSS riêng trang ──────────────────────────────────── --%>
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* Không cần CSS riêng nhiều — đã có admin.css */
-/* Chỉ override nhỏ nếu cần */
 .stat-card { position: relative; overflow: hidden; }
 </style>
 </asp:Content>
@@ -21,7 +19,7 @@
 <%-- ══════════════ NỘI DUNG CHÍNH ══════════════════════════ --%>
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- 4 Thẻ thống kê ─────────────────────────────────────── --%>
+    <%-- 4 Thẻ thống kê --%>
     <div class="stat-grid">
 
         <div class="stat-card s-blue">
@@ -70,26 +68,25 @@
             </div>
         </div>
 
-    </div><%-- /stat-grid --%>
+    </div>
 
-    <%-- Biểu đồ + Chiến dịch tiêu biểu ────────────────────── --%>
+    <%-- Biểu đồ + Chiến dịch tiêu biểu --%>
     <div class="main-row">
 
-        <%-- Biểu đồ --%>
         <div class="adm-card">
             <div class="adm-card-hd">
                 <div>
                     <h3>Quyên góp theo tháng</h3>
                     <div class="sub">Tổng tiền (triệu đồng) — năm <%= DateTime.Now.Year %></div>
                 </div>
-                <button class="btn-outline" onclick="exportCSV()">Xuất CSV</button>
+                <%-- type="button" tránh submit form --%>
+                <button type="button" class="btn-outline" onclick="exportCSV()">Xuất CSV</button>
             </div>
             <div class="chart-wrap">
                 <canvas id="chartQG"></canvas>
             </div>
         </div>
 
-        <%-- Chiến dịch nổi bật --%>
         <div class="adm-card">
             <div class="adm-card-hd">
                 <div>
@@ -98,7 +95,6 @@
                 </div>
             </div>
             <div class="campaign-list" id="campaignList">
-                <%-- Skeleton loading --%>
                 <% for (int i = 0; i < 4; i++) { %>
                 <div>
                     <div class="skeleton" style="width:70%;margin-bottom:6px"></div>
@@ -108,9 +104,9 @@
             </div>
         </div>
 
-    </div><%-- /main-row --%>
+    </div>
 
-    <%-- 3 Summary cards ─────────────────────────────────────── --%>
+    <%-- 3 Summary cards --%>
     <div class="summary-row">
         <div class="summary-card">
             <strong><%= GiaoDichThang.ToString("N0") %></strong>
@@ -126,7 +122,7 @@
         </div>
     </div>
 
-    <%-- Bảng giao dịch gần đây ─────────────────────────────── --%>
+    <%-- Bảng giao dịch gần đây --%>
     <div class="adm-card">
         <div class="adm-card-hd">
             <div>
@@ -135,7 +131,6 @@
             </div>
         </div>
 
-        <%-- Thanh thông báo inline (thay thế alert) --%>
         <div id="tblMsg" style="display:none;margin-bottom:10px;padding:8px 12px;border-radius:6px;font-size:12px;"></div>
 
         <table class="adm-table" id="tblGiaoDich">
@@ -183,9 +178,10 @@
                     <td><%= BadgeTrangThai(ts) %></td>
                     <td>
                     <% if (ts == 0) { %>
-                        <button class="btn-approve"
+                        <%-- type="button" QUAN TRỌNG: ngăn submit PostBack --%>
+                        <button type="button" class="btn-approve"
                             onclick="doAction(<%= ma %>,'duyet')">Duyệt</button>
-                        <button class="btn-reject"
+                        <button type="button" class="btn-reject"
                             onclick="doAction(<%= ma %>,'tuchoi')">Từ chối</button>
                     <% } else { %>
                         <span style="font-size:11px;color:var(--txt-sub)">—</span>
@@ -209,26 +205,24 @@
                 Xem toàn bộ lịch sử →
             </a>
         </div>
-    </div><%-- /adm-card --%>
+    </div>
 
 </asp:Content>
 
-<%-- ══════════════ SCRIPT ════════════════════════════════════ --%>
 <asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-(function () {
-    'use strict';
+    (function () {
+        'use strict';
 
-    var PAGE_URL = '<%= ResolveUrl("~/Admin/TongQuan.aspx") %>';
+        var PAGE_URL = '<%= ResolveUrl("~/Admin/TongQuan.aspx") %>';
 
     // ── 1. Load biểu đồ qua AJAX ──────────────────────────────
     var chart;
 
     function initChart(data) {
         var labels = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
-        // Đổi sang đơn vị triệu
         var tienTrieu = data.tien.map(function (v) {
             return Math.round(v / 1000000);
         });
@@ -249,7 +243,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: false,          
+                animation: false,
                 plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -286,7 +280,6 @@
             if (d.ok) initChart(d);
         })
         .catch(function () {
-            // Nếu fetch lỗi, hiển thị chart rỗng
             initChart({ tien: new Array(12).fill(0), luot: new Array(12).fill(0) });
         });
     }
@@ -308,7 +301,7 @@
             }
             var html = '';
             d.data.forEach(function (c) {
-                var pct = Math.min(c.pct, 100);
+                var pct  = Math.min(c.pct, 100);
                 var daDat = Math.round(c.quyen / 1000000);
                 var mt    = Math.round(c.muctieu / 1000000);
                 html +=
@@ -328,13 +321,13 @@
         });
     }
 
-    // ── 3. Duyệt / Từ chối quyên góp (AJAX) ─────────────────
+    // ── 3. Duyệt / Từ chối (AJAX — không reload trang) ──────
     window.doAction = function (id, action) {
-        var title  = action === 'duyet' ? 'Duyệt giao dịch' : 'Từ chối giao dịch';
-        var msg    = action === 'duyet'
+        var title = action === 'duyet' ? 'Duyệt giao dịch' : 'Từ chối giao dịch';
+        var msg   = action === 'duyet'
             ? 'Xác nhận duyệt giao dịch #' + id + '?'
             : 'Xác nhận từ chối giao dịch #' + id + '?';
-        var cls    = action === 'tuchoi' ? 'btn-reject' : '';
+        var cls   = action === 'tuchoi' ? 'btn-reject' : '';
 
         admConfirm({
             title: title, msg: msg, okLabel: title, okClass: cls,
@@ -343,12 +336,10 @@
     };
 
     function sendAction(id, action) {
-        var body = '__ajax=true&action=' + action + '&id=' + id;
-
         fetch(PAGE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: body
+            body: '__ajax=true&action=' + action + '&id=' + id
         })
         .then(function (r) { return r.json(); })
         .then(function (d) {
@@ -364,21 +355,17 @@
         });
     }
 
-    // Cập nhật trạng thái dòng bảng mà không reload trang
     function updateRow(id, action) {
         var row = document.getElementById('row-' + id);
         if (!row) return;
         var cells = row.querySelectorAll('td');
-        // Cột trạng thái (index 5)
         if (action === 'duyet') {
             cells[5].innerHTML = '<span class="badge badge-ok">Đã duyệt</span>';
         } else {
             cells[5].innerHTML = '<span class="badge badge-reject">Từ chối</span>';
         }
-        // Cột thao tác (index 6): ẩn nút
         cells[6].innerHTML = '<span style="font-size:11px;color:var(--txt-sub)">—</span>';
 
-        // Giảm số chờ duyệt ở stat card
         var statEl = document.getElementById('statChoDuyet');
         if (statEl) {
             var cur = parseInt(statEl.textContent) || 0;
@@ -394,7 +381,7 @@
         var rows   = [['Tháng', 'Quyên góp (tr.đ)']];
         labels.forEach(function (l, i) { rows.push([l, vals[i]]); });
 
-        var csv = rows.map(function (r) { return r.join(','); }).join('\n');
+        var csv  = rows.map(function (r) { return r.join(','); }).join('\n');
         var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
         var url  = URL.createObjectURL(blob);
         var a    = document.createElement('a');
@@ -403,7 +390,6 @@
             document.body.appendChild(a); a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-
             admToast('Đã xuất CSV', 'File được tải về máy của bạn.', 'ok');
         };
 

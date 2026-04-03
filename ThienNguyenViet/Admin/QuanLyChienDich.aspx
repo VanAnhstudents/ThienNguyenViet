@@ -211,7 +211,7 @@
 <asp:Content ID="ScriptContent" ContentPlaceHolderID="ScriptContent" runat="server">
     <script>
         let currentPage = 1;
-        const PAGE_SIZE = 10;
+        const PAGE_SIZE = 8;
         let searchTimeout = null;
 
         function fmtMoney(n) {
