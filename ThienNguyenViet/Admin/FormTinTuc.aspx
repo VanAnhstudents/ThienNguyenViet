@@ -33,11 +33,9 @@
 }
 .form-control:focus { border-color: #3182CE; box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
 textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-height: 1.55; }
-select.form-control   { background: #fff; cursor: pointer; }
-
 .form-hint { font-size: 11px; color: var(--admin-chu-phu); margin-top: 4px; }
 
-/* Rich text editor mock */
+/* Rich text editor */
 .rte-toolbar {
     display: flex; flex-wrap: wrap; gap: 4px;
     padding: 8px 10px; background: var(--admin-nen);
@@ -57,8 +55,7 @@ select.form-control   { background: #fff; cursor: pointer; }
     width: 100%; min-height: 280px; padding: 12px 14px;
     border: 1px solid var(--admin-vien); border-radius: 0 0 var(--r-nut) var(--r-nut);
     font-size: 13px; font-family: var(--font); line-height: 1.7;
-    color: var(--admin-chu-chinh); outline: none; box-sizing: border-box;
-    resize: vertical;
+    color: var(--admin-chu-chinh); outline: none; box-sizing: border-box; resize: vertical;
 }
 .rte-area:focus { border-color: #3182CE; }
 
@@ -78,7 +75,7 @@ select.form-control   { background: #fff; cursor: pointer; }
     border: 1px solid var(--admin-vien); object-fit: cover;
 }
 
-/* SEO preview box */
+/* SEO preview */
 .seo-preview {
     background: var(--admin-nen); border-radius: var(--r-nut);
     border: 1px solid var(--admin-vien); padding: 12px 14px; font-size: 12px;
@@ -95,12 +92,6 @@ select.form-control   { background: #fff; cursor: pointer; }
     font-size: 13px; font-family: var(--font); font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px;
 }
 .btn-luu:hover { background: #2B6CB0; }
-.btn-nhap {
-    height: 36px; padding: 0 16px; background: #EBF8FF; color: #2B6CB0;
-    border: 1px solid #BEE3F8; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; width: 100%; margin-bottom: 8px;
-}
-.btn-nhap:hover { background: #BEE3F8; }
 .btn-huy {
     height: 36px; background: transparent; color: var(--admin-chu-phu);
     border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
@@ -115,14 +106,27 @@ select.form-control   { background: #fff; cursor: pointer; }
 .meta-row     { margin-bottom: 4px; }
 .meta-row b   { color: var(--admin-chu-chinh); }
 
-/* Alerts */
-.alert-success { padding:10px 14px; background:#C6F6D5; color:#276749; border-radius:var(--r-nut); font-size:13px; margin-bottom:16px; display:none; }
-.alert-error   { padding:10px 14px; background:#FED7D7; color:#C53030; border-radius:var(--r-nut); font-size:13px; margin-bottom:16px; display:none; }
+/* Toast */
+#toastWrap {
+    position: fixed; top: 64px; right: 18px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--admin-card); border: 1px solid var(--admin-vien);
+    border-left: 4px solid #3182CE; border-radius: var(--r-card);
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
+    pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    animation: toastIn .2s ease;
+}
+.toast-item.toast-ok  { border-left-color: var(--admin-thanh-cong); }
+.toast-item.toast-err { border-left-color: var(--admin-loi); }
+.toast-item .t-msg    { font-size: 13px; color: var(--admin-chu-chinh); flex: 1; }
+.toast-item .t-close  { font-size: 16px; color: var(--admin-chu-phu); cursor: pointer; line-height: 1; }
+@keyframes toastIn { from { opacity:0; transform: translateX(12px); } to { opacity:1; transform: none; } }
 
 /* Status toggle */
-.status-toggle {
-    display: flex; gap: 8px; margin-bottom: 4px;
-}
+.status-toggle { display: flex; gap: 8px; margin-bottom: 4px; }
 .status-opt {
     flex: 1; height: 34px; border-radius: var(--r-nut);
     border: 1px solid var(--admin-vien); background: var(--admin-nen);
@@ -131,6 +135,18 @@ select.form-control   { background: #fff; cursor: pointer; }
 }
 .status-opt.active-pub   { background: #C6F6D5; color: #276749; border-color: #9AE6B4; }
 .status-opt.active-draft { background: #EBF8FF; color: #2B6CB0; border-color: #BEE3F8; }
+
+/* Danh mục button group ══════════════════════════════════════════ */
+.dm-btn-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+.dm-btn {
+    flex: 1; min-width: 120px; height: 34px; padding: 0 10px;
+    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
+    background: var(--admin-nen); font-size: 12px; font-family: var(--font);
+    font-weight: 500; cursor: pointer; color: var(--admin-chu-phu);
+    transition: all .15s; white-space: nowrap; text-align: center;
+}
+.dm-btn:hover { background: #e2e8f0; color: var(--admin-chu-chinh); }
+.dm-btn.active { background: #3182CE; color: #fff; border-color: #3182CE; font-weight: 600; }
 </style>
 </asp:Content>
 
@@ -140,359 +156,348 @@ select.form-control   { background: #fff; cursor: pointer; }
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<div id="toastWrap"></div>
 
-    <div id="alertSuccess" class="alert-success"></div>
-    <div id="alertError"   class="alert-error"></div>
+<div class="breadcrumb">
+    <a href="/Admin/QuanLyTinTuc.aspx">Quản lý Tin tức</a> /
+    <span id="breadcrumbCurrent">Thêm mới</span>
+</div>
+<div class="page-title" id="pageTitle">Thêm bài viết mới</div>
 
-    <div class="breadcrumb">
-        <a href="/Admin/QuanLyTinTuc.aspx">Quản lý Tin tức</a> /
-        <span id="breadcrumbCurrent">Thêm mới</span>
-    </div>
-    <div class="page-title" id="pageTitle">Thêm bài viết mới</div>
+<div class="form-grid">
 
-    <div class="form-grid">
+    <%-- CỘT TRÁI --%>
+    <div>
 
-        <%-- ═══ CỘT TRÁI ═══ --%>
-        <div>
+        <div class="admin-card">
+            <div class="card-section-title">Nội dung bài viết</div>
 
-            <%-- Nội dung chính --%>
-            <div class="admin-card">
-                <div class="card-section-title">Nội dung bài viết</div>
-
-                <div class="form-group">
-                    <label class="form-label">Tiêu đề <span class="req">*</span></label>
-                    <input type="text" id="txtTieuDe" class="form-control" maxlength="250"
-                           placeholder="Nhập tiêu đề bài viết..."
-                           oninput="onTieuDeChange()" />
-                    <div class="char-counter" id="charTieuDe">0 / 250</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Tóm tắt</label>
-                    <textarea id="txtTomTat" class="form-control" rows="3" maxlength="400"
-                              placeholder="Mô tả ngắn hiển thị trên danh sách (tối đa 400 ký tự)..."
-                              oninput="onTomTatChange()"></textarea>
-                    <div class="char-counter" id="charTomTat">0 / 400</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Nội dung chi tiết <span class="req">*</span></label>
-
-                    <%-- Toolbar giả lập rich text --%>
-                    <div class="rte-toolbar">
-                        <button class="rte-btn" title="In đậm" onclick="insertTag('b')"><b>B</b></button>
-                        <button class="rte-btn" title="In nghiêng" onclick="insertTag('i')"><i>I</i></button>
-                        <button class="rte-btn" title="Gạch chân" onclick="insertTag('u')"><u>U</u></button>
-                        <div class="rte-sep"></div>
-                        <button class="rte-btn" title="Tiêu đề H2" onclick="insertTag('h2')">H2</button>
-                        <button class="rte-btn" title="Tiêu đề H3" onclick="insertTag('h3')">H3</button>
-                        <div class="rte-sep"></div>
-                        <button class="rte-btn" title="Danh sách" onclick="insertList()">≡</button>
-                        <button class="rte-btn" title="Trích dẫn" onclick="insertTag('blockquote')">❝</button>
-                        <div class="rte-sep"></div>
-                        <button class="rte-btn" title="Chèn link" onclick="insertLink()">🔗</button>
-                        <button class="rte-btn" title="Chèn ảnh"  onclick="insertImg()">🖼</button>
-                    </div>
-                    <textarea id="txtNoiDung" class="rte-area"
-                              placeholder="Nhập nội dung đầy đủ...&#10;(Hỗ trợ HTML tags)"></textarea>
-                    <div class="form-hint">Hỗ trợ HTML. Toolbar phía trên chèn tag mẫu để tham khảo.</div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">Tiêu đề <span class="req">*</span></label>
+                <input type="text" id="txtTieuDe" class="form-control" maxlength="250"
+                       placeholder="Nhập tiêu đề bài viết..."
+                       oninput="onTieuDeChange()" />
+                <div class="char-counter" id="charTieuDe">0 / 250</div>
             </div>
 
-            <%-- SEO Preview --%>
-            <div class="admin-card">
-                <div class="card-section-title">Xem trước SEO</div>
-                <div class="seo-preview">
-                    <div class="seo-preview-label">Google Search Preview</div>
-                    <div class="seo-title"  id="seoTitle">Tiêu đề bài viết — Thiện Nguyện Việt</div>
-                    <div class="seo-url">thiennguyen.vn/chi-tiet-tin-tuc?id=...</div>
-                    <div class="seo-desc"  id="seoDesc">Tóm tắt bài viết sẽ hiển thị ở đây...</div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">Tóm tắt</label>
+                <textarea id="txtTomTat" class="form-control" rows="3" maxlength="400"
+                          placeholder="Mô tả ngắn hiển thị trên danh sách (tối đa 400 ký tự)..."
+                          oninput="onTomTatChange()"></textarea>
+                <div class="char-counter" id="charTomTat">0 / 400</div>
             </div>
 
+            <div class="form-group">
+                <label class="form-label">Nội dung chi tiết <span class="req">*</span></label>
+                <div class="rte-toolbar">
+                    <button class="rte-btn" title="In đậm" onclick="insertTag('b')"><b>B</b></button>
+                    <button class="rte-btn" title="In nghiêng" onclick="insertTag('i')"><i>I</i></button>
+                    <button class="rte-btn" title="Gạch chân" onclick="insertTag('u')"><u>U</u></button>
+                    <div class="rte-sep"></div>
+                    <button class="rte-btn" title="Tiêu đề H2" onclick="insertTag('h2')">H2</button>
+                    <button class="rte-btn" title="Tiêu đề H3" onclick="insertTag('h3')">H3</button>
+                    <div class="rte-sep"></div>
+                    <button class="rte-btn" title="Danh sách" onclick="insertList()">List</button>
+                    <button class="rte-btn" title="Trích dẫn" onclick="insertTag('blockquote')">Quote</button>
+                    <div class="rte-sep"></div>
+                    <button class="rte-btn" title="Chèn link" onclick="insertLink()">Link</button>
+                    <button class="rte-btn" title="Chèn ảnh"  onclick="insertImg()">Img</button>
+                </div>
+                <textarea id="txtNoiDung" class="rte-area"
+                          placeholder="Nhập nội dung đầy đủ...&#10;(Hỗ trợ HTML tags)"></textarea>
+                <div class="form-hint">Hỗ trợ HTML.</div>
+            </div>
         </div>
 
-        <%-- ═══ CỘT PHẢI ═══ --%>
-        <div>
-
-            <%-- Ảnh bìa --%>
-            <div class="admin-card">
-                <div class="card-section-title">Ảnh bìa</div>
-
-                <div id="imgPlaceholder" class="img-placeholder">🖼 Chưa có ảnh bìa</div>
-                <div id="imgPreviewBox"><img id="imgPreview" src="" alt="Ảnh bìa" /></div>
-
-                <div class="form-group">
-                    <label class="form-label">Tải ảnh lên</label>
-                    <input type="file" id="fuAnhBia" accept="image/*" style="font-size:12px"
-                           onchange="previewAnhBia(this)" />
-                    <div class="form-hint">JPG, PNG — nên dùng 1200×630px</div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Hoặc nhập URL</label>
-                    <input type="text" id="txtAnhBia" class="form-control" maxlength="255"
-                           placeholder="/Uploads/TinTuc/..."
-                           oninput="previewAnhBiaUrl(this.value)" />
-                </div>
+        <div class="admin-card">
+            <div class="card-section-title">Xem trước SEO</div>
+            <div class="seo-preview">
+                <div class="seo-preview-label">Google Search Preview</div>
+                <div class="seo-title"  id="seoTitle">Tiêu đề bài viết — Thiện Nguyện Việt</div>
+                <div class="seo-url">thiennguyen.vn/chi-tiet-tin-tuc?id=...</div>
+                <div class="seo-desc"  id="seoDesc">Tóm tắt bài viết sẽ hiển thị ở đây...</div>
             </div>
-
-            <%-- Phân loại & trạng thái --%>
-            <div class="admin-card">
-                <div class="card-section-title">Phân loại</div>
-
-                <div class="form-group">
-                    <label class="form-label">Danh mục <span class="req">*</span></label>
-                    <select id="selDanhMuc" class="form-control">
-                        <option value="">-- Chọn danh mục --</option>
-                        <option value="1">Hoạt động thiện nguyện</option>
-                        <option value="2">Câu chuyện truyền cảm hứng</option>
-                        <option value="3">Thông báo</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Ngày đăng</label>
-                    <input type="date" id="txtNgayDang" class="form-control" />
-                </div>
-            </div>
-
-            <%-- Xuất bản --%>
-            <div class="admin-card">
-                <div class="card-section-title">Xuất bản</div>
-
-                <div class="form-group">
-                    <label class="form-label">Trạng thái</label>
-                    <div class="status-toggle">
-                        <button class="status-opt active-pub" id="btnPub"   onclick="setStatus(1)">✅ Đăng ngay</button>
-                        <button class="status-opt"            id="btnDraft" onclick="setStatus(0)">📝 Lưu nháp</button>
-                    </div>
-                    <input type="hidden" id="hdnTrangThai" value="1" />
-                </div>
-
-                <button class="btn-luu"  onclick="luuBaiViet(false)">💾 Lưu bài viết</button>
-                <button class="btn-nhap" onclick="luuBaiViet(true)">📝 Lưu nháp</button>
-                <a href="/Admin/QuanLyTinTuc.aspx" class="btn-huy">✕ Hủy, quay lại</a>
-            </div>
-
-            <%-- Meta (edit mode) --%>
-            <div id="panelMeta" class="admin-card meta-box" style="display:none">
-                <div class="meta-title">Thông tin bài viết</div>
-                <div class="meta-row">Mã: #<b id="metaMa"></b></div>
-                <div class="meta-row">Tác giả: <b id="metaTacGia"></b></div>
-                <div class="meta-row">Ngày tạo: <b id="metaNgayTao"></b></div>
-                <div class="meta-row">Lượt xem: <b id="metaLuotXem"></b></div>
-            </div>
-
         </div>
 
     </div>
+
+    <%-- CỘT PHẢI --%>
+    <div>
+
+        <%-- Ảnh bìa --%>
+        <div class="admin-card">
+            <div class="card-section-title">Ảnh bìa</div>
+
+            <div id="imgPlaceholder" class="img-placeholder">Chưa có ảnh bìa</div>
+            <div id="imgPreviewBox"><img id="imgPreview" src="" alt="Ảnh bìa" /></div>
+
+            <div class="form-group">
+                <label class="form-label">Tải ảnh lên</label>
+                <input type="file" id="fuAnhBia" accept="image/*" style="font-size:12px"
+                       onchange="previewAnhBia(this)" />
+                <div class="form-hint">JPG, PNG — nên dùng 1200×630px</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Hoặc nhập URL</label>
+                <input type="text" id="txtAnhBia" class="form-control" maxlength="255"
+                       placeholder="Nhập URL..."
+                       oninput="previewAnhBiaUrl(this.value)" />
+            </div>
+        </div>
+
+        <%-- Phân loại — 4 nút button --%>
+        <div class="admin-card">
+            <div class="card-section-title">Phân loại</div>
+
+            <div class="form-group">
+                <label class="form-label">Danh mục <span class="req">*</span></label>
+                <div class="dm-btn-group" id="dmBtnGroup">
+                    <button type="button" class="dm-btn" data-val="1" onclick="setDanhMuc(this,1)">Hoạt động TN</button>
+                    <button type="button" class="dm-btn" data-val="2" onclick="setDanhMuc(this,2)">Cảm hứng</button>
+                    <button type="button" class="dm-btn" data-val="3" onclick="setDanhMuc(this,3)">Thông báo</button>
+                </div>
+                <input type="hidden" id="hdnMaDanhMuc" value="" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ngày đăng</label>
+                <input type="date" id="txtNgayDang" class="form-control" />
+            </div>
+        </div>
+
+        <%-- Xuất bản --%>
+        <div class="admin-card">
+            <div class="card-section-title">Xuất bản</div>
+
+            <div class="form-group">
+                <label class="form-label">Trạng thái</label>
+                <div class="status-toggle">
+                    <button class="status-opt active-pub" id="btnPub"   onclick="setStatus(1)">Đăng ngay</button>
+                    <button class="status-opt"            id="btnDraft" onclick="setStatus(0)">Lưu nháp</button>
+                </div>
+                <input type="hidden" id="hdnTrangThai" value="1" />
+            </div>
+
+            <button class="btn-luu" onclick="luuBaiViet()">Lưu bài viết</button>
+            <a href="/Admin/QuanLyTinTuc.aspx" class="btn-huy">Hủy, quay lại</a>
+        </div>
+
+        <%-- Meta (edit mode) --%>
+        <div id="panelMeta" class="admin-card meta-box" style="display:none">
+            <div class="meta-title">Thông tin bài viết</div>
+            <div class="meta-row">Mã: #<b id="metaMa"></b></div>
+            <div class="meta-row">Tác giả: <b id="metaTacGia"></b></div>
+            <div class="meta-row">Ngày tạo: <b id="metaNgayTao"></b></div>
+            <div class="meta-row">Lượt xem: <b id="metaLuotXem"></b></div>
+        </div>
+
+    </div>
+
+</div>
 
 </asp:Content>
 
 <asp:Content ID="ScriptContent" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
-/* ══════════════════════════════════════════════════════════════
-   MOCK DATA khớp SampleData.sql
-══════════════════════════════════════════════════════════════ */
-var MOCK_TINTUC = {
-    1: {
-        id: 1, tieuDe: 'Thiện Nguyện Việt trao 500 phần quà cho bà con miền Trung',
-        maDanhMuc: '1', tomTat: 'Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên đã lên đường đến Quảng Bình...',
-        noiDung: '<p>Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên đã lên đường đến Quảng Bình để trao tận tay 500 phần quà cho người dân vùng lũ.</p>',
-        anhBia: null, trangThai: 1, ngayDang: '2026-03-07',
-        tacGia: 'Admin', ngayTao: '07/03/2026', luotXem: 1240
-    },
-    2: {
-        id: 2, tieuDe: 'Cậu bé 8 tuổi được cứu sống nhờ ca phẫu thuật tim từ quỹ từ thiện',
-        maDanhMuc: '2', tomTat: 'Em Nguyễn Văn Khôi (8 tuổi, Cần Thơ) mắc bệnh tim bẩm sinh từ nhỏ. Nhờ sự hỗ trợ của chương trình, em đã được phẫu thuật thành công.',
-        noiDung: '<p>Em Nguyễn Văn Khôi sinh ra đã mang trong mình căn bệnh tim bẩm sinh...</p>',
-        anhBia: null, trangThai: 1, ngayDang: '2026-02-20',
-        tacGia: 'Admin', ngayTao: '20/02/2026', luotXem: 3580
-    },
-    3: {
-        id: 3, tieuDe: 'Thông báo: Mở đăng ký tình nguyện viên đợt 2 năm 2026',
-        maDanhMuc: '3', tomTat: 'Thiện Nguyện Việt mở đăng ký tình nguyện viên cho các chuyến đi thiện nguyện tháng 4 và 5/2026.',
-        noiDung: '<p>Để đáp ứng nhu cầu ngày càng tăng của các chiến dịch, chúng tôi mở đăng ký tình nguyện viên đợt 2...</p>',
-        anhBia: null, trangThai: 1, ngayDang: '2026-03-12',
-        tacGia: 'Admin', ngayTao: '12/03/2026', luotXem: 892
-    },
-    4: {
-        id: 4, tieuDe: '10.000 cây xanh sẽ được trồng tại Hà Nội trong tháng 4',
-        maDanhMuc: '1', tomTat: 'Dự án trồng cây xanh do Thiện Nguyện Việt phối hợp với Trung tâm Bảo tồn Thiên nhiên Việt sẽ chính thức khởi động vào ngày 05/04/2026.',
-        noiDung: '<p>Dự án trồng 10.000 cây xanh tại các quận ngoại thành Hà Nội chính thức khởi động...</p>',
-        anhBia: null, trangThai: 1, ngayDang: '2026-03-14',
-        tacGia: 'Admin', ngayTao: '14/03/2026', luotXem: 456
-    }
-};
+    (function () {
+        'use strict';
 
-/* ── Init ───────────────────────────────────────────────────── */
-var urlParams  = new URLSearchParams(window.location.search);
-var editId     = parseInt(urlParams.get('id') || '0');
-var isEditMode = editId > 0;
+        /* ── State ──────────────────────────────────────────────────── */
+        var urlParams = new URLSearchParams(window.location.search);
+        var editId = parseInt(urlParams.get('id') || '0');
+        var isEditMode = editId > 0;
+        var selectedDanhMuc = 0;
 
-(function init() {
-    document.getElementById('txtNgayDang').value = new Date().toISOString().slice(0,10);
+        /* ── Toast ──────────────────────────────────────────────────── */
+        function showToast(msg, type) {
+            var wrap = document.getElementById('toastWrap');
+            var t = document.createElement('div');
+            t.className = 'toast-item toast-' + (type || 'ok');
+            t.innerHTML = '<span class="t-msg">' + msg + '</span><span class="t-close" onclick="this.parentElement.remove()">×</span>';
+            wrap.appendChild(t);
+            setTimeout(function () { t.style.transition = 'opacity .3s'; t.style.opacity = '0'; setTimeout(function () { t.remove(); }, 350); }, 4500);
+        }
 
-    if (isEditMode && MOCK_TINTUC[editId]) {
-        loadEditMode(editId);
-    }
-})();
+        /* ── Init ────────────────────────────────────────────────────── */
+        (function init() {
+            document.getElementById('txtNgayDang').value = new Date().toISOString().slice(0, 10);
+            if (isEditMode) loadEditData(editId);
+        })();
 
-function loadEditMode(id) {
-    var t = MOCK_TINTUC[id];
-    if (!t) { showError('Không tìm thấy bài viết #' + id); return; }
+        /* ── Load edit data từ DB ─────────────────────────────────────── */
+        function loadEditData(id) {
+            fetch(location.pathname + '?__ajax=true&action=get&id=' + id)
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.ok) { showToast('Không tìm thấy bài viết #' + id, 'err'); return; }
+                    var d = j.data;
 
-    document.getElementById('topBarH1').textContent          = 'Chỉnh sửa bài viết';
-    document.getElementById('topBarSub').textContent         = t.tieuDe;
-    document.getElementById('breadcrumbCurrent').textContent = 'Chỉnh sửa';
-    document.getElementById('pageTitle').textContent         = 'Chỉnh sửa bài viết';
-    document.title = 'Sửa tin tức — Admin';
+                    document.getElementById('topBarH1').textContent = 'Chỉnh sửa bài viết';
+                    document.getElementById('topBarSub').textContent = d.TieuDe;
+                    document.getElementById('breadcrumbCurrent').textContent = 'Chỉnh sửa';
+                    document.getElementById('pageTitle').textContent = 'Chỉnh sửa bài viết';
+                    document.title = 'Sửa tin tức — Admin';
 
-    document.getElementById('txtTieuDe').value   = t.tieuDe;
-    document.getElementById('txtTomTat').value   = t.tomTat;
-    document.getElementById('txtNoiDung').value  = t.noiDung;
-    document.getElementById('selDanhMuc').value  = t.maDanhMuc;
-    document.getElementById('txtNgayDang').value = t.ngayDang;
-    document.getElementById('txtAnhBia').value   = t.anhBia || '';
+                    document.getElementById('txtTieuDe').value = d.TieuDe || '';
+                    document.getElementById('txtTomTat').value = d.TomTat || '';
+                    document.getElementById('txtNoiDung').value = d.NoiDung || '';
+                    document.getElementById('txtNgayDang').value = d.NgayDang || '';
+                    document.getElementById('txtAnhBia').value = d.AnhBia || '';
 
-    setStatus(t.trangThai);
-    onTieuDeChange(); onTomTatChange();
-    updateSEO();
+                    // Danh mục
+                    if (d.MaDanhMuc) setDanhMucByVal(d.MaDanhMuc);
+                    // Trạng thái
+                    setStatus(d.TrangThai);
 
-    if (t.anhBia) previewAnhBiaUrl(t.anhBia);
+                    onTieuDeChange(); onTomTatChange(); updateSEO();
+                    if (d.AnhBia) previewAnhBiaUrl(d.AnhBia);
 
-    // Meta
-    document.getElementById('metaMa').textContent      = t.id;
-    document.getElementById('metaTacGia').textContent  = t.tacGia;
-    document.getElementById('metaNgayTao').textContent = t.ngayTao;
-    document.getElementById('metaLuotXem').textContent = t.luotXem.toLocaleString('vi-VN') + ' lượt';
-    document.getElementById('panelMeta').style.display = 'block';
-}
+                    // Meta
+                    document.getElementById('metaMa').textContent = d.MaTinTuc;
+                    document.getElementById('metaTacGia').textContent = d.NguoiDang || 'Admin';
+                    document.getElementById('metaNgayTao').textContent = d.NgayDang || '—';
+                    document.getElementById('metaLuotXem').textContent = (d.LuotXem || 0).toLocaleString('vi-VN') + ' lượt';
+                    document.getElementById('panelMeta').style.display = 'block';
+                })
+                .catch(function () { showToast('Lỗi kết nối server.', 'err'); });
+        }
 
-/* ── Status toggle ──────────────────────────────────────────── */
-function setStatus(val) {
-    document.getElementById('hdnTrangThai').value = val;
-    if (val === 1) {
-        document.getElementById('btnPub').className   = 'status-opt active-pub';
-        document.getElementById('btnDraft').className = 'status-opt';
-    } else {
-        document.getElementById('btnPub').className   = 'status-opt';
-        document.getElementById('btnDraft').className = 'status-opt active-draft';
-    }
-}
+        /* ── Danh mục buttons ─────────────────────────────────────────── */
+        window.setDanhMuc = function (btn, val) {
+            document.querySelectorAll('#dmBtnGroup .dm-btn').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            selectedDanhMuc = val;
+            document.getElementById('hdnMaDanhMuc').value = val;
+        };
 
-/* ── Char counter ────────────────────────────────────────────── */
-function onTieuDeChange() {
-    var len = document.getElementById('txtTieuDe').value.length;
-    var el  = document.getElementById('charTieuDe');
-    el.textContent = len + ' / 250';
-    el.className   = 'char-counter' + (len > 250 ? ' over' : '');
-    updateSEO();
-}
-function onTomTatChange() {
-    var len = document.getElementById('txtTomTat').value.length;
-    var el  = document.getElementById('charTomTat');
-    el.textContent = len + ' / 400';
-    el.className   = 'char-counter' + (len > 400 ? ' over' : '');
-    updateSEO();
-}
+        function setDanhMucByVal(val) {
+            var btn = document.querySelector('#dmBtnGroup .dm-btn[data-val="' + val + '"]');
+            if (btn) { btn.click(); }
+        }
 
-/* ── SEO Preview ─────────────────────────────────────────────── */
-function updateSEO() {
-    var title = document.getElementById('txtTieuDe').value.trim();
-    var desc  = document.getElementById('txtTomTat').value.trim();
-    document.getElementById('seoTitle').textContent =
-        (title || 'Tiêu đề bài viết') + ' — Thiện Nguyện Việt';
-    document.getElementById('seoDesc').textContent  =
-        desc || 'Tóm tắt bài viết sẽ hiển thị ở đây...';
-}
+        /* ── Status toggle ─────────────────────────────────────────────── */
+        window.setStatus = function (val) {
+            document.getElementById('hdnTrangThai').value = val;
+            if (val === 1 || val === '1') {
+                document.getElementById('btnPub').className = 'status-opt active-pub';
+                document.getElementById('btnDraft').className = 'status-opt';
+            } else {
+                document.getElementById('btnPub').className = 'status-opt';
+                document.getElementById('btnDraft').className = 'status-opt active-draft';
+            }
+        };
 
-/* ── Image preview ───────────────────────────────────────────── */
-function previewAnhBia(input) {
-    if (!input.files || !input.files[0]) return;
-    showImgPreview(URL.createObjectURL(input.files[0]));
-}
-function previewAnhBiaUrl(url) {
-    if (!url) { hideImgPreview(); return; }
-    showImgPreview(url);
-}
-function showImgPreview(url) {
-    document.getElementById('imgPreview').src                 = url;
-    document.getElementById('imgPreviewBox').style.display   = 'block';
-    document.getElementById('imgPlaceholder').style.display  = 'none';
-}
-function hideImgPreview() {
-    document.getElementById('imgPreviewBox').style.display   = 'none';
-    document.getElementById('imgPlaceholder').style.display  = 'flex';
-}
+        /* ── Char counters ─────────────────────────────────────────────── */
+        window.onTieuDeChange = function () {
+            var len = document.getElementById('txtTieuDe').value.length;
+            var el = document.getElementById('charTieuDe');
+            el.textContent = len + ' / 250';
+            el.className = 'char-counter' + (len > 250 ? ' over' : '');
+            updateSEO();
+        };
+        window.onTomTatChange = function () {
+            var len = document.getElementById('txtTomTat').value.length;
+            var el = document.getElementById('charTomTat');
+            el.textContent = len + ' / 400';
+            el.className = 'char-counter' + (len > 400 ? ' over' : '');
+            updateSEO();
+        };
 
-/* ── RTE toolbar helpers ─────────────────────────────────────── */
-function insertTag(tag) {
-    var ta = document.getElementById('txtNoiDung');
-    var start = ta.selectionStart, end = ta.selectionEnd;
-    var sel  = ta.value.substring(start, end) || 'nội dung';
-    var ins  = '<' + tag + '>' + sel + '</' + tag + '>';
-    ta.value = ta.value.substring(0, start) + ins + ta.value.substring(end);
-    ta.focus();
-}
-function insertList() {
-    var ta = document.getElementById('txtNoiDung');
-    var ins = '\n<ul>\n  <li>Mục 1</li>\n  <li>Mục 2</li>\n</ul>\n';
-    ta.value += ins; ta.focus();
-}
-function insertLink() {
-    var url  = prompt('Nhập URL:', 'https://');
-    if (!url) return;
-    var text = prompt('Chữ hiển thị:', 'Xem thêm');
-    if (!text) return;
-    insertRaw('<a href="' + url + '">' + text + '</a>');
-}
-function insertImg() {
-    var url = prompt('Nhập URL ảnh:', '/Uploads/TinTuc/');
-    if (!url) return;
-    insertRaw('<img src="' + url + '" alt="Ảnh minh họa" style="max-width:100%" />');
-}
-function insertRaw(str) {
-    var ta = document.getElementById('txtNoiDung');
-    var pos = ta.selectionStart;
-    ta.value = ta.value.substring(0, pos) + str + ta.value.substring(pos);
-    ta.focus();
-}
+        /* ── SEO Preview ─────────────────────────────────────────────── */
+        function updateSEO() {
+            var title = document.getElementById('txtTieuDe').value.trim();
+            var desc = document.getElementById('txtTomTat').value.trim();
+            document.getElementById('seoTitle').textContent = (title || 'Tiêu đề bài viết') + ' — Thiện Nguyện Việt';
+            document.getElementById('seoDesc').textContent = desc || 'Tóm tắt bài viết sẽ hiển thị ở đây...';
+        }
 
-/* ── Lưu ─────────────────────────────────────────────────────── */
-function luuBaiViet(forceNhap) {
-    var tieuDe  = document.getElementById('txtTieuDe').value.trim();
-    var noiDung = document.getElementById('txtNoiDung').value.trim();
-    var danhMuc = document.getElementById('selDanhMuc').value;
+        /* ── Image preview ───────────────────────────────────────────── */
+        window.previewAnhBia = function (input) {
+            if (input.files && input.files[0]) showImgPreview(URL.createObjectURL(input.files[0]));
+        };
+        window.previewAnhBiaUrl = function (url) {
+            if (url) showImgPreview(url); else hideImgPreview();
+        };
+        function showImgPreview(url) {
+            document.getElementById('imgPreview').src = url;
+            document.getElementById('imgPreviewBox').style.display = 'block';
+            document.getElementById('imgPlaceholder').style.display = 'none';
+        }
+        function hideImgPreview() {
+            document.getElementById('imgPreviewBox').style.display = 'none';
+            document.getElementById('imgPlaceholder').style.display = 'flex';
+        }
 
-    if (!tieuDe)  { showError('Vui lòng nhập tiêu đề bài viết.'); return; }
-    if (!danhMuc) { showError('Vui lòng chọn danh mục.'); return; }
-    if (!noiDung) { showError('Vui lòng nhập nội dung bài viết.'); return; }
+        /* ── RTE toolbar helpers ─────────────────────────────────────── */
+        window.insertTag = function (tag) {
+            var ta = document.getElementById('txtNoiDung');
+            var s = ta.selectionStart, e = ta.selectionEnd;
+            var sel = ta.value.substring(s, e) || 'nội dung';
+            ta.value = ta.value.substring(0, s) + '<' + tag + '>' + sel + '</' + tag + '>' + ta.value.substring(e);
+            ta.focus();
+        };
+        window.insertList = function () {
+            var ta = document.getElementById('txtNoiDung');
+            ta.value += '\n<ul>\n  <li>Mục 1</li>\n  <li>Mục 2</li>\n</ul>\n';
+            ta.focus();
+        };
+        window.insertLink = function () {
+            var url = prompt('Nhập URL:', 'https://'); if (!url) return;
+            var txt = prompt('Chữ hiển thị:', 'Xem thêm'); if (!txt) return;
+            insertRaw('<a href="' + url + '">' + txt + '</a>');
+        };
+        window.insertImg = function () {
+            var url = prompt('Nhập URL ảnh:', ''); if (!url) return;
+            insertRaw('<img src="' + url + '" alt="Ảnh minh họa" style="max-width:100%" />');
+        };
+        function insertRaw(str) {
+            var ta = document.getElementById('txtNoiDung');
+            var pos = ta.selectionStart;
+            ta.value = ta.value.substring(0, pos) + str + ta.value.substring(pos);
+            ta.focus();
+        }
 
-    var trangThai = forceNhap ? 0 : parseInt(document.getElementById('hdnTrangThai').value);
+        /* ── Lưu bài viết → gọi backend ─────────────────────────────── */
+        window.luuBaiViet = function () {
+            var tieuDe = document.getElementById('txtTieuDe').value.trim();
+            var noiDung = document.getElementById('txtNoiDung').value.trim();
+            var danhMuc = document.getElementById('hdnMaDanhMuc').value;
 
-    if (isEditMode) {
-        showSuccess('✓ Đã cập nhật bài viết "' + tieuDe.substring(0,40) + (tieuDe.length>40?'...':'') + '" thành công!');
-    } else {
-        showSuccess('✓ Đã ' + (trangThai === 1 ? 'đăng' : 'lưu nháp') + ' bài viết thành công!');
-        setTimeout(function() { window.location.href = '/Admin/QuanLyTinTuc.aspx'; }, 1500);
-    }
-}
+            if (!tieuDe) { showToast('Vui lòng nhập tiêu đề bài viết.', 'err'); return; }
+            if (!danhMuc) { showToast('Vui lòng chọn danh mục.', 'err'); return; }
+            if (!noiDung) { showToast('Vui lòng nhập nội dung bài viết.', 'err'); return; }
 
-/* ── Alerts ──────────────────────────────────────────────────── */
-function showSuccess(msg) {
-    var el = document.getElementById('alertSuccess');
-    el.textContent = msg; el.style.display = 'block';
-    document.getElementById('alertError').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(function(){ el.style.display = 'none'; }, 4000);
-}
-function showError(msg) {
-    var el = document.getElementById('alertError');
-    el.textContent = msg; el.style.display = 'block';
-    document.getElementById('alertSuccess').style.display = 'none';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+            var payload = new URLSearchParams({
+                __ajax: 'true',
+                action: isEditMode ? 'update' : 'insert',
+                id: editId,
+                tieuDe: tieuDe,
+                tomTat: document.getElementById('txtTomTat').value.trim(),
+                noiDung: noiDung,
+                maDanhMuc: danhMuc,
+                anhBia: document.getElementById('txtAnhBia').value.trim(),
+                ngayDang: document.getElementById('txtNgayDang').value,
+                trangThai: document.getElementById('hdnTrangThai').value
+            });
+
+            fetch(location.pathname + '?' + payload)
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (j.ok) {
+                        var label = isEditMode ? 'Đã cập nhật' : 'Đã lưu';
+                        showToast(label + ' bài viết "' + tieuDe.substring(0, 40) + (tieuDe.length > 40 ? '...' : '') + '" thành công!', 'ok');
+                        if (!isEditMode) {
+                            setTimeout(function () { window.location.href = '/Admin/QuanLyTinTuc.aspx'; }, 1500);
+                        }
+                    } else {
+                        showToast(j.msg || 'Lỗi khi lưu bài viết.', 'err');
+                    }
+                })
+                .catch(function () { showToast('Lỗi kết nối server.', 'err'); });
+        };
+
+    })();
 </script>
 </asp:Content>
