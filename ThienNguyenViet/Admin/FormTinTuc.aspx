@@ -5,148 +5,15 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ══════════════════════════════════════════════════════════════
-   FORM TIN TỨC — PAGE STYLES
-══════════════════════════════════════════════════════════════ */
-.breadcrumb   { font-size: 12px; color: var(--admin-chu-phu); margin-bottom: 4px; }
-.breadcrumb a { color: #3182CE; text-decoration: none; }
-.breadcrumb a:hover { text-decoration: underline; }
-.page-title   { font-size: 20px; font-weight: 700; color: var(--admin-chu-chinh); margin-bottom: 20px; }
+/* ── FormTinTuc — Đồng bộ đẹp như FormChienDich ── */
+.form-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+.admin-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 18px 20px; }
+.form-control { border: 1px solid var(--border); border-radius: var(--r); background: #fff; }
+.rte-toolbar, .rte-area { border: 1px solid var(--border); border-radius: var(--r); }
+.btn-luu { background: var(--accent); color: #fff; border-radius: var(--r); }
+.btn-huy { background: transparent; border: 1px solid var(--border); border-radius: var(--r); color: var(--txt-sub); }
 
-/* 2-column layout */
-.form-grid {
-    display: grid; grid-template-columns: 1fr 300px;
-    gap: 20px; align-items: start;
-}
-
-/* Form controls */
-.card-section-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
-.form-group          { margin-bottom: 16px; }
-.form-group:last-child { margin-bottom: 0; }
-.form-label          { display: block; font-size: 12px; font-weight: 600; color: var(--admin-chu-chinh); margin-bottom: 5px; }
-.form-label .req     { color: #E53E3E; margin-left: 2px; }
-.form-control {
-    width: 100%; height: 36px; padding: 0 10px;
-    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); color: var(--admin-chu-chinh);
-    outline: none; box-sizing: border-box; transition: border-color .15s;
-}
-.form-control:focus { border-color: #3182CE; box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
-textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-height: 1.55; }
-.form-hint { font-size: 11px; color: var(--admin-chu-phu); margin-top: 4px; }
-
-/* Rich text editor */
-.rte-toolbar {
-    display: flex; flex-wrap: wrap; gap: 4px;
-    padding: 8px 10px; background: var(--admin-nen);
-    border: 1px solid var(--admin-vien); border-bottom: none;
-    border-radius: var(--r-nut) var(--r-nut) 0 0;
-}
-.rte-btn {
-    height: 26px; min-width: 26px; padding: 0 7px;
-    background: var(--admin-card); border: 1px solid var(--admin-vien);
-    border-radius: 4px; font-size: 12px; cursor: pointer; font-family: var(--font);
-    color: var(--admin-chu-chinh); transition: background .12s;
-    display: flex; align-items: center; justify-content: center;
-}
-.rte-btn:hover { background: #EBF8FF; color: #2B6CB0; border-color: #3182CE; }
-.rte-sep { width: 1px; background: var(--admin-vien); margin: 0 3px; align-self: stretch; }
-.rte-area {
-    width: 100%; min-height: 280px; padding: 12px 14px;
-    border: 1px solid var(--admin-vien); border-radius: 0 0 var(--r-nut) var(--r-nut);
-    font-size: 13px; font-family: var(--font); line-height: 1.7;
-    color: var(--admin-chu-chinh); outline: none; box-sizing: border-box; resize: vertical;
-}
-.rte-area:focus { border-color: #3182CE; }
-
-/* Char counter */
-.char-counter { text-align: right; font-size: 11px; color: var(--admin-chu-phu); margin-top: 4px; }
-.char-counter.over { color: #E53E3E; }
-
-/* Image preview */
-.img-placeholder {
-    width: 100%; height: 120px; border: 2px dashed var(--admin-vien);
-    border-radius: var(--r-nut); display: flex; align-items: center;
-    justify-content: center; color: var(--admin-chu-phu); font-size: 12px; margin-bottom: 10px;
-}
-#imgPreviewBox { display: none; margin-bottom: 8px; }
-#imgPreviewBox img {
-    max-width: 100%; max-height: 180px; border-radius: var(--r-nut);
-    border: 1px solid var(--admin-vien); object-fit: cover;
-}
-
-/* SEO preview */
-.seo-preview {
-    background: var(--admin-nen); border-radius: var(--r-nut);
-    border: 1px solid var(--admin-vien); padding: 12px 14px; font-size: 12px;
-}
-.seo-preview .seo-title   { font-size: 16px; color: #1a0dab; margin-bottom: 3px; line-height: 1.3; }
-.seo-preview .seo-url     { color: #006621; font-size: 11px; margin-bottom: 4px; }
-.seo-preview .seo-desc    { color: #545454; line-height: 1.5; }
-.seo-preview-label        { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing:.06em; color: var(--admin-chu-phu); margin-bottom: 6px; }
-
-/* Action buttons */
-.btn-luu {
-    height: 36px; padding: 0 20px; background: #3182CE; color: #fff;
-    border: none; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px;
-}
-.btn-luu:hover { background: #2B6CB0; }
-.btn-huy {
-    height: 36px; background: transparent; color: var(--admin-chu-phu);
-    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); text-decoration: none;
-    display: flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box;
-}
-.btn-huy:hover { background: var(--admin-nen); color: var(--admin-chu-chinh); }
-
-/* Meta info */
-.meta-box     { font-size: 12px; color: var(--admin-chu-phu); }
-.meta-title   { font-size: 13px; font-weight: 600; color: var(--admin-chu-chinh); margin-bottom: 8px; }
-.meta-row     { margin-bottom: 4px; }
-.meta-row b   { color: var(--admin-chu-chinh); }
-
-/* Toast */
-#toastWrap {
-    position: fixed; top: 64px; right: 18px; z-index: 9999;
-    display: flex; flex-direction: column; gap: 8px; pointer-events: none;
-}
-.toast-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    background: var(--admin-card); border: 1px solid var(--admin-vien);
-    border-left: 4px solid #3182CE; border-radius: var(--r-card);
-    padding: 10px 14px; min-width: 260px; max-width: 340px;
-    pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
-    animation: toastIn .2s ease;
-}
-.toast-item.toast-ok  { border-left-color: var(--admin-thanh-cong); }
-.toast-item.toast-err { border-left-color: var(--admin-loi); }
-.toast-item .t-msg    { font-size: 13px; color: var(--admin-chu-chinh); flex: 1; }
-.toast-item .t-close  { font-size: 16px; color: var(--admin-chu-phu); cursor: pointer; line-height: 1; }
-@keyframes toastIn { from { opacity:0; transform: translateX(12px); } to { opacity:1; transform: none; } }
-
-/* Status toggle */
-.status-toggle { display: flex; gap: 8px; margin-bottom: 4px; }
-.status-opt {
-    flex: 1; height: 34px; border-radius: var(--r-nut);
-    border: 1px solid var(--admin-vien); background: var(--admin-nen);
-    font-size: 12px; font-family: var(--font); font-weight: 500;
-    cursor: pointer; color: var(--admin-chu-phu); transition: all .15s;
-}
-.status-opt.active-pub   { background: #C6F6D5; color: #276749; border-color: #9AE6B4; }
-.status-opt.active-draft { background: #EBF8FF; color: #2B6CB0; border-color: #BEE3F8; }
-
-/* Danh mục button group ══════════════════════════════════════════ */
-.dm-btn-group { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
-.dm-btn {
-    flex: 1; min-width: 120px; height: 34px; padding: 0 10px;
-    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
-    background: var(--admin-nen); font-size: 12px; font-family: var(--font);
-    font-weight: 500; cursor: pointer; color: var(--admin-chu-phu);
-    transition: all .15s; white-space: nowrap; text-align: center;
-}
-.dm-btn:hover { background: #e2e8f0; color: var(--admin-chu-chinh); }
-.dm-btn.active { background: #3182CE; color: #fff; border-color: #3182CE; font-weight: 600; }
+#toastWrap .toast-item { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-card); }
 </style>
 </asp:Content>
 
