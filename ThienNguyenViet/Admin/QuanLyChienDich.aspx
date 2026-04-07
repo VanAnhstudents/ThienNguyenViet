@@ -4,135 +4,74 @@
     Inherits="ThienNguyenViet.Admin.QuanLyChienDich" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-    <style>
-        .filter-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+<style>
+/* ── Filter bar ──────────────────────────────────────── */
+.filter-bar {
+    display: flex; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+}
+.filter-bar .input-search {
+    flex: 1; min-width: 180px; max-width: 280px;
+    height: 36px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    font-size: 13px; background: #fff;
+}
 
-            .filter-bar .input-search {
-                flex: 1;
-                min-width: 260px;
-                height: 38px;
-                padding: 0 14px;
-                border: 1px solid var(--border);
-                border-radius: var(--r);
-                font-size: 13px;
-                background: #fff;
-            }
+/* ── Status button group ─────────────────────────────── */
+.status-btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
+.status-btn {
+    height: 36px; padding: 0 13px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    background: var(--bg); font-family: var(--font);
+    font-size: 12px; font-weight: 500; color: var(--txt-sub);
+    cursor: pointer; white-space: nowrap;
+    transition: all .15s;
+}
+.status-btn:hover { background: #e2e8f0; color: var(--txt); }
+.status-btn.active {
+    background: var(--accent); color: #fff;
+    border-color: var(--accent); font-weight: 600;
+}
 
-            .filter-bar select {
-                height: 38px;
-                padding: 0 12px;
-                border: 1px solid var(--border);
-                border-radius: var(--r);
-                font-size: 13px;
-                background: #fff;
-                min-width: 160px;
-            }
+/* ── Table cells ─────────────────────────────────────── */
+.adm-table td .cd-name {
+    font-size: 13px; font-weight: 600; color: var(--txt);
+}
+.adm-table td .cd-sub {
+    font-size: 11px; color: var(--txt-sub); margin-top: 2px;
+}
+.prog-bar-container {
+    height: 6px; background: var(--border);
+    border-radius: 99px; overflow: hidden; margin-top: 4px;
+}
+.prog-bar { height: 100%; border-radius: 99px; }
+.prog-pct { font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 3px; }
 
-            .filter-bar .btn-primary-sm,
-            .filter-bar .btn-outline-sm {
-                height: 38px;
-                padding: 0 18px;
-                font-size: 13px;
-                font-weight: 500;
-            }
+/* ── Action buttons inline ───────────────────────────── */
+.btn-action-row { display: flex; gap: 4px; flex-wrap: nowrap; }
+.btn-action {
+    font-size: 11px; padding: 3px 9px;
+    border-radius: var(--r); border: none; cursor: pointer;
+    font-family: var(--font); white-space: nowrap;
+}
 
-        .adm-table td .cd-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--txt);
-        }
-
-        .adm-table td .cd-sub {
-            font-size: 11px;
-            color: var(--txt-sub);
-            margin-top: 2px;
-        }
-
-        /* Progress bar reuse từ TongQuan */
-        .prog-bar-container {
-            height: 6px;
-            background: var(--border);
-            border-radius: 99px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .prog-bar {
-            height: 100%;
-            border-radius: 99px;
-        }
-
-        .prog-pct {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent);
-            margin-top: 3px;
-        }
-
-        /* Nút hành động */
-        .btn-action {
-            font-size: 12px;
-            padding: 4px 12px;
-            border-radius: var(--r);
-            margin-right: 4px;
-        }
-
-        /* PAGINATION */
-        .tbl-footer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            padding: 15px 0;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        #pagingBtns {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-            #pagingBtns button {
-                min-width: 38px;
-                height: 38px;
-                padding: 0 12px;
-                border: 1px solid #e2e8f0;
-                background: #fff;
-                color: #334155;
-                border-radius: 8px;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-            }
-
-                #pagingBtns button:hover {
-                    background: #f8fafc;
-                    border-color: #cbd5e1;
-                }
-
-                #pagingBtns button.active {
-                    background: #3182CE;
-                    color: #fff;
-                    border-color: #3182CE;
-                }
-
-                #pagingBtns button:disabled {
-                    opacity: 0.4;
-                    cursor: not-allowed;
-                }
-
-        #pagingInfo {
-            font-size: 13px;
-            color: #64748b;
-            white-space: nowrap;
-        }
-    </style>
+/* ── PAGINATION ──────────────────────────────────────── */
+.tbl-footer {
+    display: flex; align-items: center; justify-content: center;
+    gap: 15px; padding: 15px 0;
+    border-top: 1px solid #e2e8f0;
+}
+#pagingBtns { display: flex; align-items: center; gap: 6px; }
+#pagingBtns button {
+    min-width: 38px; height: 38px; padding: 0 12px;
+    border: 1px solid #e2e8f0; background: #fff; color: #334155;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+}
+#pagingBtns button:hover { background: #f8fafc; border-color: #cbd5e1; }
+#pagingBtns button.active { background: #3182CE; color: #fff; border-color: #3182CE; }
+#pagingBtns button:disabled { opacity: .4; cursor: not-allowed; }
+#pagingInfo { font-size: 13px; color: #64748b; white-space: nowrap; }
+</style>
 </asp:Content>
 
 <asp:Content ID="ContentTopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
@@ -141,12 +80,14 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <div class="adm-card" style="margin-bottom: 18px;">
+<%-- Filter bar --%>
+    <div class="adm-card" style="margin-bottom:18px">
         <div class="filter-bar">
-            <input type="text" id="inputSearch" class="input-search" placeholder="Tìm theo tên chiến dịch..." />
+            <input type="text" id="inputSearch" class="input-search"
+                   placeholder="Tìm theo tên chiến dịch..." />
 
-            <select id="selDanhMuc" class="form-control">
+            <%-- Danh mục --%>
+            <select id="selDanhMuc" style="height:36px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;background:#fff;min-width:150px">
                 <option value="">Tất cả danh mục</option>
                 <option value="1">Cứu trợ thiên tai</option>
                 <option value="2">Học bổng & Giáo dục</option>
@@ -154,19 +95,21 @@
                 <option value="4">Môi trường & Cây xanh</option>
             </select>
 
-            <select id="selTrangThai" class="form-control">
-                <option value="">Tất cả trạng thái</option>
-                <option value="0">Nháp</option>
-                <option value="1">Đang chạy</option>
-                <option value="2">Tạm dừng</option>
-                <option value="3">Đã kết thúc</option>
-            </select>
+            <%-- Trạng thái - button group --%>
+            <div class="status-btn-group" id="statusBtnGroup">
+                <button type="button" class="status-btn active" data-val="" onclick="setStatusFilter(this,'')">Tất cả</button>
+                <button type="button" class="status-btn" data-val="0" onclick="setStatusFilter(this,'0')">Nháp</button>
+                <button type="button" class="status-btn" data-val="1" onclick="setStatusFilter(this,'1')">Đang chạy</button>
+                <button type="button" class="status-btn" data-val="2" onclick="setStatusFilter(this,'2')">Tạm dừng</button>
+                <button type="button" class="status-btn" data-val="3" onclick="setStatusFilter(this,'3')">Đã kết thúc</button>
+            </div>
 
-            <button type="button" class="btn-primary" onclick="applyFilter()" style="display: none;">Tìm kiếm</button>
             <button type="button" class="btn-outline" onclick="resetFilter()">Đặt lại</button>
 
-            <!-- Nút thêm mới – đã chuyển thành button đẹp -->
-            <a href="FormChienDich.aspx" class="btn-primary" style="margin-left: auto; text-decoration: none;">＋ Thêm chiến dịch mới
+            <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>"
+               class="btn-primary"
+               style="margin-left:auto;text-decoration:none;height:36px;display:inline-flex;align-items:center;padding:0 14px;font-size:13px">
+                ＋ Thêm chiến dịch mới
             </a>
         </div>
     </div>
@@ -182,25 +125,25 @@
         <table class="adm-table" id="tblChienDich">
             <thead>
                 <tr>
-                    <th style="width: 28%">Chiến dịch</th>
+                    <th style="width:28%">Chiến dịch</th>
                     <th>Danh mục</th>
                     <th>Mục tiêu</th>
                     <th>Đã quyên góp</th>
-                    <th style="width: 110px">Tiến độ</th>
+                    <th style="width:110px">Tiến độ</th>
                     <th>Ngày kết thúc</th>
-                    <th style="text-align: center; width: 70px">Nổi bật</th>
+                    <th style="text-align:center;width:70px">Nổi bật</th>
                     <th>Trạng thái</th>
-                    <th style="width: 110px">Thao tác</th>
+                    <th style="width:100px">Thao tác</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
 
-        <div id="emptyMsg" style="display: none; text-align: center; padding: 60px 20px; color: var(--txt-sub); font-size: 13px;">
+        <div id="emptyMsg" style="display:none;text-align:center;padding:60px 20px;color:var(--txt-sub);font-size:13px">
             Không tìm thấy chiến dịch nào phù hợp với điều kiện lọc.
         </div>
 
-        <div class="tbl-footer" id="pagingWrap" style="display: none;">
+        <div class="tbl-footer" id="pagingWrap" style="display:none">
             <span id="pagingInfo"></span>
             <div id="pagingBtns"></div>
         </div>
@@ -209,115 +152,113 @@
 </asp:Content>
 
 <asp:Content ID="ScriptContent" ContentPlaceHolderID="ScriptContent" runat="server">
-    <script>
-        let currentPage = 1;
-        const PAGE_SIZE = 8;
-        let searchTimeout = null;
+<script>
+    (function () {
+        'use strict';
 
+        var currentPage = 1;
+        var PAGE_SIZE = 8;
+        var selectedStatus = '';   // '' | '0' | '1' | '2' | '3'
+        var searchTimeout = null;
+
+        /* ── Status filter buttons ────────────────────────────────── */
+        window.setStatusFilter = function (btn, val) {
+            document.querySelectorAll('#statusBtnGroup .status-btn').forEach(function (b) {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            selectedStatus = val;
+            currentPage = 1;
+            loadData();
+        };
+
+        /* ── Helpers ─────────────────────────────────────────────── */
         function fmtMoney(n) {
-            if (n >= 1000000000) return (n / 1000000000).toFixed(2) + ' tỷ';
-            if (n >= 1000000) return (n / 1000000).toFixed(1) + ' tr';
+            if (n >= 1e9) return (n / 1e9).toFixed(2).replace(/\.?0+$/, '') + ' tỷ';
+            if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.?0+$/, '') + ' tr';
             return n.toLocaleString('vi-VN');
         }
 
         function trangThaiBadge(ts) {
-            const map = {
+            var map = {
                 0: '<span class="badge badge-wait">Nháp</span>',
                 1: '<span class="badge badge-ok">Đang chạy</span>',
-                2: '<span class="badge badge-warn">Tạm dừng</span>',
-                3: '<span class="badge badge-info">Đã kết thúc</span>'
+                2: '<span class="badge badge-info">Tạm dừng</span>',
+                3: '<span class="badge badge-reject">Đã kết thúc</span>'
             };
             return map[ts] || '—';
         }
 
-        function log(msg) {
-            console.log(`[QuanLyChienDich] ${msg}`);
-        }
-
-        /* ====================== PAGINATION ====================== */
+        /* ── Pagination ──────────────────────────────────────────── */
         function renderPagination(totalPages) {
-            const pagingWrap = document.getElementById('pagingWrap');
-            const pagingInfo = document.getElementById('pagingInfo');
-            const pagingBtns = document.getElementById('pagingBtns');
+            var wrap = document.getElementById('pagingWrap');
+            var info = document.getElementById('pagingInfo');
+            var btns = document.getElementById('pagingBtns');
+            if (totalPages <= 1) { wrap.style.display = 'none'; return; }
 
-            if (totalPages <= 1) {
-                pagingWrap.style.display = 'none';
-                return;
-            }
+            wrap.style.display = 'flex';
+            info.innerHTML = 'Trang <strong>' + currentPage + '</strong> / ' + totalPages;
+            btns.innerHTML = '';
 
-            pagingWrap.style.display = 'flex';
-            pagingInfo.innerHTML = `Trang <strong>${currentPage}</strong> / ${totalPages}`;
-
-            pagingBtns.innerHTML = '';
-
-            let btn = document.createElement('button');
-            btn.type = 'button';
-            btn.innerHTML = '&laquo; Trước';
+            var btn = document.createElement('button');
+            btn.type = 'button'; btn.innerHTML = '&laquo; Trước';
             btn.disabled = currentPage === 1;
-            btn.onclick = () => goToPage(currentPage - 1);
-            pagingBtns.appendChild(btn);
+            btn.onclick = function () { goToPage(currentPage - 1); };
+            btns.appendChild(btn);
 
-            const maxVisible = 7;
-            let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-            let end = Math.min(totalPages, start + maxVisible - 1);
-            if (end - start < maxVisible - 1) start = Math.max(1, end - maxVisible + 1);
+            var maxV = 7;
+            var start = Math.max(1, currentPage - Math.floor(maxV / 2));
+            var end = Math.min(totalPages, start + maxV - 1);
+            if (end - start < maxV - 1) start = Math.max(1, end - maxV + 1);
 
-            for (let i = start; i <= end; i++) {
-                btn = document.createElement('button');
-                btn.type = 'button';
-                btn.textContent = i;
-                if (i === currentPage) btn.classList.add('active');
-                btn.onclick = () => goToPage(i);
-                pagingBtns.appendChild(btn);
+            for (var i = start; i <= end; i++) {
+                (function (page) {
+                    btn = document.createElement('button');
+                    btn.type = 'button'; btn.textContent = page;
+                    if (page === currentPage) btn.classList.add('active');
+                    btn.onclick = function () { goToPage(page); };
+                    btns.appendChild(btn);
+                })(i);
             }
 
             btn = document.createElement('button');
-            btn.type = 'button';
-            btn.innerHTML = 'Sau &raquo;';
+            btn.type = 'button'; btn.innerHTML = 'Sau &raquo;';
             btn.disabled = currentPage === totalPages;
-            btn.onclick = () => goToPage(currentPage + 1);
-            pagingBtns.appendChild(btn);
+            btn.onclick = function () { goToPage(currentPage + 1); };
+            btns.appendChild(btn);
         }
 
-        /* ====================== LOAD DATA ====================== */
-        async function loadData() {
-            log(`Đang load trang ${currentPage}`);
+        window.goToPage = function (page) { currentPage = page; loadData(); };
 
-            const params = new URLSearchParams({
+        /* ── Load data ───────────────────────────────────────────── */
+        function loadData() {
+            var params = new URLSearchParams({
                 __ajax: 'true',
                 action: 'list',
                 TuKhoa: document.getElementById('inputSearch').value.trim(),
                 MaDanhMuc: document.getElementById('selDanhMuc').value,
-                TrangThai: document.getElementById('selTrangThai').value,
+                TrangThai: selectedStatus,
                 TrangHienTai: currentPage,
                 SoDoiMoiTrang: PAGE_SIZE,
                 SapXepTheo: 'NgayTao'
             });
 
-            try {
-                const res = await fetch(`${location.pathname}?${params}`, {
-                    method: 'GET',
-                    headers: { 'Cache-Control': 'no-cache' }
-                });
-
-                const json = await res.json();
-
-                if (json.ok) {
-                    log(`✅ Load thành công: ${json.data.length} dòng`);
-                    renderTable(json.data, json.total);
-                } else {
-                    log('❌ Lỗi server: ' + (json.msg || 'không rõ'));
-                }
-            } catch (err) {
-                console.error('LoadData error:', err);
-            }
+            fetch(location.pathname + '?' + params, {
+                method: 'GET', headers: { 'Cache-Control': 'no-cache' }
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (json) {
+                    if (json.ok) renderTable(json.data, json.total);
+                })
+                .catch(function (err) { console.error('LoadData error:', err); });
         }
 
+        /* ── Render table ────────────────────────────────────────── */
         function renderTable(data, total) {
-            const tbody = document.getElementById('tableBody');
-            const empty = document.getElementById('emptyMsg');
+            var tbody = document.getElementById('tableBody');
+            var empty = document.getElementById('emptyMsg');
 
-            if (!data || data.length === 0) {
+            if (!data || !data.length) {
                 tbody.innerHTML = '';
                 empty.style.display = 'block';
                 document.getElementById('pagingWrap').style.display = 'none';
@@ -328,96 +269,98 @@
             empty.style.display = 'none';
             document.getElementById('pagingWrap').style.display = 'flex';
 
-            let html = '';
-            data.forEach(c => {
-                const pct = c.MucTieu > 0 ? Math.round(c.SoTienDaQuyen * 100 / c.MucTieu) : 0;
-                const color = c.MauDanhMuc || '#3182CE';
-                html += `
-            <tr>
-                <td><div class="cd-name">${c.TenChienDich}</div><div class="cd-sub">${c.MoTaNgan || ''}</div></td>
-                <td><span style="background:rgba(49,130,206,0.1);color:${color};padding:2px 8px;border-radius:4px;font-size:11px;">${c.TenDanhMuc}</span></td>
-                <td>${fmtMoney(c.MucTieu)}</td>
-                <td style="color:#38A169;font-weight:600">${fmtMoney(c.SoTienDaQuyen)}</td>
-                <td>
-                    <div class="prog-bar-container"><div class="prog-bar" style="width:${pct}%;background:${color}"></div></div>
-                    <div class="prog-pct">${pct}%</div>
-                </td>
-                <td>${c.NgayKetThuc}<br><small style="color:#D69E2E">Còn ${c.SoNgayCon} ngày</small></td>
-                <td style="text-align:center;font-size:18px">${c.NoiBat ? '⭐' : '☆'}</td>
-                <td>${trangThaiBadge(c.TrangThai)}</td>
-                <td>
-                    <a href="FormChienDich.aspx?id=${c.MaChienDich}" class="btn-edit btn-action">Sửa</a>
-                    <button type="button" onclick="xoaChienDich(${c.MaChienDich}, '${c.TenChienDich.replace(/'/g, "\\'")}')" class="btn-delete btn-action">Xóa</button>
-                </td>
-            </tr>`;
+            var html = '';
+            data.forEach(function (c) {
+                var pct = c.MucTieu > 0 ? Math.round(c.SoTienDaQuyen * 100 / c.MucTieu) : 0;
+                var color = c.MauDanhMuc || '#3182CE';
+                var tenEsc = c.TenChienDich.replace(/'/g, "\\'");
+                html += '<tr>' +
+                    '<td><div class="cd-name">' + c.TenChienDich + '</div><div class="cd-sub">' + (c.MoTaNgan || '') + '</div></td>' +
+                    '<td><span style="background:rgba(49,130,206,0.1);color:' + color + ';padding:2px 8px;border-radius:4px;font-size:11px">' + c.TenDanhMuc + '</span></td>' +
+                    '<td>' + fmtMoney(c.MucTieu) + '</td>' +
+                    '<td style="color:#38A169;font-weight:600">' + fmtMoney(c.SoTienDaQuyen) + '</td>' +
+                    '<td>' +
+                    '<div class="prog-bar-container"><div class="prog-bar" style="width:' + pct + '%;background:' + color + '"></div></div>' +
+                    '<div class="prog-pct">' + pct + '%</div>' +
+                    '</td>' +
+                    '<td>' + c.NgayKetThuc + '<br><small style="color:#D69E2E">Còn ' + c.SoNgayCon + ' ngày</small></td>' +
+                    '<td style="text-align:center;font-size:18px">' + (c.NoiBat ? '⭐' : '☆') + '</td>' +
+                    '<td>' + trangThaiBadge(c.TrangThai) + '</td>' +
+                    '<td>' +
+                    '<div class="btn-action-row">' +
+                    '<a href="FormChienDich.aspx?id=' + c.MaChienDich + '" class="btn-edit btn-action">Sửa</a>' +
+                    '<button type="button" class="btn-delete btn-action" onclick="xoaChienDich(' + c.MaChienDich + ',\'' + tenEsc + '\')">Xóa</button>' +
+                    '</div>' +
+                    '</td></tr>';
             });
 
             tbody.innerHTML = html;
             document.getElementById('countLabel').innerHTML =
-                `Hiển thị <strong>${(currentPage - 1) * PAGE_SIZE + 1}</strong>–<strong>${Math.min(currentPage * PAGE_SIZE, total)}</strong> / ${total} chiến dịch`;
+                'Hiển thị <strong>' + ((currentPage - 1) * PAGE_SIZE + 1) + '</strong>–<strong>' +
+                Math.min(currentPage * PAGE_SIZE, total) + '</strong> / ' + total + ' chiến dịch';
 
             renderPagination(Math.ceil(total / PAGE_SIZE));
         }
 
-        /* ====================== TỰ ĐỘNG LỌC ====================== */
-        function applyFilter() {
-            currentPage = 1;
-            loadData();
-        }
-
-        /* ====================== KHỞI TẠO EVENT ====================== */
-        function initEvents() {
-            const searchInput = document.getElementById('inputSearch');
-            const selDanhMuc = document.getElementById('selDanhMuc');
-            const selTrangThai = document.getElementById('selTrangThai');
-
-            // 1. Tìm kiếm bằng Enter
-            searchInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    applyFilter();
+        /* ── Xóa chiến dịch (dùng admConfirm, không dùng alert) ──── */
+        window.xoaChienDich = function (id, ten) {
+            admConfirm({
+                title: 'Xóa chiến dịch',
+                msg: 'Bạn có chắc muốn xóa chiến dịch "' + ten + '"? Hành động này không thể hoàn tác.',
+                okLabel: 'Xóa',
+                okClass: 'btn-reject',
+                onOk: function () {
+                    var params = new URLSearchParams({ __ajax: 'true', action: 'delete', id: id });
+                    fetch(location.pathname + '?' + params, { method: 'GET' })
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) {
+                            if (d.ok) {
+                                admToast('Đã xóa', 'Chiến dịch đã được xóa thành công.', 'ok');
+                                loadData();
+                            } else {
+                                admToast('Không thể xóa', d.msg || 'Chiến dịch có dữ liệu liên quan.', 'err');
+                            }
+                        })
+                        .catch(function () { admToast('Lỗi kết nối', 'Không thể kết nối máy chủ.', 'err'); });
                 }
             });
-
-            // Tìm kiếm realtime (debounce 400ms)
-            searchInput.addEventListener('input', function () {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    applyFilter();
-                }, 400);
-            });
-
-            // 2. Chọn danh mục hoặc trạng thái → lọc ngay
-            selDanhMuc.addEventListener('change', applyFilter);
-            selTrangThai.addEventListener('change', applyFilter);
-        }
-
-        window.goToPage = function (page) {
-            currentPage = parseInt(page);
-            loadData();
         };
 
-        window.resetFilter = () => {
+        /* ── Events ──────────────────────────────────────────────── */
+        window.applyFilter = function () { currentPage = 1; loadData(); };
+
+        window.resetFilter = function () {
             document.getElementById('inputSearch').value = '';
             document.getElementById('selDanhMuc').value = '';
-            document.getElementById('selTrangThai').value = '';
+            selectedStatus = '';
+            document.querySelectorAll('#statusBtnGroup .status-btn').forEach(function (b) {
+                b.classList.remove('active');
+                if (b.dataset.val === '') b.classList.add('active');
+            });
             currentPage = 1;
             loadData();
         };
 
-        window.xoaChienDich = async (id, ten) => {
-            if (!confirm(`Xóa chiến dịch "${ten}"?`)) return;
-            const params = new URLSearchParams({ __ajax: 'true', action: 'delete', id: id });
-            try {
-                await fetch(`${location.pathname}?${params}`, { method: 'GET' });
-                loadData();
-            } catch (e) { }
-        };
+        function initEvents() {
+            var searchInput = document.getElementById('inputSearch');
+            var selDanhMuc = document.getElementById('selDanhMuc');
 
-        window.onload = () => {
-            log('Trang đã load - bắt đầu loadData()');
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); applyFilter(); }
+            });
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(applyFilter, 400);
+            });
+            selDanhMuc.addEventListener('change', applyFilter);
+        }
+
+        /* ── Init ────────────────────────────────────────────────── */
+        window.onload = function () {
             initEvents();
             loadData();
         };
-    </script>
+
+    })();
+</script>
 </asp:Content>
