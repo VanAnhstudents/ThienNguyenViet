@@ -5,34 +5,59 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ══════════════════════════════════════════════════════════════
-   QUẢN LÝ TIN TỨC — PAGE STYLES
-══════════════════════════════════════════════════════════════ */
-.page-topbar {
-    display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 20px;
+/* ══ Toast ══════════════════════════════════════════════════════ */
+#toastWrap {
+    position: fixed; top: 64px; right: 18px;
+    z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+    pointer-events: none;
 }
-.page-topbar-title { font-size: 20px; font-weight: 700; color: var(--admin-chu-chinh); }
+.toast-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--admin-card); border: 1px solid var(--admin-vien);
+    border-left: 4px solid #3182CE; border-radius: var(--r-card);
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
+    pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    animation: toastIn .2s ease;
+}
+.toast-item.toast-ok  { border-left-color: var(--admin-thanh-cong); }
+.toast-item.toast-err { border-left-color: var(--admin-loi); }
+.toast-item .t-msg    { font-size: 13px; color: var(--admin-chu-chinh); flex: 1; }
+.toast-item .t-close  { font-size: 16px; color: var(--admin-chu-phu); cursor: pointer; }
+@keyframes toastIn { from { opacity:0; transform: translateX(12px); } to { opacity:1; transform: none; } }
 
-/* Stat row */
+/* ══ Stat cards — căn giữa, không icon ══════════════════════════ */
 .tt-stats-row {
     display: grid; grid-template-columns: repeat(4,1fr);
     gap: 14px; margin-bottom: 20px;
 }
 .tt-stat-card {
     background: var(--admin-card); border-radius: var(--r-card);
-    border: 0.5px solid var(--admin-vien); padding: 16px 18px;
-    display: flex; align-items: center; gap: 14px;
+    border: 0.5px solid var(--admin-vien); padding: 20px 18px;
+    text-align: center; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
 }
-.tt-stat-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
+.tt-stat-card strong {
+    display: block; font-size: 24px; font-weight: 700;
+    line-height: 1.1; margin-bottom: 6px;
 }
-.tt-stat-info strong { display: block; font-size: 20px; font-weight: 700; color: var(--admin-chu-chinh); line-height: 1.1; }
-.tt-stat-info span   { font-size: 11px; color: var(--admin-chu-phu); }
+.tt-stat-card span { font-size: 11px; color: var(--admin-chu-phu); text-align: center; }
 
-/* Tab bar */
+/* ══ Topbar ══════════════════════════════════════════════════════ */
+.page-topbar {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 16px;
+}
+.page-topbar-title { font-size: 20px; font-weight: 700; color: var(--admin-chu-chinh); }
+.btn-add-link {
+    height: 36px; padding: 0 16px; background: #3182CE; color: #fff;
+    border: none; border-radius: var(--r-nut);
+    font-size: 13px; font-family: var(--font); font-weight: 500;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+    cursor: pointer; transition: background .15s;
+}
+.btn-add-link:hover { background: #2B6CB0; color: #fff; }
+
+/* ══ Tab bar ══════════════════════════════════════════════════════ */
 .tab-bar {
     display: flex; align-items: center; gap: 4px; margin-bottom: 16px;
     background: var(--admin-card); border: 0.5px solid var(--admin-vien);
@@ -53,7 +78,7 @@
 .tab-btn.active .tab-count     { background: rgba(255,255,255,.25); color: #fff; }
 .tab-btn:not(.active) .tab-count { background: var(--admin-vien); color: var(--admin-chu-phu); }
 
-/* Filter */
+/* ══ Filter ══════════════════════════════════════════════════════ */
 .filter-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .input-search {
     height: 34px; padding: 0 10px; border: 1px solid var(--admin-vien);
@@ -61,45 +86,46 @@
     color: var(--admin-chu-chinh); width: 240px; outline: none; transition: border-color .15s;
 }
 .input-search:focus { border-color: #3182CE; }
-.select-filter {
-    height: 34px; padding: 0 8px; border: 1px solid var(--admin-vien);
-    border-radius: var(--r-nut); font-size: 13px; font-family: var(--font);
-    color: var(--admin-chu-chinh); background: #fff; cursor: pointer; outline: none;
+
+/* Button group danh mục ══════════════════════════════════════════ */
+.btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+.btn-grp-item {
+    height: 34px; padding: 0 13px;
+    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
+    background: var(--admin-nen); font-family: var(--font);
+    font-size: 12px; font-weight: 500; color: var(--admin-chu-phu);
+    cursor: pointer; white-space: nowrap; transition: all .15s;
 }
+.btn-grp-item:hover { background: #e2e8f0; color: var(--admin-chu-chinh); }
+.btn-grp-item.active { background: #3182CE; color: #fff; border-color: #3182CE; font-weight: 600; }
+
 .btn-primary-sm {
     height: 34px; padding: 0 14px; background: #3182CE; color: #fff;
     border: none; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: background .15s;
+    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer;
 }
 .btn-primary-sm:hover { background: #2B6CB0; }
 .btn-outline-sm {
-    height: 34px; padding: 0 12px; background: transparent; color: var(--admin-chu-phu);
-    border: 1px solid var(--admin-vien); border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); cursor: pointer; transition: background .15s;
+    height: 34px; padding: 0 12px; background: transparent;
+    color: var(--admin-chu-phu); border: 1px solid var(--admin-vien);
+    border-radius: var(--r-nut); font-size: 13px; font-family: var(--font); cursor: pointer;
 }
 .btn-outline-sm:hover { background: var(--admin-nen); color: var(--admin-chu-chinh); }
-.btn-add-link {
-    height: 36px; padding: 0 16px; background: #3182CE; color: #fff;
-    border: none; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 500;
-    text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
-}
-.btn-add-link:hover { background: #2B6CB0; color: #fff; }
 
-/* Section header */
+/* ══ Section header ══════════════════════════════════════════════ */
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .section-title  { font-size: 14px; font-weight: 600; }
 .section-count  { font-size: 12px; color: var(--admin-chu-phu); }
 
-/* News thumbnail cell */
+/* ══ News cell ════════════════════════════════════════════════════ */
 .news-cell { display: flex; align-items: center; gap: 12px; }
 .news-thumb {
     width: 64px; height: 44px; border-radius: 6px; flex-shrink: 0;
     background: var(--admin-nen); border: 1px solid var(--admin-vien);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; overflow: hidden;
+    overflow: hidden;
 }
 .news-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.news-thumb-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--admin-chu-phu); }
 .news-title {
     font-size: 13px; font-weight: 500; color: var(--admin-chu-chinh);
     max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -108,29 +134,21 @@
     font-size: 11px; color: var(--admin-chu-phu);
     max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px;
 }
-
-/* Cat badge */
 .cat-badge {
     font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px;
     display: inline-block; white-space: nowrap;
 }
-
 .view-count { font-size: 12px; color: var(--admin-chu-phu); }
 .date-col   { font-size: 12px; color: var(--admin-chu-phu); }
 
-/* Action buttons */
+/* ══ Action buttons ══════════════════════════════════════════════ */
 .btn-sua {
     font-size: 11px; padding: 4px 10px; border-radius: var(--r-nut);
     background: #EBF8FF; color: #2B6CB0; border: none; cursor: pointer;
-    font-family: var(--font); transition: background .12s;
+    font-family: var(--font); transition: background .12s; text-decoration: none;
+    display: inline-block;
 }
 .btn-sua:hover { background: #BEE3F8; }
-.btn-xoa {
-    font-size: 11px; padding: 4px 10px; border-radius: var(--r-nut);
-    background: #FED7D7; color: #C53030; border: none; cursor: pointer;
-    font-family: var(--font); transition: background .12s;
-}
-.btn-xoa:hover { background: #FEB2B2; }
 .btn-toggle {
     font-size: 11px; padding: 4px 10px; border-radius: var(--r-nut);
     background: #FEEBC8; color: #C05621; border: none; cursor: pointer;
@@ -139,32 +157,37 @@
 .btn-toggle:hover { background: #FBD38D; }
 .btn-toggle.published { background: #C6F6D5; color: #276749; }
 .btn-toggle.published:hover { background: #9AE6B4; }
+.btn-xoa {
+    font-size: 11px; padding: 4px 10px; border-radius: var(--r-nut);
+    background: #FED7D7; color: #C53030; border: none; cursor: pointer;
+    font-family: var(--font); transition: background .12s;
+}
+.btn-xoa:hover { background: #FEB2B2; }
 
-/* Pagination */
+/* ══ Pagination — căn giữa ═══════════════════════════════════════ */
 .pagination-wrap {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
     padding-top: 14px; border-top: 1px solid var(--admin-vien); margin-top: 4px;
 }
 .paging-info { font-size: 12px; color: var(--admin-chu-phu); }
 .paging-btns { display: flex; align-items: center; gap: 6px; }
 .paging-btn {
-    font-size: 12px; padding: 4px 10px; border-radius: var(--r-nut);
+    font-size: 12px; padding: 4px 12px; border-radius: var(--r-nut);
     background: #fff; border: 1px solid var(--admin-vien);
-    color: var(--admin-chu-chinh); cursor: pointer; font-family: var(--font); transition: background .12s;
+    color: var(--admin-chu-chinh); cursor: pointer; font-family: var(--font);
+    transition: background .12s; min-width: 34px; text-align: center;
 }
 .paging-btn:hover    { background: var(--admin-nen); }
 .paging-btn.active   { background: #3182CE; color: #fff; border-color: #3182CE; }
 .paging-btn:disabled { opacity: .4; cursor: default; }
 
-/* Alert */
-.alert-success { padding: 10px 14px; background: #C6F6D5; color: #276749; border-radius: var(--r-nut); font-size: 13px; margin-bottom: 16px; display: none; }
-
-/* Empty */
+/* ══ Empty / Loading ══════════════════════════════════════════════ */
 .empty-state { text-align: center; padding: 48px 0; color: var(--admin-chu-phu); }
-.empty-state .empty-icon { font-size: 38px; margin-bottom: 8px; }
 .empty-state p { font-size: 13px; }
+.tbl-loading { text-align: center; padding: 40px; font-size: 13px; color: var(--admin-chu-phu); }
 
-/* Confirm modal */
+/* ══ Confirm modal ════════════════════════════════════════════════ */
 .modal-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,.45); z-index: 999;
@@ -175,10 +198,7 @@
     background: var(--admin-card); border-radius: 12px; width: 400px; max-width: 94vw;
     box-shadow: 0 20px 60px rgba(0,0,0,.22); overflow: hidden; animation: modalIn .18s ease;
 }
-@keyframes modalIn {
-    from { opacity:0; transform:translateY(-14px) scale(.97); }
-    to   { opacity:1; transform:translateY(0) scale(1); }
-}
+@keyframes modalIn { from { opacity:0; transform:translateY(-14px) scale(.97); } to { opacity:1; transform:none; } }
 .modal-header {
     padding: 16px 20px 14px; border-bottom: 1px solid var(--admin-vien);
     display: flex; align-items: center; justify-content: space-between;
@@ -187,8 +207,7 @@
 .modal-close {
     width: 28px; height: 28px; border-radius: 6px; border: none;
     background: var(--admin-nen); font-size: 15px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--admin-chu-phu); transition: background .12s;
+    display: flex; align-items: center; justify-content: center; color: var(--admin-chu-phu);
 }
 .modal-close:hover { background: #FED7D7; color: #C53030; }
 .modal-body  { padding: 20px; }
@@ -198,7 +217,7 @@
 .btn-confirm-danger {
     height: 34px; padding: 0 18px; background: #E53E3E; color: #fff;
     border: none; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: opacity .15s;
+    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer;
 }
 .btn-confirm-danger:hover { opacity: .88; }
 .btn-cancel {
@@ -216,386 +235,347 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<div id="toastWrap"></div>
 
-    <div id="alertSuccess" class="alert-success"></div>
+<%-- Stat cards --%>
+<div class="tt-stats-row" id="statsRow">
+    <div class="tt-stat-card"><strong class="skeleton" style="width:60px;height:28px;display:inline-block">&nbsp;</strong><span>Đang tải...</span></div>
+    <div class="tt-stat-card"><strong class="skeleton" style="width:60px;height:28px;display:inline-block">&nbsp;</strong><span>Đang tải...</span></div>
+    <div class="tt-stat-card"><strong class="skeleton" style="width:60px;height:28px;display:inline-block">&nbsp;</strong><span>Đang tải...</span></div>
+    <div class="tt-stat-card"><strong class="skeleton" style="width:60px;height:28px;display:inline-block">&nbsp;</strong><span>Đang tải...</span></div>
+</div>
 
-    <%-- Stat cards --%>
-    <div class="tt-stats-row" id="statsRow"></div>
+<%-- Topbar --%>
+<div class="page-topbar">
+    <span class="page-topbar-title">Danh sách bài viết</span>
+    <a href="/Admin/FormTinTuc.aspx" class="btn-add-link">Viết bài mới</a>
+</div>
 
-    <%-- Topbar --%>
-    <div class="page-topbar">
-        <span class="page-topbar-title">Danh sách bài viết</span>
-        <a href="/Admin/FormTinTuc.aspx" class="btn-add-link">＋ Viết bài mới</a>
-    </div>
+<%-- Tab lọc trạng thái --%>
+<div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab(this,'')"  data-tab="">Tất cả <span class="tab-count" id="cnt-all">0</span></button>
+    <button class="tab-btn"        onclick="switchTab(this,'1')" data-tab="1">Đã đăng <span class="tab-count" id="cnt-1">0</span></button>
+    <button class="tab-btn"        onclick="switchTab(this,'0')" data-tab="0">Nháp <span class="tab-count" id="cnt-0">0</span></button>
+</div>
 
-    <%-- Tab lọc --%>
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab(this,'')"   data-tab="">Tất cả <span class="tab-count" id="cnt-all"></span></button>
-        <button class="tab-btn"        onclick="switchTab(this,'1')"  data-tab="1">✅ Đã đăng <span class="tab-count" id="cnt-1"></span></button>
-        <button class="tab-btn"        onclick="switchTab(this,'0')"  data-tab="0">📝 Nháp <span class="tab-count" id="cnt-0"></span></button>
-    </div>
+<%-- Filter — danh mục là button group --%>
+<div class="admin-card" style="margin-bottom:16px;padding:14px 20px;">
+    <div class="filter-bar">
+        <input type="text" id="inputSearch" class="input-search" placeholder="Tìm theo tiêu đề bài viết..." />
 
-    <%-- Filter --%>
-    <div class="admin-card" style="margin-bottom:16px;padding:14px 20px;">
-        <div class="filter-bar">
-            <input type="text" id="inputSearch" class="input-search" placeholder="Tìm theo tiêu đề bài viết..." />
-            <select id="selDanhMuc" class="select-filter">
-                <option value="">Tất cả danh mục</option>
-                <option value="1">Hoạt động thiện nguyện</option>
-                <option value="2">Câu chuyện truyền cảm hứng</option>
-                <option value="3">Thông báo</option>
-            </select>
-            <button class="btn-primary-sm" onclick="applyFilter()">Tìm kiếm</button>
-            <button class="btn-outline-sm" onclick="resetFilter()">Đặt lại</button>
-        </div>
-    </div>
-
-    <%-- Table --%>
-    <div class="admin-card">
-        <div class="section-header">
-            <span class="section-title">Danh sách tin tức</span>
-            <span class="section-count" id="countLabel"></span>
+        <span style="font-size:12px;font-weight:600;color:var(--admin-chu-phu);white-space:nowrap">Danh mục:</span>
+        <div class="btn-group" id="dmBtnGroup">
+            <button type="button" class="btn-grp-item active" data-val="" onclick="setDanhMuc(this,'')">Tất cả</button>
+            <button type="button" class="btn-grp-item" data-val="1" onclick="setDanhMuc(this,'1')">Hoạt động thiện nguyện</button>
+            <button type="button" class="btn-grp-item" data-val="2" onclick="setDanhMuc(this,'2')">Cảm hứng</button>
+            <button type="button" class="btn-grp-item" data-val="3" onclick="setDanhMuc(this,'3')">Thông báo</button>
         </div>
 
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th style="width:38%">Bài viết</th>
-                    <th>Danh mục</th>
-                    <th>Lượt xem</th>
-                    <th>Người đăng</th>
-                    <th>Ngày đăng</th>
-                    <th>Trạng thái</th>
-                    <th style="text-align:center">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+        <button class="btn-outline-sm" onclick="resetFilter()">Đặt lại</button>
+    </div>
+</div>
 
-        <div id="emptyMsg" class="empty-state" style="display:none">
-            <div class="empty-icon">📭</div>
-            <p>Không tìm thấy bài viết nào.</p>
-        </div>
-
-        <div class="pagination-wrap" id="pagingWrap">
-            <span class="paging-info" id="pagingInfo"></span>
-            <div class="paging-btns" id="pagingBtns"></div>
-        </div>
+<%-- Table --%>
+<div class="admin-card">
+    <div class="section-header">
+        <span class="section-title">Danh sách tin tức</span>
+        <span class="section-count" id="countLabel"></span>
     </div>
 
-    <%-- Modal xóa --%>
-    <div class="modal-overlay" id="modalXoa" onclick="closeModalOutside(event)">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Xóa bài viết</h3>
-                <button class="modal-close" onclick="closeModal()">✕</button>
-            </div>
-            <div class="modal-body">
-                <div class="confirm-msg">Xóa bài viết "<strong id="xoa-title"></strong>"?</div>
-                <div class="confirm-sub">Hành động này không thể hoàn tác.</div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-confirm-danger" onclick="confirmXoa()">🗑 Xóa bài viết</button>
-                <button class="btn-cancel" onclick="closeModal()">Hủy</button>
-            </div>
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th style="width:38%">Bài viết</th>
+                <th>Danh mục</th>
+                <th>Lượt xem</th>
+                <th>Người đăng</th>
+                <th>Ngày đăng</th>
+                <th>Trạng thái</th>
+                <th style="text-align:center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <tr><td colspan="7" class="tbl-loading">Đang tải dữ liệu...</td></tr>
+        </tbody>
+    </table>
+
+    <div id="emptyMsg" class="empty-state" style="display:none">
+        <p>Không tìm thấy bài viết nào.</p>
+    </div>
+
+    <div class="pagination-wrap" id="pagingWrap" style="display:none">
+        <div class="paging-btns" id="pagingBtns"></div>
+        <span class="paging-info" id="pagingInfo"></span>
+    </div>
+</div>
+
+<%-- Modal xóa --%>
+<div class="modal-overlay" id="modalXoa" onclick="closeModalOutside(event)">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Xóa bài viết</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-msg">Xóa bài viết "<strong id="xoa-title"></strong>"?</div>
+            <div class="confirm-sub">Hành động này không thể hoàn tác.</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm-danger" onclick="confirmXoa()">Xóa bài viết</button>
+            <button class="btn-cancel" onclick="closeModal()">Hủy</button>
         </div>
     </div>
+</div>
 
 </asp:Content>
 
 <asp:Content ID="ScriptContent" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
-/* ══════════════════════════════════════════════════════════════
-   MOCK DATA — khớp SampleData.sql
-══════════════════════════════════════════════════════════════ */
-var MOCK_DANHMUC = {
-    1: { ten: 'Hoạt động thiện nguyện',     bg:'#EBF8FF', color:'#2B6CB0' },
-    2: { ten: 'Câu chuyện truyền cảm hứng', bg:'#C6F6D5', color:'#276749' },
-    3: { ten: 'Thông báo',                  bg:'#FEEBC8', color:'#C05621' }
-};
+    (function () {
+        'use strict';
 
-var MOCK_TINTUC = [
-    {
-        id: 1,
-        tieuDe:   'Thiện Nguyện Việt trao 500 phần quà cho bà con miền Trung',
-        maDanhMuc: 1,
-        tomTat:   'Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên đã lên đường đến Quảng Bình...',
-        anhBia:   null,
-        luotXem:  1240,
-        trangThai: 1,
-        nguoiDang: 'Admin',
-        ngayDang:  '07/03/2026'
-    },
-    {
-        id: 2,
-        tieuDe:   'Cậu bé 8 tuổi được cứu sống nhờ ca phẫu thuật tim từ quỹ từ thiện',
-        maDanhMuc: 2,
-        tomTat:   'Em Nguyễn Văn Khôi (8 tuổi, Cần Thơ) mắc bệnh tim bẩm sinh từ nhỏ...',
-        anhBia:   null,
-        luotXem:  3580,
-        trangThai: 1,
-        nguoiDang: 'Admin',
-        ngayDang:  '20/02/2026'
-    },
-    {
-        id: 3,
-        tieuDe:   'Thông báo: Mở đăng ký tình nguyện viên đợt 2 năm 2026',
-        maDanhMuc: 3,
-        tomTat:   'Thiện Nguyện Việt mở đăng ký tình nguyện viên cho các chuyến đi trong tháng 4 và 5/2026.',
-        anhBia:   null,
-        luotXem:  892,
-        trangThai: 1,
-        nguoiDang: 'Admin',
-        ngayDang:  '12/03/2026'
-    },
-    {
-        id: 4,
-        tieuDe:   '10.000 cây xanh sẽ được trồng tại Hà Nội trong tháng 4',
-        maDanhMuc: 1,
-        tomTat:   'Dự án trồng cây xanh do Thiện Nguyện Việt phối hợp với Trung tâm Bảo tồn Thiên nhiên Việt.',
-        anhBia:   null,
-        luotXem:  456,
-        trangThai: 1,
-        nguoiDang: 'Admin',
-        ngayDang:  '14/03/2026'
-    },
-    {
-        id: 5,
-        tieuDe:   '[Nháp] Chương trình khám bệnh miễn phí sắp mở rộng sang tỉnh Hà Tĩnh',
-        maDanhMuc: 1,
-        tomTat:   'Sau thành công tại Nghệ An, đoàn y tế lưu động sẽ mở rộng địa bàn hoạt động...',
-        anhBia:   null,
-        luotXem:  0,
-        trangThai: 0,
-        nguoiDang: 'Admin',
-        ngayDang:  '18/03/2026'
-    },
-    {
-        id: 6,
-        tieuDe:   '[Nháp] Báo cáo tổng kết chiến dịch học bổng quý 1/2026',
-        maDanhMuc: 3,
-        tomTat:   'Báo cáo tổng kết kết quả chiến dịch học bổng Thắp sáng ước mơ quý 1 năm 2026.',
-        anhBia:   null,
-        luotXem:  0,
-        trangThai: 0,
-        nguoiDang: 'Admin',
-        ngayDang:  '20/03/2026'
-    }
-];
+        /* ── State ──────────────────────────────────────────────────── */
+        var currentPage = 1;
+        var PAGE_SIZE = 10;
+        var activeTab = '';
+        var filterDanhMuc = '';
+        var searchTimeout = null;
+        var pendingDeleteId = null;
 
-/* ── Helpers ────────────────────────────────────────────────── */
-function fmtViews(n) {
-    if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-    return n.toString();
-}
+        var DANHMUC_MAP = {
+            1: { ten: 'Hoạt động thiện nguyện', bg: '#EBF8FF', color: '#2B6CB0' },
+            2: { ten: 'Câu chuyện truyền cảm hứng', bg: '#C6F6D5', color: '#276749' },
+            3: { ten: 'Thông báo', bg: '#FEEBC8', color: '#C05621' }
+        };
 
-function statusBadge(ts) {
-    return ts === 1
-        ? '<span class="badge-admin badge-thanh-cong">✅ Đã đăng</span>'
-        : '<span class="badge-admin badge-nhap">📝 Nháp</span>';
-}
+        /* ── Toast ──────────────────────────────────────────────────── */
+        function showToast(msg, type) {
+            var wrap = document.getElementById('toastWrap');
+            var t = document.createElement('div');
+            t.className = 'toast-item toast-' + (type || 'ok');
+            t.innerHTML = '<span class="t-msg">' + msg + '</span><span class="t-close" onclick="this.parentElement.remove()">×</span>';
+            wrap.appendChild(t);
+            setTimeout(function () { t.style.transition = 'opacity .3s'; t.style.opacity = '0'; setTimeout(function () { t.remove(); }, 350); }, 4000);
+        }
 
-/* ══════════════════════════════════════════════════════════════
-   STATS
-══════════════════════════════════════════════════════════════ */
-function renderStats() {
-    var total   = MOCK_TINTUC.length;
-    var daDang  = MOCK_TINTUC.filter(function(t){ return t.trangThai === 1; }).length;
-        var nhap  = MOCK_TINTUC.filter(function(t){ return t.trangThai === 0; }).length;
-    var tongView= MOCK_TINTUC.reduce(function(s,t){ return s + t.luotXem; }, 0);
+        /* ── Load Stats ──────────────────────────────────────────────── */
+        function loadStats() {
+            fetch(location.pathname + '?__ajax=true&action=stats')
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (!j.ok) return;
+                    var d = j.data;
+                    var statColors = [
+                        'var(--stat-xanh-vien)', 'var(--admin-thanh-cong)',
+                        'var(--stat-cam-vien)', 'var(--stat-tim-vien)'
+                    ];
+                    var cards = [
+                        { label: 'Tổng bài viết', value: d.tong, color: statColors[0] },
+                        { label: 'Đã đăng', value: d.daDang, color: statColors[1] },
+                        { label: 'Nháp', value: d.nhap, color: statColors[2] },
+                        { label: 'Tổng lượt xem', value: d.tongView + ' lượt', color: statColors[3] }
+                    ];
+                    var html = '';
+                    cards.forEach(function (c) {
+                        html += '<div class="tt-stat-card">'
+                            + '<strong style="color:' + c.color + '">' + c.value + '</strong>'
+                            + '<span>' + c.label + '</span>'
+                            + '</div>';
+                    });
+                    document.getElementById('statsRow').innerHTML = html;
+                    document.getElementById('cnt-all').textContent = d.tong;
+                    document.getElementById('cnt-1').textContent = d.daDang;
+                    document.getElementById('cnt-0').textContent = d.nhap;
+                })
+                .catch(function () { });
+        }
 
-    var cards = [
-        { icon:'📰', label:'Tổng bài viết',  value: total,             bg:'var(--stat-xanh-nen)',  color:'var(--stat-xanh-vien)' },
-        { icon:'✅', label:'Đã đăng',        value: daDang,            bg:'#C6F6D5',               color:'var(--admin-thanh-cong)' },
-        { icon:'📝', label:'Nháp',           value: nhap,              bg:'var(--stat-cam-nen)',   color:'var(--stat-cam-vien)' },
-        { icon:'👁', label:'Tổng lượt xem', value: fmtViews(tongView)+'+ lượt', bg:'var(--stat-tim-nen)', color:'var(--stat-tim-vien)' }
-    ];
+        /* ── Tab / Filter ────────────────────────────────────────────── */
+        window.switchTab = function (btn, tab) {
+            document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            activeTab = tab; currentPage = 1; loadData();
+        };
 
-    var html = '';
-    cards.forEach(function(c) {
-        html +=
-            '<div class="tt-stat-card">' +
-            '<div class="tt-stat-icon" style="background:' + c.bg + ';color:' + c.color + '">' + c.icon + '</div>' +
-            '<div class="tt-stat-info"><strong style="color:' + c.color + '">' + c.value + '</strong><span>' + c.label + '</span></div>' +
-            '</div>';
-    });
-    document.getElementById('statsRow').innerHTML = html;
+        window.setDanhMuc = function (btn, val) {
+            document.querySelectorAll('#dmBtnGroup .btn-grp-item').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            filterDanhMuc = val; currentPage = 1; loadData();
+        };
 
-    document.getElementById('cnt-all').textContent = total;
-    document.getElementById('cnt-1').textContent   = daDang;
-    document.getElementById('cnt-0').textContent   = nhap;
-}
+        window.resetFilter = function () {
+            document.getElementById('inputSearch').value = '';
+            filterDanhMuc = ''; currentPage = 1;
+            document.querySelectorAll('#dmBtnGroup .btn-grp-item').forEach(function (b) { b.classList.remove('active'); if (b.dataset.val === '') b.classList.add('active'); });
+            loadData();
+        };
 
-/* ══════════════════════════════════════════════════════════════
-   TABLE + FILTER + PAGINATION
-══════════════════════════════════════════════════════════════ */
-var PAGE_SIZE    = 8;
-var currentPage  = 1;
-var activeTab    = '';
-var filteredData = MOCK_TINTUC.slice();
+        /* ── Load Data ───────────────────────────────────────────────── */
+        function loadData() {
+            var q = document.getElementById('inputSearch').value.trim();
+            var params = new URLSearchParams({
+                __ajax: 'true', action: 'list',
+                tuKhoa: q, trangThai: activeTab, maDanhMuc: filterDanhMuc,
+                trang: currentPage, soDong: PAGE_SIZE
+            });
+            fetch(location.pathname + '?' + params)
+                .then(function (r) { return r.json(); })
+                .then(function (j) { if (j.ok) renderTable(j.data, j.total); })
+                .catch(function (e) { console.error(e); });
+        }
 
-function applyAllFilters() {
-    var q  = document.getElementById('inputSearch').value.trim().toLowerCase();
-    var dm = document.getElementById('selDanhMuc').value;
+        /* ── Render Table ────────────────────────────────────────────── */
+        function renderTable(data, total) {
+            var tbody = document.getElementById('tableBody');
+            var emptyMsg = document.getElementById('emptyMsg');
+            var pagingWrap = document.getElementById('pagingWrap');
 
-    filteredData = MOCK_TINTUC.filter(function(t) {
-        var matchTab = activeTab === '' || String(t.trangThai) === activeTab;
-        var matchQ   = !q  || t.tieuDe.toLowerCase().includes(q);
-        var matchDm  = !dm || String(t.maDanhMuc) === dm;
-        return matchTab && matchQ && matchDm;
-    });
+            if (!data || !data.length) {
+                tbody.innerHTML = '';
+                emptyMsg.style.display = 'block';
+                pagingWrap.style.display = 'none';
+                document.getElementById('countLabel').textContent = '0 bài viết';
+                return;
+            }
+            emptyMsg.style.display = 'none';
+            pagingWrap.style.display = 'flex';
 
-    currentPage = 1;
-    renderTable();
-}
+            var from = (currentPage - 1) * PAGE_SIZE + 1;
+            var to = Math.min(currentPage * PAGE_SIZE, total);
+            document.getElementById('countLabel').textContent = 'Hiển thị ' + from + '–' + to + ' / ' + total + ' bài viết';
 
-function switchTab(btn, tab) {
-    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    activeTab = tab;
-    applyAllFilters();
-}
+            var html = '';
+            data.forEach(function (t) {
+                var dm = DANHMUC_MAP[t.MaDanhMuc] || { ten: '—', bg: '#EDF2F7', color: '#718096' };
+                var toggleLabel = t.TrangThai === 1 ? 'Ẩn bài' : 'Đăng';
+                var toggleClass = t.TrangThai === 1 ? 'btn-toggle published' : 'btn-toggle';
+                var statusBadge = t.TrangThai === 1
+                    ? '<span class="badge-admin badge-thanh-cong">Đã đăng</span>'
+                    : '<span class="badge-admin badge-nhap">Nháp</span>';
+                var views = t.LuotXem >= 1000 ? (t.LuotXem / 1000).toFixed(1) + 'K' : t.LuotXem;
 
-function applyFilter() { applyAllFilters(); }
-function resetFilter() {
-    document.getElementById('inputSearch').value  = '';
-    document.getElementById('selDanhMuc').value   = '';
-    applyAllFilters();
-}
+                var thumbHtml = t.AnhBia
+                    ? '<img src="' + t.AnhBia + '" alt="" />'
+                    : '<div class="news-thumb-empty">No img</div>';
 
-function renderTable() {
-    var tbody      = document.getElementById('tableBody');
-    var emptyMsg   = document.getElementById('emptyMsg');
-    var pagingWrap = document.getElementById('pagingWrap');
+                html += '<tr id="tt-row-' + t.MaTinTuc + '">'
+                    + '<td><div class="news-cell">'
+                    + '<div class="news-thumb">' + thumbHtml + '</div>'
+                    + '<div>'
+                    + '<div class="news-title" title="' + t.TieuDe + '">' + t.TieuDe + '</div>'
+                    + '<div class="news-summary">' + (t.TomTat || '') + '</div>'
+                    + '</div></div></td>'
+                    + '<td><span class="cat-badge" style="background:' + dm.bg + ';color:' + dm.color + '">' + dm.ten + '</span></td>'
+                    + '<td class="view-count">' + views + '</td>'
+                    + '<td style="font-size:12px">' + (t.NguoiDang || 'Admin') + '</td>'
+                    + '<td class="date-col">' + t.NgayDang + '</td>'
+                    + '<td>' + statusBadge + '</td>'
+                    + '<td style="text-align:center;white-space:nowrap">'
+                    + '<a href="/Admin/FormTinTuc.aspx?id=' + t.MaTinTuc + '" class="btn-sua" style="margin-right:3px">Sửa</a>'
+                    + '<button class="' + toggleClass + '" onclick="toggleTrangThai(' + t.MaTinTuc + ')" style="margin-right:3px">' + toggleLabel + '</button>'
+                    + '<button class="btn-xoa" onclick="openXoa(' + t.MaTinTuc + ',' + JSON.stringify(t.TieuDe) + ')">Xóa</button>'
+                    + '</td>'
+                    + '</tr>';
+            });
+            tbody.innerHTML = html;
+            renderPaging(Math.ceil(total / PAGE_SIZE));
+        }
 
-    if (filteredData.length === 0) {
-        tbody.innerHTML = ''; emptyMsg.style.display = 'block'; pagingWrap.style.display = 'none';
-        document.getElementById('countLabel').textContent = '0 bài viết';
-        return;
-    }
+        /* ── Pagination ──────────────────────────────────────────────── */
+        function renderPaging(totalPages) {
+            var info = document.getElementById('pagingInfo');
+            var btns = document.getElementById('pagingBtns');
+            info.textContent = 'Trang ' + currentPage + ' / ' + totalPages;
+            btns.innerHTML = '';
 
-    emptyMsg.style.display = 'none'; pagingWrap.style.display = 'flex';
-    var totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
-    if (currentPage > totalPages) currentPage = totalPages;
+            var prev = document.createElement('button');
+            prev.className = 'paging-btn'; prev.textContent = 'Trước';
+            prev.disabled = currentPage <= 1;
+            prev.onclick = function () { goToPage(currentPage - 1); };
+            btns.appendChild(prev);
 
-    var from = (currentPage - 1) * PAGE_SIZE;
-    var to   = Math.min(from + PAGE_SIZE, filteredData.length);
-    var page = filteredData.slice(from, to);
+            var start = Math.max(1, currentPage - 2);
+            var end = Math.min(totalPages, start + 4);
+            start = Math.max(1, end - 4);
+            for (var p = start; p <= end; p++) {
+                (function (pg) {
+                    var b = document.createElement('button');
+                    b.className = 'paging-btn' + (pg === currentPage ? ' active' : '');
+                    b.textContent = pg;
+                    b.onclick = function () { goToPage(pg); };
+                    btns.appendChild(b);
+                })(p);
+            }
 
-    document.getElementById('countLabel').textContent =
-        'Hiển thị ' + (from+1) + '–' + to + ' / ' + filteredData.length + ' bài viết';
-    document.getElementById('pagingInfo').textContent =
-        'Trang ' + currentPage + ' / ' + totalPages;
+            var next = document.createElement('button');
+            next.className = 'paging-btn'; next.textContent = 'Tiếp';
+            next.disabled = currentPage >= totalPages;
+            next.onclick = function () { goToPage(currentPage + 1); };
+            btns.appendChild(next);
+        }
+        function goToPage(p) { currentPage = p; loadData(); }
 
-    var html = '';
-    page.forEach(function(t) {
-        var dm  = MOCK_DANHMUC[t.maDanhMuc] || { ten:'—', bg:'#EDF2F7', color:'#718096' };
-        var toggleLabel  = t.trangThai === 1 ? '📤 Ẩn bài' : '📢 Đăng';
-        var toggleClass  = t.trangThai === 1 ? 'btn-toggle published' : 'btn-toggle';
+        /* ── Toggle trạng thái ───────────────────────────────────────── */
+        window.toggleTrangThai = function (id) {
+            fetch(location.pathname + '?__ajax=true&action=toggle&id=' + id)
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (j.ok) {
+                        showToast('Đã cập nhật trạng thái bài viết.', 'ok');
+                        loadStats();
+                        loadData();
+                    } else {
+                        showToast(j.msg || 'Lỗi khi cập nhật.', 'err');
+                    }
+                })
+                .catch(function () { showToast('Lỗi kết nối server.', 'err'); });
+        };
 
-        html +=
-            '<tr id="tt-row-' + t.id + '">' +
-            '<td>' +
-                '<div class="news-cell">' +
-                    '<div class="news-thumb">📰</div>' +
-                    '<div>' +
-                        '<div class="news-title" title="' + t.tieuDe + '">' + t.tieuDe + '</div>' +
-                        '<div class="news-summary">' + t.tomTat + '</div>' +
-                    '</div>' +
-                '</div>' +
-            '</td>' +
-            '<td><span class="cat-badge" style="background:' + dm.bg + ';color:' + dm.color + '">' + dm.ten + '</span></td>' +
-            '<td class="view-count">👁 ' + fmtViews(t.luotXem) + '</td>' +
-            '<td style="font-size:12px">' + t.nguoiDang + '</td>' +
-            '<td class="date-col">' + t.ngayDang + '</td>' +
-            '<td>' + statusBadge(t.trangThai) + '</td>' +
-            '<td style="text-align:center;white-space:nowrap">' +
-                '<a href="/Admin/FormTinTuc.aspx?id=' + t.id + '" class="btn-sua" style="margin-right:3px">✏ Sửa</a>' +
-                '<button class="' + toggleClass + '" onclick="toggleTrangThai(' + t.id + ')" style="margin-right:3px">' + toggleLabel + '</button>' +
-                '<button class="btn-xoa" onclick="openXoa(' + t.id + ')">🗑 Xóa</button>' +
-            '</td>' +
-            '</tr>';
-    });
+        /* ── Xóa ─────────────────────────────────────────────────────── */
+        window.openXoa = function (id, title) {
+            pendingDeleteId = id;
+            document.getElementById('xoa-title').textContent = title.substring(0, 50) + (title.length > 50 ? '...' : '');
+            document.getElementById('modalXoa').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+        window.confirmXoa = function () {
+            if (!pendingDeleteId) return;
+            fetch(location.pathname + '?__ajax=true&action=delete&id=' + pendingDeleteId)
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    closeModal();
+                    if (j.ok) {
+                        showToast('Đã xóa bài viết thành công.', 'ok');
+                        loadStats(); loadData();
+                    } else {
+                        showToast(j.msg || 'Lỗi khi xóa.', 'err');
+                    }
+                })
+                .catch(function () { showToast('Lỗi kết nối server.', 'err'); });
+        };
+        window.closeModal = function () {
+            document.getElementById('modalXoa').classList.remove('show');
+            document.body.style.overflow = '';
+            pendingDeleteId = null;
+        };
+        window.closeModalOutside = function (e) {
+            if (e.target === document.getElementById('modalXoa')) closeModal();
+        };
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-    tbody.innerHTML = html;
-    renderPaging(totalPages);
-}
+        /* ── Real-time search ────────────────────────────────────────── */
+        document.getElementById('inputSearch').addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(function () { currentPage = 1; loadData(); }, 350);
+        });
+        document.getElementById('inputSearch').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { clearTimeout(searchTimeout); currentPage = 1; loadData(); }
+        });
 
-function renderPaging(totalPages) {
-    var btns  = document.getElementById('pagingBtns');
-    var start = Math.max(1, currentPage - 2);
-    var end   = Math.min(totalPages, start + 4);
-    start     = Math.max(1, end - 4);
+        /* ── Init ────────────────────────────────────────────────────── */
+        loadStats();
+        loadData();
 
-    var html = '<button class="paging-btn" onclick="changePage(' + (currentPage-1) + ')"' +
-               (currentPage <= 1 ? ' disabled':'') + '>← Trước</button>';
-    for (var p = start; p <= end; p++) {
-        html += '<button class="paging-btn' + (p === currentPage ? ' active':'') +
-                '" onclick="changePage(' + p + ')">' + p + '</button>';
-    }
-    html += '<button class="paging-btn" onclick="changePage(' + (currentPage+1) + ')"' +
-            (currentPage >= totalPages ? ' disabled':'') + '>Tiếp →</button>';
-    btns.innerHTML = html;
-}
-
-function changePage(p) {
-    var totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
-    if (p < 1 || p > totalPages) return;
-    currentPage = p; renderTable();
-}
-
-document.getElementById('inputSearch').addEventListener('keyup', function(e) {
-    if (e.key === 'Enter') applyAllFilters();
-});
-
-/* ── Toggle trạng thái ──────────────────────────────────────── */
-function toggleTrangThai(id) {
-    var t = MOCK_TINTUC.find(function(x){ return x.id === id; });
-    if (!t) return;
-    t.trangThai = t.trangThai === 1 ? 0 : 1;
-    var action = t.trangThai === 1 ? 'đã đăng' : 'chuyển về nháp';
-    renderStats(); applyAllFilters();
-    showAlert('alertSuccess', '✓ Bài viết "' + t.tieuDe.substring(0,40) + '..." ' + action + ' thành công.');
-}
-
-/* ── Xóa ────────────────────────────────────────────────────── */
-var pendingDeleteId = null;
-function openXoa(id) {
-    var t = MOCK_TINTUC.find(function(x){ return x.id === id; });
-    if (!t) return;
-    pendingDeleteId = id;
-    document.getElementById('xoa-title').textContent = t.tieuDe.substring(0, 50) + (t.tieuDe.length > 50 ? '...' : '');
-    document.getElementById('modalXoa').classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-function confirmXoa() {
-    if (!pendingDeleteId) return;
-    var idx = MOCK_TINTUC.findIndex(function(x){ return x.id === pendingDeleteId; });
-    if (idx > -1) {
-        var title = MOCK_TINTUC[idx].tieuDe.substring(0,40);
-        MOCK_TINTUC.splice(idx, 1);
-        closeModal(); renderStats(); applyAllFilters();
-        showAlert('alertSuccess', '🗑 Đã xóa bài viết "' + title + '..."');
-    }
-}
-function closeModal() {
-    document.getElementById('modalXoa').classList.remove('show');
-    document.body.style.overflow = '';
-}
-function closeModalOutside(e) {
-    if (e.target === document.getElementById('modalXoa')) closeModal();
-}
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
-});
-
-function showAlert(id, msg) {
-    var el = document.getElementById(id);
-    el.textContent = msg; el.style.display = 'block';
-    setTimeout(function(){ el.style.display = 'none'; }, 4000);
-}
-
-/* ── Init ───────────────────────────────────────────────────── */
-renderStats(); applyAllFilters();
+    })();
 </script>
 </asp:Content>
