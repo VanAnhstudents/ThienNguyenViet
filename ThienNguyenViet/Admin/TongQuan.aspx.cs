@@ -12,7 +12,7 @@ namespace ThienNguyenViet.Admin
 {
     public partial class TongQuan : System.Web.UI.Page
     {
-        // ── Dữ liệu được bind lên ASPX ────────────────────────────
+        // ── Dữ liệu bind lên ASPX ─────────────────────────────
         protected long TongTienDaQuyen { get; private set; }
         protected int ChienDichDangChay { get; private set; }
         protected int TongNguoiDung { get; private set; }
@@ -21,12 +21,12 @@ namespace ThienNguyenViet.Admin
         protected int GiaoDichDaDuyet { get; private set; }
         protected int ChienDichHoanThanh { get; private set; }
 
-        // Dữ liệu bảng giao dịch
         protected DataTable DtGiaoDich { get; private set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // ── Xử lý AJAX requests (POST với __ajax=true) ────────
+            PhanQuyenHelper.YeuCauAdmin(this);
+
             if (Request.HttpMethod == "POST" && Request["__ajax"] == "true")
             {
                 HandleAjax();
@@ -34,19 +34,14 @@ namespace ThienNguyenViet.Admin
                 return;
             }
 
-            // ── GET: tải trang bình thường ────────────────────────
-            if (!IsPostBack)
-            {
-                LoadData();
-            }
+            if (!IsPostBack) LoadData();
         }
 
-        // ── Tải toàn bộ dữ liệu từ DB ─────────────────────────────
+        // ── Tải dữ liệu ───────────────────────────────────────
         private void LoadData()
         {
             try
             {
-                // 1. Thống kê tổng quan (gọi SP)
                 DataRow row = QuyenGopDAO.LayThongKeTongQuan();
                 if (row != null)
                 {
@@ -56,18 +51,30 @@ namespace ThienNguyenViet.Admin
                     TongChoXuLy = Convert.ToInt32(row["TongChoXuLy"]);
                 }
 
-                // 2. Thống kê tháng hiện tại
-                int thang = DateTime.Now.Month;
-                int nam = DateTime.Now.Year;
+                int thang = DateTime.Now.Month, nam = DateTime.Now.Year;
                 GiaoDichThang = QuyenGopDAO.DemGiaoDichThang(thang, nam);
                 GiaoDichDaDuyet = QuyenGopDAO.DemDaDuyetThang(thang, nam);
                 ChienDichHoanThanh = QuyenGopDAO.DemChienDichHoanThanh();
 
-                // 3. Bảng giao dịch gần đây
-                DtGiaoDich = QuyenGopDAO.LayGiaoDichGanDay(10);
+                // Query mở rộng: bổ sung LoiNhan + AnhXacNhan để modal Xem dùng được
+                DtGiaoDich = KetNoiDB.GetDataTable(@"
+SELECT TOP 10
+    qg.MaQuyenGop,
+    CASE WHEN qg.AnDanh = 1 THEN N'Ẩn danh'
+         ELSE ISNULL(nd.HoTen, N'Ẩn danh') END AS HoTen,
+    nd.Email,
+    cd.TenChienDich,
+    qg.SoTien,
+    qg.NgayTao,
+    qg.TrangThai,
+    qg.AnDanh,
+    ISNULL(qg.LoiNhan,    N'') AS LoiNhan,
+    ISNULL(qg.AnhXacNhan, N'') AS AnhXacNhan
+FROM       dbo.QuyenGop   qg
+LEFT JOIN  dbo.NguoiDung  nd ON qg.MaNguoiDung  = nd.MaNguoiDung
+INNER JOIN dbo.ChienDich  cd ON qg.MaChienDich   = cd.MaChienDich
+ORDER BY qg.NgayTao DESC", CommandType.Text);
 
-                // Lưu Application-level cache đơn giản cho chart data
-                // (refresh mỗi 5 phút)
                 string cacheKey = "ChartData_" + nam;
                 if (Application[cacheKey] == null ||
                     (DateTime)Application["ChartData_Ts"] < DateTime.Now.AddMinutes(-5))
@@ -78,19 +85,16 @@ namespace ThienNguyenViet.Admin
             }
             catch (Exception ex)
             {
-                // Ghi lỗi vào Server log — trang vẫn load với dữ liệu mặc định (0)
                 System.Diagnostics.Debug.WriteLine("[TongQuan] LoadData error: " + ex.Message);
             }
         }
 
-        // ── AJAX dispatcher ───────────────────────────────────────
+        // ── AJAX dispatcher ────────────────────────────────────
         private void HandleAjax()
         {
             Response.ContentType = "application/json";
             Response.ContentEncoding = Encoding.UTF8;
-
             string action = Request["action"] ?? "";
-
             try
             {
                 switch (action)
@@ -106,23 +110,17 @@ namespace ThienNguyenViet.Admin
             }
             catch (Exception ex)
             {
-                Response.Write("{\"ok\":false,\"msg\":" +
-                    JsonStr("Lỗi máy chủ: " + ex.Message) + "}");
+                Response.Write("{\"ok\":false,\"msg\":" + JsonStr("Lỗi: " + ex.Message) + "}");
             }
         }
 
-        // ── AJAX: Duyệt / Từ chối quyên góp ──────────────────────
         private void AjaxDuyetQuyenGop(int trangThai)
         {
             if (!int.TryParse(Request["id"], out int maQG))
-            {
-                Response.Write("{\"ok\":false,\"msg\":\"Mã giao dịch không hợp lệ.\"}");
-                return;
-            }
+            { Response.Write("{\"ok\":false,\"msg\":\"Mã giao dịch không hợp lệ.\"}"); return; }
 
             int maNguoiDuyet = PhanQuyenHelper.LayMa(Session);
-            string lyDo = Request["lydo"] ?? null;
-
+            string lyDo = Request["lydo"];
             bool ok = QuyenGopDAO.DuyetQuyenGop(maQG, trangThai, maNguoiDuyet, lyDo);
 
             if (ok)
@@ -131,17 +129,13 @@ namespace ThienNguyenViet.Admin
                 Response.Write("{\"ok\":true,\"msg\":" + JsonStr(verb + " giao dịch #" + maQG) + "}");
             }
             else
-            {
                 Response.Write("{\"ok\":false,\"msg\":\"Giao dịch đã được xử lý hoặc có lỗi xảy ra.\"}");
-            }
         }
 
-        // ── AJAX: Dữ liệu biểu đồ ────────────────────────────────
         private void AjaxChartData()
         {
             int nam = DateTime.Now.Year;
             string cacheKey = "ChartData_" + nam;
-
             string json = Application[cacheKey] as string;
             if (string.IsNullOrEmpty(json))
             {
@@ -152,7 +146,6 @@ namespace ThienNguyenViet.Admin
             Response.Write(json);
         }
 
-        // ── AJAX: Danh sách chiến dịch nổi bật ──────────────────
         private void AjaxCampaigns()
         {
             DataTable dt = ChienDichDAO.LayChienDichNoiBat(5);
@@ -162,25 +155,19 @@ namespace ThienNguyenViet.Admin
             {
                 if (!first) sb.Append(",");
                 first = false;
-                sb.AppendFormat(
-                    "{{\"ten\":{0},\"pct\":{1},\"quyen\":{2},\"muctieu\":{3}}}",
+                sb.AppendFormat("{{\"ten\":{0},\"pct\":{1},\"quyen\":{2},\"muctieu\":{3}}}",
                     JsonStr(r["TenChienDich"].ToString()),
-                    r["PhanTram"],
-                    r["SoTienDaQuyen"],
-                    r["MucTieu"]);
+                    r["PhanTram"], r["SoTienDaQuyen"], r["MucTieu"]);
             }
             sb.Append("]");
             Response.Write("{\"ok\":true,\"data\":" + sb + "}");
         }
 
-        // ── Build chart JSON (12 tháng, điền 0 cho tháng thiếu) ─
         private string BuildChartJson(int nam)
         {
             DataTable dt = QuyenGopDAO.LayQuyenGopTheoThang(nam);
-
             long[] tien = new long[12];
             int[] luot = new int[12];
-
             foreach (DataRow r in dt.Rows)
             {
                 int idx = Convert.ToInt32(r["Thang"]) - 1;
@@ -190,26 +177,20 @@ namespace ThienNguyenViet.Admin
                     luot[idx] = Convert.ToInt32(r["SoLuot"]);
                 }
             }
-
             var sb = new StringBuilder("{\"ok\":true,");
             sb.Append("\"tien\":["); sb.Append(string.Join(",", tien)); sb.Append("],");
             sb.Append("\"luot\":["); sb.Append(string.Join(",", luot)); sb.Append("]}");
             return sb.ToString();
         }
 
-        // ── Helpers ───────────────────────────────────────────────
-
-        /// <summary>Format tiền VNĐ: 1.240.000.000 → "1,24 tỷ" / "320 tr" / "500.000"</summary>
+        // ── Helpers ────────────────────────────────────────────
         protected string FormatTien(long so)
         {
-            if (so >= 1_000_000_000)
-                return string.Format("{0:0.##} tỷ", (double)so / 1_000_000_000);
-            if (so >= 1_000_000)
-                return string.Format("{0:0.#} tr", (double)so / 1_000_000);
+            if (so >= 1_000_000_000) return string.Format("{0:0.##} tỷ", (double)so / 1_000_000_000);
+            if (so >= 1_000_000) return string.Format("{0:0.#} tr", (double)so / 1_000_000);
             return string.Format("{0:N0}", so);
         }
 
-        /// <summary>Lấy badge HTML theo trạng thái quyên góp.</summary>
         protected string BadgeTrangThai(int ts)
         {
             switch (ts)
@@ -221,16 +202,13 @@ namespace ThienNguyenViet.Admin
             }
         }
 
-        /// <summary>Trả về initials avatar cho tên người dùng.</summary>
         protected string Initials(string name)
         {
-            if (string.IsNullOrWhiteSpace(name) || name == "Ẩn danh")
-                return "?";
+            if (string.IsNullOrWhiteSpace(name) || name == "Ẩn danh") return "?";
             var parts = name.Trim().Split(' ');
             return parts[parts.Length - 1].Substring(0, 1).ToUpper();
         }
 
-        /// <summary>Escape string thành JSON string literal.</summary>
         private static string JsonStr(string s)
             => "\"" + (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
     }

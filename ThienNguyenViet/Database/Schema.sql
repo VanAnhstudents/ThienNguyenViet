@@ -782,3 +782,89 @@ BEGIN
     -- Các bảng con (AnhChienDich, CapNhatTienDo) sẽ tự xóa nhờ ON DELETE CASCADE
 END
 GO
+
+-- SP: Thống kê tổng quan cho trang QuanLyQuyenGop
+-- Trả về: tổng GD, số chờ duyệt, số đã duyệt, số từ chối, tổng tiền đã duyệt
+CREATE OR ALTER PROCEDURE dbo.SP_ThongKeQuyenGopTongQuan
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT
+        COUNT(*)                                                    AS TongGiaoDich,
+        SUM(CASE WHEN TrangThai = 0 THEN 1 ELSE 0 END)            AS SoChoDuyet,
+        SUM(CASE WHEN TrangThai = 1 THEN 1 ELSE 0 END)            AS SoDaDuyet,
+        SUM(CASE WHEN TrangThai = 2 THEN 1 ELSE 0 END)            AS SoTuChoi,
+        ISNULL(SUM(CASE WHEN TrangThai = 1 THEN SoTien ELSE 0 END), 0) AS TongTienDaDuyet
+    FROM dbo.QuyenGop;
+END
+GO
+ 
+-- SP: Lấy danh sách chiến dịch (cho dropdown lọc)
+CREATE OR ALTER PROCEDURE dbo.SP_LayDanhSachChienDichDropdown
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT MaChienDich, TenChienDich
+    FROM dbo.ChienDich
+    ORDER BY TenChienDich;
+END
+GO
+ 
+-- SP: Lấy danh sách quyên góp có lọc + phân trang (mở rộng SP cũ với thêm tổng số dòng)
+CREATE OR ALTER PROCEDURE dbo.SP_LayQuyenGopCoLoc
+    @TrangThai      TINYINT       = NULL,   -- NULL=tất cả, 0=chờ, 1=duyệt, 2=từ chối
+    @MaChienDich    INT           = NULL,   -- NULL=tất cả
+    @TuKhoa         NVARCHAR(100) = NULL,   -- tìm theo tên người dùng / chiến dịch
+    @TrangHienTai   INT           = 1,
+    @SoDong         INT           = 10,
+    @TongSoDong     INT           OUTPUT   -- trả về để frontend tính phân trang
+AS
+BEGIN
+    SET NOCOUNT ON;
+ 
+    -- Đếm tổng
+    SELECT @TongSoDong = COUNT(*)
+    FROM dbo.QuyenGop qg
+    INNER JOIN dbo.ChienDich  cd ON qg.MaChienDich  = cd.MaChienDich
+    LEFT  JOIN dbo.NguoiDung  nd ON qg.MaNguoiDung  = nd.MaNguoiDung
+    WHERE (@TrangThai   IS NULL OR qg.TrangThai    = @TrangThai)
+      AND (@MaChienDich IS NULL OR qg.MaChienDich  = @MaChienDich)
+      AND (@TuKhoa      IS NULL
+           OR cd.TenChienDich LIKE N'%' + @TuKhoa + N'%'
+           OR nd.HoTen        LIKE N'%' + @TuKhoa + N'%');
+ 
+    -- Lấy trang dữ liệu
+    DECLARE @Start INT = (@TrangHienTai - 1) * @SoDong;
+ 
+    SELECT
+        qg.MaQuyenGop,
+        qg.MaChienDich,
+        cd.TenChienDich,
+        CASE WHEN qg.AnDanh = 1 OR qg.MaNguoiDung IS NULL
+             THEN N'Ẩn danh'
+             ELSE nd.HoTen
+        END                     AS HoTen,
+        CASE WHEN qg.AnDanh = 1 OR qg.MaNguoiDung IS NULL
+             THEN NULL
+             ELSE nd.Email
+        END                     AS Email,
+        qg.SoTien,
+        qg.LoiNhan,
+        qg.AnDanh,
+        qg.AnhXacNhan,
+        qg.TrangThai,
+        qg.LyDoTuChoi,
+        qg.NgayTao,
+        qg.NgayDuyet
+    FROM dbo.QuyenGop qg
+    INNER JOIN dbo.ChienDich  cd ON qg.MaChienDich  = cd.MaChienDich
+    LEFT  JOIN dbo.NguoiDung  nd ON qg.MaNguoiDung  = nd.MaNguoiDung
+    WHERE (@TrangThai   IS NULL OR qg.TrangThai    = @TrangThai)
+      AND (@MaChienDich IS NULL OR qg.MaChienDich  = @MaChienDich)
+      AND (@TuKhoa      IS NULL
+           OR cd.TenChienDich LIKE N'%' + @TuKhoa + N'%'
+           OR nd.HoTen        LIKE N'%' + @TuKhoa + N'%')
+    ORDER BY qg.NgayTao DESC
+    OFFSET @Start ROWS FETCH NEXT @SoDong ROWS ONLY;
+END
+GO
