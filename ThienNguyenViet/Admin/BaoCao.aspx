@@ -5,109 +5,16 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ══ Toolbar ══════════════════════════════════════════════════════ */
-.bc-toolbar {
-    display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 20px;
-}
-.bc-toolbar-title { font-size: 20px; font-weight: 700; color: var(--admin-chu-chinh); }
-.bc-toolbar-right { display: flex; align-items: center; gap: 10px; }
-.select-year {
-    height: 34px; padding: 0 10px; border: 1px solid var(--admin-vien);
-    border-radius: var(--r-nut); font-size: 13px; font-family: var(--font);
-    color: var(--admin-chu-chinh); background: #fff; cursor: pointer; outline: none;
-}
-.btn-export {
-    height: 34px; padding: 0 16px; background: #38A169; color: #fff;
-    border: none; border-radius: var(--r-nut);
-    font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer;
-    display: flex; align-items: center; gap: 6px; transition: background .15s;
-}
-.btn-export:hover { background: #276749; }
+/* ── BaoCao — Đồng bộ đẹp như TongQuan ── */
+.bc-summary-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+.bc-stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 20px 18px; text-align: center; }
+.bc-stat-card strong { display: block; font-size: 24px; font-weight: 700; }
 
-/* ══ Summary cards — căn giữa, không icon ════════════════════════ */
-.bc-summary-row {
-    display: grid; grid-template-columns: repeat(4,1fr);
-    gap: 14px; margin-bottom: 20px;
-}
-.bc-stat-card {
-    background: var(--admin-card); border-radius: var(--r-card);
-    border: 0.5px solid var(--admin-vien); padding: 20px 18px;
-    text-align: center; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-}
-.bc-stat-label {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: .04em; color: var(--admin-chu-phu); margin-bottom: 8px;
-    text-align: center;
-}
-.bc-stat-value {
-    font-size: 24px; font-weight: 700; color: var(--admin-chu-chinh);
-    line-height: 1; margin-bottom: 6px; text-align: center;
-}
-.bc-stat-sub   { font-size: 11px; color: var(--admin-chu-phu); text-align: center; }
-.bc-stat-up    { color: var(--admin-thanh-cong); font-weight: 600; }
-.bc-stat-down  { color: var(--admin-loi); font-weight: 600; }
+.admin-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 18px 20px; }
+.charts-row, .tables-row { display: grid; grid-template-columns: 1fr 380px; gap: 16px; }
+.btn-export { background: var(--ok); color: #fff; border-radius: var(--r); }
 
-/* ══ Chart layout ══════════════════════════════════════════════════ */
-.charts-row {
-    display: grid; grid-template-columns: 1fr 380px;
-    gap: 16px; margin-bottom: 20px;
-}
-.chart-wrap { position: relative; height: 280px; }
-.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.card-header h3  { font-size: 14px; font-weight: 600; }
-.card-header .card-sub { font-size: 11px; color: var(--admin-chu-phu); margin-top: 2px; }
-.btn-outline-xs {
-    font-size: 11px; padding: 4px 10px; border-radius: var(--r-nut);
-    background: transparent; border: 1px solid var(--admin-vien);
-    color: var(--admin-chu-phu); cursor: pointer; font-family: var(--font);
-    transition: background .12s;
-}
-.btn-outline-xs:hover { background: var(--admin-nen); }
-
-/* ══ Pie legend ════════════════════════════════════════════════════ */
-.pie-legend { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-.pie-legend-item { display: flex; align-items: center; gap: 8px; }
-.pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.pie-label { font-size: 12px; color: var(--admin-chu-chinh); flex: 1; }
-.pie-pct   { font-size: 12px; font-weight: 600; }
-.pie-amt   { font-size: 11px; color: var(--admin-chu-phu); }
-
-/* ══ Rank tables ════════════════════════════════════════════════════ */
-.rank-num {
-    width: 24px; height: 24px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; flex-shrink: 0;
-}
-.rank-1 { background: #F6E05E; color: #744210; }
-.rank-2 { background: #E2E8F0; color: #2D3748; }
-.rank-3 { background: #F7C59F; color: #7B341E; }
-.rank-n { background: var(--admin-nen); color: var(--admin-chu-phu); }
-
-.cd-name-rank { font-size: 12px; font-weight: 500; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; flex-shrink: 0; }
-.amount-col { font-size: 13px; font-weight: 600; color: var(--admin-thanh-cong); white-space: nowrap; }
-.pct-bar-wrap { display: flex; align-items: center; gap: 8px; }
-.pct-bar-bg   { flex: 1; height: 6px; background: var(--admin-vien); border-radius: 99px; overflow: hidden; }
-.pct-bar-fill { height: 100%; border-radius: 99px; }
-.pct-text     { font-size: 11px; color: var(--admin-chu-phu); white-space: nowrap; width: 36px; text-align: right; }
-
-.donor-av {
-    width: 30px; height: 30px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 700; flex-shrink: 0;
-}
-.donor-name  { font-size: 12px; font-weight: 500; }
-.donor-email { font-size: 11px; color: var(--admin-chu-phu); }
-.tables-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-/* Loading skeleton */
-.skeleton {
-    background: linear-gradient(90deg,#e2e8f0 25%,#f0f4f8 50%,#e2e8f0 75%);
-    background-size: 400% 100%; border-radius: 4px; animation: skel 1.2s infinite;
-}
-@keyframes skel { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
+#toastWrap .toast-item { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-card); }
 </style>
 </asp:Content>
 
