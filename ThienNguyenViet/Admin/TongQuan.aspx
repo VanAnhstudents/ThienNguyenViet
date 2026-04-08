@@ -5,70 +5,196 @@
 
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── Stat cards: căn giữa ────────────────────────────── */
-.stat-card           { position: relative; overflow: hidden; text-align: center; }
-.stat-card-top       { text-align: center; }
-.stat-label          { text-align: center; }
-.stat-value          { text-align: center; }
-.stat-sub            { text-align: center; }
-
-/* ── Summary cards: căn giữa ────────────────────────── */
-.summary-card        { text-align: center; }
-
-/* ── Campaign name: không cắt ngang ─────────────────── */
-.c-name              { max-width: 240px; white-space: normal; word-break: break-word; font-size: 12px; font-weight: 500; color: var(--txt); }
-
-/* ── Modal chi tiết giao dịch ────────────────────────── */
+/* ── TongQuan: Chart + Campaign row ── */
 .tq-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,.35); z-index: 200;
     align-items: center; justify-content: center;
 }
 .tq-overlay.show { display: flex; }
+
 .tq-modal {
     background: var(--card); border-radius: var(--r-card);
     border: 1px solid var(--border); width: 90%; max-width: 540px;
     max-height: 90vh; overflow-y: auto;
     box-shadow: 0 8px 32px rgba(0,0,0,.15);
 }
+
+/* ── Top bar modal ── */
 .tq-modal-hd {
     display: flex; justify-content: space-between; align-items: center;
     padding: 14px 18px; border-bottom: 1px solid var(--border);
 }
-.tq-modal-hd h3 { font-size: 14px; font-weight: 600; }
+.tq-modal-hd h3 { font-size: 14px; font-weight: 600; color: var(--txt); }
 .tq-modal-close {
     background: none; border: none; font-size: 18px;
-    color: var(--txt-sub); cursor: pointer;
+    color: var(--txt-sub); cursor: pointer; line-height: 1;
+    padding: 2px 6px; border-radius: var(--r);
+    transition: background .15s, color .15s;
 }
+.tq-modal-close:hover { background: var(--bg); color: var(--txt); }
+
 .tq-modal-body { padding: 18px; }
+
+/* ── Detail grid ── */
 .tq-detail-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
 }
 .tq-detail-full { grid-column: 1 / -1; }
 .tq-detail-item label {
     display: block; font-size: 10px; font-weight: 600;
     color: var(--txt-sub); text-transform: uppercase;
-    letter-spacing: .04em; margin-bottom: 3px;
+    letter-spacing: .05em; margin-bottom: 4px;
 }
-.tq-detail-val  { font-size: 13px; color: var(--txt); }
+.tq-detail-val { font-size: 13px; color: var(--txt); line-height: 1.5; }
+
+/* ── Modal footer ── */
 .tq-modal-ft {
     padding: 12px 18px; border-top: 1px solid var(--border);
     display: flex; justify-content: flex-end; gap: 8px;
+    flex-wrap: wrap;
 }
 .tq-btn-close {
-    padding: 6px 16px; font-size: 12px;
+    padding: 6px 16px; font-size: 12px; font-weight: 500;
     background: transparent; color: var(--txt-sub);
     border: 1px solid var(--border); border-radius: var(--r);
     cursor: pointer; font-family: var(--font);
+    transition: background .15s, color .15s;
 }
-.tq-btn-close:hover { background: var(--bg); }
+.tq-btn-close:hover { background: var(--bg); color: var(--txt); }
+
+/* ── Proof image wrap ── */
 .tq-proof-wrap {
     margin-top: 6px; border: 1px solid var(--border); border-radius: var(--r);
-    padding: 10px; min-height: 60px;
+    padding: 12px; min-height: 70px;
     display: flex; align-items: center; justify-content: center;
     background: var(--bg); color: var(--txt-sub); font-size: 12px;
 }
-.tq-proof-wrap img { max-width: 100%; max-height: 240px; border-radius: var(--r); }
+.tq-proof-wrap img {
+    max-width: 100%; max-height: 260px;
+    border-radius: var(--r); object-fit: contain;
+}
+
+/* ── Stat cards: center ── */
+.stat-card           { position: relative; overflow: hidden; }
+.stat-card-top       { text-align: center; margin-bottom: 8px; }
+.stat-label          { font-size: 10px; font-weight: 600; color: var(--txt-sub);
+                        text-transform: uppercase; letter-spacing: .04em;
+                        margin-bottom: 6px; text-align: center; }
+.stat-value          { font-size: 24px; font-weight: 700; color: var(--txt);
+                        line-height: 1.1; text-align: center; }
+.stat-sub            { font-size: 11px; color: var(--txt-sub); text-align: center; }
+.stat-sub .up        { color: var(--ok); font-weight: 600; }
+.stat-sub .down      { color: var(--err); font-weight: 600; }
+
+/* ── s- color variants ── */
+.s-blue   .stat-value { color: #3182CE; }
+.s-orange .stat-value { color: #C05621; }
+.s-purple .stat-value { color: #6B46C1; }
+.s-green  .stat-value { color: var(--ok); }
+
+/* ── Main row: chart = 2 stat cards, campaigns = remaining ──
+   stat-grid = 4 cols → chart should be 2/4 = 50%
+   Campaign = 50%  → grid 1fr 1fr works fine                 */
+.main-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+    align-items: stretch;
+}
+
+/* Chart height matches its card flexibly */
+.chart-wrap {
+    position: relative;
+    height: 240px;
+}
+
+/* Campaign list */
+.campaign-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+    max-height: 240px;
+    padding-right: 2px;
+}
+.campaign-list::-webkit-scrollbar { width: 4px; }
+.campaign-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.c-item-top {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 5px; gap: 8px;
+}
+.c-name {
+    font-size: 12px; font-weight: 500; color: var(--txt);
+    white-space: normal; word-break: break-word;
+    flex: 1;
+}
+.c-pct { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+
+.progress-bar  { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width .4s ease; }
+
+.c-item-bot {
+    display: flex; justify-content: space-between; margin-top: 4px;
+}
+.c-item-bot span { font-size: 10px; color: var(--txt-sub); }
+
+/* ── Summary row ── */
+.summary-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.summary-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 16px 18px; text-align: center;
+}
+.summary-card strong { display: block; font-size: 22px; font-weight: 700; color: var(--txt); }
+.summary-card span   { font-size: 11px; color: var(--txt-sub); }
+
+/* ── Donor cell ── */
+.donor-cell { display: flex; align-items: center; gap: 8px; }
+.donor-av {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex-shrink: 0;
+    background: #EBF8FF; color: #2B6CB0;
+}
+.donor-name  { font-size: 12px; font-weight: 500; color: var(--txt); }
+.donor-email { font-size: 10px; color: var(--txt-sub); }
+.amount-pos  { color: var(--ok); font-weight: 600; }
+
+/* ── Table footer ── */
+.tbl-footer {
+    display: flex; justify-content: flex-end; align-items: center;
+    padding-top: 10px; border-top: 1px solid var(--border); margin-top: 4px;
+}
+.tbl-footer a { font-size: 12px; color: var(--accent); font-weight: 500; text-decoration: none; }
+.tbl-footer a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .main-row         { grid-template-columns: 1fr; }
+    .summary-row      { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .stat-grid        { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .summary-row      { grid-template-columns: 1fr; }
+    .main-row         { grid-template-columns: 1fr; }
+    .tq-detail-grid   { grid-template-columns: 1fr; }
+    .tq-modal         { width: 95vw; max-width: 95vw; }
+    .chart-wrap       { height: 200px; }
+    .campaign-list    { max-height: none; }
+}
+@media (max-width: 480px) {
+    .stat-grid        { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-value       { font-size: 20px; }
+    .tq-modal-ft      { justify-content: stretch; }
+    .tq-modal-ft button { flex: 1; justify-content: center; }
+}
 </style>
 </asp:Content>
 
