@@ -5,15 +5,217 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── FormTinTuc — Đồng bộ đẹp như FormChienDich ── */
-.form-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
-.admin-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); padding: 18px 20px; }
-.form-control { border: 1px solid var(--border); border-radius: var(--r); background: #fff; }
-.rte-toolbar, .rte-area { border: 1px solid var(--border); border-radius: var(--r); }
-.btn-luu { background: var(--accent); color: #fff; border-radius: var(--r); }
-.btn-huy { background: transparent; border: 1px solid var(--border); border-radius: var(--r); color: var(--txt-sub); }
+/* ═══════════════════════════════════════════════════════
+   FormTinTuc — synced with FormChienDich master
+═══════════════════════════════════════════════════════ */
 
-#toastWrap .toast-item { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--r-card); }
+/* ── Layout ── */
+.breadcrumb   { font-size: 12px; color: var(--txt-sub); margin-bottom: 4px; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.page-title   { font-size: 20px; font-weight: 700; color: var(--txt); margin-bottom: 20px; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px; align-items: start;
+}
+
+/* ── Admin card ── */
+.admin-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 16px;
+}
+.card-section-title {
+    font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 14px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+
+/* ── Form controls ── */
+.form-group        { margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label        { display: block; font-size: 12px; font-weight: 600;
+                      color: var(--txt); margin-bottom: 6px; }
+.form-label .req   { color: var(--err); margin-left: 2px; }
+.form-hint         { font-size: 11px; color: var(--txt-sub); margin-top: 4px; }
+
+.form-control {
+    width: 100%; height: 36px; padding: 0 10px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    font-size: 13px; font-family: var(--font);
+    color: var(--txt); background: #fff;
+    outline: none; box-sizing: border-box;
+    transition: border-color .15s, box-shadow .15s;
+}
+.form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
+textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-height: 1.6; }
+
+/* ── Char counter ── */
+.char-counter {
+    font-size: 11px; color: var(--txt-sub); text-align: right; margin-top: 3px;
+}
+.char-counter.over { color: var(--err); font-weight: 600; }
+
+/* ── Rich Text Editor ── */
+.rte-toolbar {
+    display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
+    border: 1px solid var(--border); border-bottom: none;
+    border-radius: var(--r) var(--r) 0 0;
+    padding: 6px 8px; background: var(--thead);
+}
+.rte-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 30px; height: 28px; padding: 0 6px;
+    border: 1px solid var(--border); border-radius: 4px;
+    background: #fff; font-family: var(--font); font-size: 12px;
+    color: var(--txt); cursor: pointer;
+    transition: background .15s, border-color .15s;
+}
+.rte-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.rte-sep { width: 1px; height: 20px; background: var(--border); margin: 0 3px; }
+
+.rte-area {
+    display: block; width: 100%;
+    min-height: 240px; padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--r) var(--r);
+    font-size: 13px; font-family: var(--font);
+    color: var(--txt); background: #fff;
+    resize: vertical; box-sizing: border-box; line-height: 1.7;
+    outline: none; transition: border-color .15s;
+}
+.rte-area:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
+
+/* ── SEO Preview ── */
+.seo-preview {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 14px 16px;
+}
+.seo-preview-label {
+    font-size: 10px; font-weight: 600; color: var(--txt-sub);
+    text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px;
+}
+.seo-title {
+    font-size: 16px; color: #1a0dab; font-weight: 600;
+    margin-bottom: 3px; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.seo-url {
+    font-size: 12px; color: #006621; margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.seo-desc { font-size: 12px; color: #545454; line-height: 1.55;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; }
+
+/* ── Image preview ── */
+.img-placeholder {
+    width: 100%; height: 120px;
+    border: 2px dashed var(--border); border-radius: var(--r);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--txt-sub); font-size: 12px; margin-bottom: 12px;
+    background: var(--bg);
+}
+#imgPreviewBox {
+    display: none; margin-bottom: 10px; border-radius: var(--r); overflow: hidden;
+    border: 1px solid var(--border);
+}
+#imgPreviewBox img {
+    display: block; width: 100%; max-height: 180px; object-fit: cover;
+}
+
+/* ── Danh mục button group ── */
+.dm-btn-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.dm-btn {
+    height: 34px; padding: 0 14px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    background: var(--bg); font-family: var(--font);
+    font-size: 12px; font-weight: 500; color: var(--txt-sub);
+    cursor: pointer; white-space: nowrap; transition: all .15s;
+}
+.dm-btn:hover  { background: #e2e8f0; color: var(--txt); }
+.dm-btn.active {
+    background: var(--accent); color: #fff;
+    border-color: var(--accent); font-weight: 600;
+}
+
+/* ── Status toggle ── */
+.status-toggle {
+    display: flex; border: 1px solid var(--border); border-radius: var(--r);
+    overflow: hidden; margin-bottom: 14px;
+}
+.status-opt {
+    flex: 1; height: 36px; border: none; background: var(--bg);
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--txt-sub); cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.status-opt + .status-opt { border-left: 1px solid var(--border); }
+.status-opt.active-pub  { background: var(--ok);    color: #fff; font-weight: 600; }
+.status-opt.active-draft { background: var(--warn-bg); color: var(--warn-txt); font-weight: 600; }
+
+/* ── Action buttons ── */
+.btn-luu {
+    display: block; width: 100%; height: 38px;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--r); font-family: var(--font);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    margin-bottom: 8px; transition: background .15s;
+}
+.btn-luu:hover { background: #2B6CB0; }
+.btn-huy {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 38px;
+    background: transparent; color: var(--txt-sub);
+    border: 1px solid var(--border); border-radius: var(--r);
+    font-family: var(--font); font-size: 13px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background .15s, color .15s;
+}
+.btn-huy:hover { background: var(--bg); color: var(--txt); }
+
+/* ── Meta box ── */
+.meta-box { font-size: 12px; color: var(--txt-sub); }
+.meta-title { font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 10px; }
+.meta-row  { margin-bottom: 5px; line-height: 1.5; }
+.meta-row b { color: var(--txt); font-weight: 600; }
+
+/* ── Toast ── */
+#toastWrap {
+    position: fixed; top: 64px; right: 18px; z-index: 9999;
+    display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: var(--r-card);
+    padding: 10px 14px; min-width: 250px; max-width: 340px;
+    pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    animation: toastIn .2s ease;
+}
+.toast-item.toast-ok  { border-left-color: var(--ok); }
+.toast-item.toast-err { border-left-color: var(--err); }
+.t-msg   { font-size: 12px; color: var(--txt); flex: 1; line-height: 1.5; }
+.t-close { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; flex-shrink: 0; }
+@keyframes toastIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:none; } }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .form-grid { grid-template-columns: 1fr 260px; gap: 16px; }
+}
+@media (max-width: 768px) {
+    .form-grid  { grid-template-columns: 1fr; }
+    .rte-toolbar { gap: 4px; }
+    .seo-title  { font-size: 14px; }
+    .dm-btn-group { gap: 5px; }
+}
+@media (max-width: 480px) {
+    .page-title    { font-size: 17px; }
+    .rte-btn       { min-width: 26px; height: 26px; font-size: 11px; }
+    .dm-btn        { font-size: 11px; height: 30px; padding: 0 10px; }
+    .status-toggle { flex-direction: column; }
+    .status-opt + .status-opt { border-left: none; border-top: 1px solid var(--border); }
+}
 </style>
 </asp:Content>
 
