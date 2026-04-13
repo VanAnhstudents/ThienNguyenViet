@@ -6,13 +6,27 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
 /* ═══════════════════════════════════════════════════════
-   BaoCao — synced with QuanLyQuyenGop master
+   BaoCao — synced with QuanLyChienDich + TongQuan
 ═══════════════════════════════════════════════════════ */
 
-/* ── Toolbar ── */
+/* ── CSS variable additions for BaoCao ── */
+:root {
+    --stat-xanh-vien: #2B6CB0;
+    --stat-cam-vien:  #C05621;
+    --stat-tim-vien:  #6B46C1;
+    --stat-xanh-nen:  #EBF8FF;
+    --stat-cam-nen:   #FEEBC8;
+    --stat-tim-nen:   #E9D8FD;
+    --stat-blue:      #2B6CB0;
+    --stat-orange:    #C05621;
+    --stat-purple:    #6B46C1;
+    --stat-green:     #276749;
+}
+
+/* ── Toolbar (chuẩn filter-bar) ── */
 .bc-toolbar {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
 }
 .bc-toolbar-title {
     font-size: 14px; font-weight: 600; color: var(--txt);
@@ -21,49 +35,50 @@
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .select-year {
-    height: 34px; padding: 0 10px;
+    height: 36px; padding: 0 10px;
     border: 1px solid var(--border); border-radius: var(--r);
-    font-family: var(--font); font-size: 12px; color: var(--txt);
-    background: var(--bg); cursor: pointer;
+    font-family: var(--font); font-size: 13px; color: var(--txt);
+    background: #fff; cursor: pointer;
     transition: border-color .15s;
 }
 .select-year:focus { outline: none; border-color: var(--accent); }
 .btn-export {
-    height: 34px; padding: 0 16px;
+    height: 36px; padding: 0 16px;
     background: var(--ok); color: #fff; border: none;
     border-radius: var(--r); font-family: var(--font);
-    font-size: 12px; font-weight: 600; cursor: pointer;
+    font-size: 13px; font-weight: 500; cursor: pointer;
     transition: opacity .15s;
 }
 .btn-export:hover { opacity: .88; }
 
-/* ── Summary cards ── */
+/* ── Summary cards (chuẩn stat-card TongQuan) ── */
 .bc-summary-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px; margin-bottom: 20px;
+    gap: 14px; margin-bottom: 18px;
 }
 .bc-stat-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 18px 16px; text-align: center;
+    border-radius: var(--r-card); padding: 18px 16px;
+    text-align: center; position: relative; overflow: hidden;
     transition: box-shadow .2s;
 }
 .bc-stat-card:hover { box-shadow: 0 2px 12px rgba(49,130,206,.1); }
 .bc-stat-label {
     font-size: 10px; font-weight: 600; color: var(--txt-sub);
-    text-transform: uppercase; letter-spacing: .05em;
-    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: .04em;
+    margin-bottom: 6px;
 }
 .bc-stat-value {
     font-size: 24px; font-weight: 700; line-height: 1.1;
-    margin-bottom: 4px; color: var(--txt);
+    margin-bottom: 6px; color: var(--txt);
 }
 .bc-stat-sub { font-size: 11px; color: var(--txt-sub); }
 
-/* ── Admin card ── */
+/* ── Admin card (chuẩn adm-card) ── */
 .admin-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 16px;
+    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 18px;
 }
 
 /* ── Card header ── */
@@ -83,15 +98,15 @@
 }
 .btn-outline-xs:hover { background: var(--bg); color: var(--txt); }
 
-/* ── Charts row ── */
+/* ── Charts row (chuẩn main-row TongQuan) ── */
 .charts-row {
     display: grid;
     grid-template-columns: 1fr 380px;
-    gap: 16px; margin-bottom: 16px;
+    gap: 16px; margin-bottom: 18px;
     align-items: start;
 }
 .chart-wrap {
-    position: relative; height: 260px;
+    position: relative; height: 240px;
 }
 
 /* ── Pie legend ── */
@@ -109,11 +124,11 @@
 .tables-row {
     display: grid;
     grid-template-columns: 1fr 380px;
-    gap: 16px; margin-bottom: 16px;
+    gap: 16px; margin-bottom: 18px;
     align-items: start;
 }
 
-/* ── Ranking table ── */
+/* ── Table (chuẩn adm-table) ── */
 .admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .admin-table thead tr { background: var(--thead); }
 .admin-table thead th {
@@ -123,7 +138,7 @@
     border-bottom: 1px solid var(--border); white-space: nowrap;
 }
 .admin-table tbody td {
-    padding: 10px 12px; border-bottom: 1px solid var(--border);
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
     vertical-align: middle; color: var(--txt);
 }
 .admin-table tbody tr:last-child td { border-bottom: none; }
@@ -157,7 +172,7 @@
 /* ── Amount col ── */
 .amount-col { font-weight: 600; color: var(--ok); white-space: nowrap; font-size: 12px; }
 
-/* ── Donor in rank table ── */
+/* ── Donor in rank table (chuẩn donor-cell TongQuan) ── */
 .donor-av {
     width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
@@ -175,25 +190,15 @@
     display: flex; align-items: flex-start; gap: 10px;
     background: var(--card); border: 1px solid var(--border);
     border-left: 4px solid var(--accent); border-radius: var(--r-card);
-    padding: 10px 14px; min-width: 240px; max-width: 320px;
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
     pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    animation: toastIn .2s ease;
 }
 .toast-item.toast-ok  { border-left-color: var(--ok); }
 .toast-item.toast-err { border-left-color: var(--err); }
-
-/* ── CSS variable additions for BaoCao ── */
-:root {
-    --stat-xanh-vien: #2B6CB0;
-    --stat-cam-vien:  #C05621;
-    --stat-tim-vien:  #6B46C1;
-    --stat-xanh-nen:  #EBF8FF;
-    --stat-cam-nen:   #FEEBC8;
-    --stat-tim-nen:   #E9D8FD;
-    --stat-blue:      #2B6CB0;
-    --stat-orange:    #C05621;
-    --stat-purple:    #6B46C1;
-    --stat-green:     #276749;
-}
+.toast-item .t-msg    { font-size: 13px; color: var(--txt); flex: 1; }
+.toast-item .t-close  { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:none; } }
 
 /* ── Responsive ── */
 @media (max-width: 1200px) {
@@ -201,19 +206,19 @@
     .tables-row   { grid-template-columns: 1fr 320px; }
 }
 @media (max-width: 1024px) {
-    .charts-row   { grid-template-columns: 1fr; }
-    .tables-row   { grid-template-columns: 1fr; }
+    .charts-row     { grid-template-columns: 1fr; }
+    .tables-row     { grid-template-columns: 1fr; }
     .bc-summary-row { grid-template-columns: repeat(2, 1fr); }
-    .chart-wrap   { height: 220px; }
+    .chart-wrap     { height: 220px; }
 }
 @media (max-width: 768px) {
-    .bc-summary-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .bc-toolbar     { flex-direction: column; align-items: flex-start; }
+    .bc-summary-row   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .bc-toolbar       { flex-direction: column; align-items: flex-start; }
     .bc-toolbar-right { width: 100%; }
-    .admin-table    { display: block; overflow-x: auto; white-space: nowrap; }
+    .admin-table      { display: block; overflow-x: auto; white-space: nowrap; }
     .charts-row, .tables-row { grid-template-columns: 1fr; }
-    .chart-wrap { height: 200px; }
-    .pie-legend { gap: 6px; }
+    .chart-wrap       { height: 200px; }
+    .pie-legend       { gap: 6px; }
 }
 @media (max-width: 480px) {
     .bc-summary-row { grid-template-columns: 1fr 1fr; gap: 8px; }

@@ -6,63 +6,50 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
 /* ═══════════════════════════════════════════════════════
-   QuanLyNguoiDung — synced with QuanLyQuyenGop master
+   QuanLyNguoiDung — synced with QuanLyChienDich + FormChienDich + TongQuan
 ═══════════════════════════════════════════════════════ */
 
-/* ── Stat row ── */
+/* ── Stat cards ── */
 .user-stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 .user-stat-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 20px 18px;
-    text-align: center;
+    border-radius: var(--r-card); padding: 18px 16px;
+    text-align: center; position: relative; overflow: hidden;
     transition: box-shadow .2s;
 }
 .user-stat-card:hover { box-shadow: 0 2px 12px rgba(49,130,206,.1); }
 .user-stat-card strong {
-    display: block; font-size: 26px; font-weight: 700;
-    line-height: 1.1; margin-bottom: 4px;
+    display: block; font-size: 24px; font-weight: 700;
+    line-height: 1.1; margin-bottom: 6px;
 }
 .user-stat-card span {
-    font-size: 11px; color: var(--txt-sub);
-    text-transform: uppercase; letter-spacing: .04em; font-weight: 500;
+    font-size: 10px; color: var(--txt-sub);
+    text-transform: uppercase; letter-spacing: .04em; font-weight: 600;
 }
 
-/* ── Admin card ── */
-.admin-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 18px;
-}
-
-/* ── Section header ── */
-.section-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 14px; flex-wrap: wrap; gap: 6px;
-}
-.section-title { font-size: 13px; font-weight: 600; color: var(--txt); }
-.section-count { font-size: 11px; color: var(--txt-sub); }
-
-/* ── Filter bar ── */
+/* ── Filter bar (chuẩn QuanLyChienDich) ── */
 .filter-bar {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    display: flex; align-items: center;
+    gap: 10px; flex-wrap: wrap;
 }
 .input-search {
-    height: 34px; padding: 0 12px;
+    flex: 1; min-width: 180px; max-width: 280px;
+    height: 36px; padding: 0 12px;
     border: 1px solid var(--border); border-radius: var(--r);
-    font-size: 12px; font-family: var(--font); color: var(--txt);
-    background: var(--bg); min-width: 200px; flex: 1; max-width: 280px;
-    transition: border-color .15s;
+    font-size: 13px; font-family: var(--font); color: var(--txt);
+    background: #fff; transition: border-color .15s;
 }
-.input-search:focus { outline: none; border-color: var(--accent); background: #fff; }
+.input-search:focus { outline: none; border-color: var(--accent); }
 
-/* ── Button group ── */
-.btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+/* ── Button group (chuẩn status-btn-group) ── */
+.btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
 .btn-grp-item {
-    height: 34px; padding: 0 13px;
+    height: 36px; padding: 0 13px;
     border: 1px solid var(--border); border-radius: var(--r);
     background: var(--bg); font-family: var(--font);
     font-size: 12px; font-weight: 500; color: var(--txt-sub);
@@ -75,20 +62,32 @@
     border-color: var(--accent); font-weight: 600;
 }
 
-/* ── Reset button ── */
+/* ── Reset button (chuẩn btn-outline) ── */
 .btn-outline-sm {
-    height: 34px; padding: 0 14px;
+    height: 36px; padding: 0 14px;
     border: 1px solid var(--border); border-radius: var(--r);
     background: transparent; color: var(--txt-sub);
     font-family: var(--font); font-size: 12px; font-weight: 500;
     cursor: pointer; white-space: nowrap;
-    transition: background .15s, color .15s, border-color .15s;
+    transition: background .15s, color .15s;
 }
-.btn-outline-sm:hover {
-    background: var(--bg); color: var(--txt); border-color: #cbd5e1;
+.btn-outline-sm:hover { background: var(--bg); color: var(--txt); }
+
+/* ── Section header ── */
+.section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 6px;
+}
+.section-title { font-size: 13px; font-weight: 600; color: var(--txt); }
+.section-count { font-size: 11px; color: var(--txt-sub); }
+
+/* ── Admin card (chuẩn adm-card) ── */
+.admin-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 18px;
 }
 
-/* ── Table ── */
+/* ── Table (chuẩn adm-table) ── */
 .admin-table {
     width: 100%; border-collapse: collapse; font-size: 12px;
 }
@@ -100,7 +99,7 @@
     border-bottom: 1px solid var(--border); white-space: nowrap;
 }
 .admin-table tbody td {
-    padding: 10px 12px; border-bottom: 1px solid var(--border);
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
     vertical-align: middle; color: var(--txt);
 }
 .admin-table tbody tr:last-child td { border-bottom: none; }
@@ -109,9 +108,9 @@
 /* ── User cell ── */
 .user-cell { display: flex; align-items: center; gap: 10px; }
 .user-av {
-    width: 34px; height: 34px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
 }
 .user-fullname { font-size: 13px; font-weight: 500; color: var(--txt); }
 .user-role-badge {
@@ -121,16 +120,16 @@
 .role-admin { background: #E9D8FD; color: #6B46C1; }
 .role-user  { background: var(--info-bg); color: var(--info-txt); }
 
-/* ── Badge admin ── */
-.badge-admin { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
+/* ── Badge (chuẩn admin.css) ── */
+.badge-admin { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
 .badge-thanh-cong { background: var(--ok-bg);   color: var(--ok-txt); }
 .badge-tu-choi    { background: var(--err-bg);  color: var(--err-txt); }
 .badge-cho-duyet  { background: var(--warn-bg); color: var(--warn-txt); }
 .badge-nhap       { background: var(--warn-bg); color: var(--warn-txt); }
 
-/* ── Action buttons ── */
+/* ── Action buttons (chuẩn btn-action) ── */
 .btn-view, .btn-lock, .btn-unlock {
-    font-size: 11px; padding: 4px 11px; border-radius: var(--r);
+    font-size: 11px; padding: 3px 9px; border-radius: var(--r);
     border: none; cursor: pointer; font-family: var(--font);
     font-weight: 500; white-space: nowrap; transition: opacity .15s;
 }
@@ -139,36 +138,33 @@
 .btn-unlock { background: var(--ok-bg);    color: var(--ok-txt); }
 .btn-view:hover, .btn-lock:hover, .btn-unlock:hover { opacity: .8; }
 
-/* ── Columns ── */
+/* ── Column helpers ── */
 .phone-col { font-size: 12px; color: var(--txt-sub); white-space: nowrap; }
 .date-col  { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
 .money-col { font-size: 12px; font-weight: 600; color: var(--ok); white-space: nowrap; }
 
 /* ── Loading / empty ── */
-.tbl-loading {
-    text-align: center; padding: 32px; color: var(--txt-sub); font-size: 12px;
-}
-.empty-state {
-    text-align: center; padding: 48px 20px; color: var(--txt-sub); font-size: 13px;
-}
+.tbl-loading { text-align: center; padding: 32px; color: var(--txt-sub); font-size: 12px; }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--txt-sub); font-size: 13px; }
 
-/* ── Pagination ── */
+/* ── Pagination (chuẩn QuanLyChienDich) ── */
 .pagination-wrap {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 0 2px; gap: 12px; flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: center;
+    gap: 15px; padding: 15px 0;
+    border-top: 1px solid var(--border);
 }
-.paging-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+.paging-btns { display: flex; align-items: center; gap: 6px; }
 .paging-btn {
-    min-width: 36px; height: 36px; padding: 0 10px;
-    border: 1px solid var(--border); border-radius: var(--r);
-    background: var(--card); font-family: var(--font); font-size: 12px;
+    min-width: 38px; height: 38px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); font-family: var(--font); font-size: 13px;
     font-weight: 500; color: var(--txt); cursor: pointer;
     transition: background .15s, border-color .15s;
 }
 .paging-btn:hover  { background: var(--bg); border-color: #cbd5e1; }
 .paging-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .paging-btn:disabled { opacity: .4; cursor: not-allowed; }
-.paging-info { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
+.paging-info { font-size: 13px; color: var(--txt-sub); white-space: nowrap; }
 
 /* ── Toast ── */
 #toastWrap {
@@ -179,15 +175,15 @@
     display: flex; align-items: flex-start; gap: 10px;
     background: var(--card); border: 1px solid var(--border);
     border-left: 4px solid var(--accent); border-radius: var(--r-card);
-    padding: 10px 14px; min-width: 240px; max-width: 320px;
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
     pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
     animation: toastIn .2s ease;
 }
 .toast-item.toast-ok  { border-left-color: var(--ok); }
 .toast-item.toast-err { border-left-color: var(--err); }
-.t-msg   { font-size: 12px; color: var(--txt); flex: 1; }
+.t-msg   { font-size: 13px; color: var(--txt); flex: 1; }
 .t-close { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; }
-@keyframes toastIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:none; } }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:none; } }
 
 /* ════════════════════════════════════════════════════════
    MODAL: Chi tiết người dùng
@@ -211,7 +207,7 @@
 }
 .modal-header h3 { font-size: 14px; font-weight: 600; color: var(--txt); }
 .modal-close {
-    background: none; border: none; font-size: 17px;
+    background: none; border: none; font-size: 18px;
     color: var(--txt-sub); cursor: pointer; padding: 2px 6px;
     border-radius: var(--r); line-height: 1;
     transition: background .15s, color .15s;
@@ -276,7 +272,7 @@
 
 /* ── Modal action buttons ── */
 .btn-modal-close {
-    padding: 7px 18px; font-size: 12px; font-weight: 500;
+    padding: 6px 16px; font-size: 12px; font-weight: 500;
     background: transparent; color: var(--txt-sub);
     border: 1px solid var(--border); border-radius: var(--r);
     cursor: pointer; font-family: var(--font);
@@ -284,7 +280,7 @@
 }
 .btn-modal-close:hover { background: var(--bg); color: var(--txt); }
 .btn-modal-lock {
-    padding: 7px 18px; font-size: 12px; font-weight: 600;
+    padding: 6px 16px; font-size: 12px; font-weight: 600;
     background: var(--err-bg); color: var(--err-txt);
     border: 1px solid var(--err); border-radius: var(--r);
     cursor: pointer; font-family: var(--font);
@@ -292,7 +288,7 @@
 }
 .btn-modal-lock:hover { background: #feb2b2; }
 .btn-modal-unlock {
-    padding: 7px 18px; font-size: 12px; font-weight: 600;
+    padding: 6px 16px; font-size: 12px; font-weight: 600;
     background: var(--ok-bg); color: var(--ok-txt);
     border: 1px solid var(--ok); border-radius: var(--r);
     cursor: pointer; font-family: var(--font);
@@ -307,16 +303,19 @@
 @media (max-width: 768px) {
     .user-stats-row     { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .filter-bar         { gap: 8px; }
+    .input-search       { min-width: 100%; max-width: 100%; }
     .admin-table        { display: block; overflow-x: auto; white-space: nowrap; }
-    .pagination-wrap    { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .pagination-wrap    { flex-direction: column; gap: 10px; }
     .modal-box          { width: 95vw; max-width: 95vw; }
     .info-grid          { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
     .user-stats-row     { grid-template-columns: 1fr 1fr; gap: 8px; }
     .user-stat-card strong { font-size: 20px; }
-    .btn-grp-item       { font-size: 11px; padding: 0 10px; }
+    .btn-grp-item       { font-size: 11px; padding: 0 10px; height: 32px; }
     .input-search       { min-width: 100%; max-width: 100%; }
+    .modal-footer       { justify-content: stretch; }
+    .modal-footer button { flex: 1; }
 }
 </style>
 </asp:Content>

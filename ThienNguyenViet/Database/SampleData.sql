@@ -905,6 +905,10 @@ VALUES
 GO
 
 SET IDENTITY_INSERT dbo.TinTuc OFF
+UPDATE dbo.TinTuc
+SET AnhBia = N'https://res.cloudinary.com/dwzzfzxjh/image/upload/v1774708758/IMG_9755_snwx2d.jpg'
+WHERE MaTinTuc = 6;
+
 GO
 
 -- =============================================

@@ -6,10 +6,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
 /* ═══════════════════════════════════════════════════════
-   FormTinTuc — synced with FormChienDich master
+   FormTinTuc — synced with FormChienDich
 ═══════════════════════════════════════════════════════ */
 
-/* ── Layout ── */
+/* ── Layout (chuẩn FormChienDich) ── */
 .breadcrumb   { font-size: 12px; color: var(--txt-sub); margin-bottom: 4px; }
 .breadcrumb a { color: var(--accent); text-decoration: none; }
 .breadcrumb a:hover { text-decoration: underline; }
@@ -18,37 +18,38 @@
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 300px;
-    gap: 20px; align-items: start;
+    gap: 20px;
+    align-items: start;
 }
 
-/* ── Admin card ── */
+/* ── Admin card (chuẩn adm-card) ── */
 .admin-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 16px;
+    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 18px;
 }
 .card-section-title {
-    font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 14px;
-    padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    font-size: 14px; font-weight: 600; color: var(--txt); margin-bottom: 14px;
 }
 
-/* ── Form controls ── */
-.form-group        { margin-bottom: 14px; }
+/* ── Form controls (chuẩn FormChienDich) ── */
+.form-group          { margin-bottom: 14px; }
 .form-group:last-child { margin-bottom: 0; }
-.form-label        { display: block; font-size: 12px; font-weight: 600;
-                      color: var(--txt); margin-bottom: 6px; }
-.form-label .req   { color: var(--err); margin-left: 2px; }
-.form-hint         { font-size: 11px; color: var(--txt-sub); margin-top: 4px; }
+.form-label          { display: block; font-size: 12px; font-weight: 600; color: var(--txt); margin-bottom: 6px; }
+.form-label .req     { color: var(--err); margin-left: 2px; }
+.form-hint           { font-size: 11px; color: var(--txt-sub); margin-top: 3px; }
 
 .form-control {
-    width: 100%; height: 36px; padding: 0 10px;
-    border: 1px solid var(--border); border-radius: var(--r);
+    width: 100%; height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
     font-size: 13px; font-family: var(--font);
     color: var(--txt); background: #fff;
     outline: none; box-sizing: border-box;
     transition: border-color .15s, box-shadow .15s;
 }
-.form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
-textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-height: 1.6; }
+.form-control:focus  { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
+textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-height: 1.5; }
 
 /* ── Char counter ── */
 .char-counter {
@@ -108,30 +109,38 @@ textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
             overflow: hidden; }
 
-/* ── Image preview ── */
+/* ── Ảnh bìa (chuẩn FormChienDich) ── */
 .img-placeholder {
-    width: 100%; height: 120px;
+    width: 100%; height: 110px;
     border: 2px dashed var(--border); border-radius: var(--r);
     display: flex; align-items: center; justify-content: center;
-    color: var(--txt-sub); font-size: 12px; margin-bottom: 12px;
-    background: var(--bg);
+    color: var(--txt-sub); font-size: 12px; margin-bottom: 10px;
 }
-#imgPreviewBox {
-    display: none; margin-bottom: 10px; border-radius: var(--r); overflow: hidden;
-    border: 1px solid var(--border);
-}
+#imgPreviewBox { display: none; margin-bottom: 8px; }
 #imgPreviewBox img {
-    display: block; width: 100%; max-height: 180px; object-fit: cover;
+    max-width: 100%; max-height: 160px;
+    border-radius: var(--r); border: 1px solid var(--border);
+    object-fit: cover;
 }
 
-/* ── Danh mục button group ── */
-.dm-btn-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+/* ── Danh mục button group (chuẩn seg-btn-group) ── */
+.dm-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
 .dm-btn {
-    height: 34px; padding: 0 14px;
-    border: 1px solid var(--border); border-radius: var(--r);
-    background: var(--bg); font-family: var(--font);
-    font-size: 12px; font-weight: 500; color: var(--txt-sub);
-    cursor: pointer; white-space: nowrap; transition: all .15s;
+    padding: 5px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    background: var(--bg);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--txt-sub);
+    cursor: pointer;
+    transition: all .15s;
 }
 .dm-btn:hover  { background: #e2e8f0; color: var(--txt); }
 .dm-btn.active {
@@ -139,7 +148,7 @@ textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-
     border-color: var(--accent); font-weight: 600;
 }
 
-/* ── Status toggle ── */
+/* ── Status toggle (chuẩn seg-btn) ── */
 .status-toggle {
     display: flex; border: 1px solid var(--border); border-radius: var(--r);
     overflow: hidden; margin-bottom: 14px;
@@ -151,34 +160,37 @@ textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-
     transition: background .15s, color .15s;
 }
 .status-opt + .status-opt { border-left: 1px solid var(--border); }
-.status-opt.active-pub  { background: var(--ok);    color: #fff; font-weight: 600; }
+.status-opt.active-pub   { background: var(--ok);     color: #fff; font-weight: 600; }
 .status-opt.active-draft { background: var(--warn-bg); color: var(--warn-txt); font-weight: 600; }
 
-/* ── Action buttons ── */
+/* ── Buttons (chuẩn FormChienDich) ── */
 .btn-luu {
-    display: block; width: 100%; height: 38px;
-    background: var(--accent); color: #fff; border: none;
-    border-radius: var(--r); font-family: var(--font);
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    margin-bottom: 8px; transition: background .15s;
+    height: 38px; padding: 0 18px;
+    border-radius: var(--r);
+    font-size: 13px; font-family: var(--font); font-weight: 500;
+    cursor: pointer; width: 100%; margin-bottom: 8px;
+    border: none; background: var(--accent); color: #fff;
+    transition: background .15s;
 }
 .btn-luu:hover { background: #2B6CB0; }
+
 .btn-huy {
     display: flex; align-items: center; justify-content: center;
-    width: 100%; height: 38px;
-    background: transparent; color: var(--txt-sub);
-    border: 1px solid var(--border); border-radius: var(--r);
-    font-family: var(--font); font-size: 13px; font-weight: 500;
-    cursor: pointer; text-decoration: none;
+    height: 38px; padding: 0 18px;
+    border-radius: var(--r);
+    font-size: 13px; font-family: var(--font); font-weight: 500;
+    cursor: pointer; width: 100%;
+    border: 1px solid var(--border); background: transparent; color: var(--txt-sub);
+    text-decoration: none;
     transition: background .15s, color .15s;
 }
 .btn-huy:hover { background: var(--bg); color: var(--txt); }
 
 /* ── Meta box ── */
-.meta-box { font-size: 12px; color: var(--txt-sub); }
-.meta-title { font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 10px; }
-.meta-row  { margin-bottom: 5px; line-height: 1.5; }
-.meta-row b { color: var(--txt); font-weight: 600; }
+.meta-box      { font-size: 12px; color: var(--txt-sub); }
+.meta-box .meta-title { font-size: 13px; font-weight: 600; color: var(--txt); margin-bottom: 8px; }
+.meta-row      { margin-bottom: 4px; }
+.meta-row b    { color: var(--txt); font-weight: 600; }
 
 /* ── Toast ── */
 #toastWrap {
@@ -187,32 +199,32 @@ textarea.form-control { height: auto; padding: 8px 10px; resize: vertical; line-
 }
 .toast-item {
     display: flex; align-items: flex-start; gap: 10px;
-    background: var(--card); border: 1px solid var(--border);
-    border-left: 4px solid var(--accent); border-radius: var(--r-card);
-    padding: 10px 14px; min-width: 250px; max-width: 340px;
+    background: #fff; border: 1px solid var(--border);
+    border-left-width: 4px; border-radius: var(--r-card);
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
     pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
     animation: toastIn .2s ease;
 }
 .toast-item.toast-ok  { border-left-color: var(--ok); }
 .toast-item.toast-err { border-left-color: var(--err); }
-.t-msg   { font-size: 12px; color: var(--txt); flex: 1; line-height: 1.5; }
-.t-close { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; flex-shrink: 0; }
-@keyframes toastIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:none; } }
+.toast-item .t-msg    { font-size: 13px; color: var(--txt); flex: 1; }
+.toast-item .t-close  { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:none; } }
 
 /* ── Responsive ── */
 @media (max-width: 1024px) {
     .form-grid { grid-template-columns: 1fr 260px; gap: 16px; }
 }
 @media (max-width: 768px) {
-    .form-grid  { grid-template-columns: 1fr; }
-    .rte-toolbar { gap: 4px; }
-    .seo-title  { font-size: 14px; }
+    .form-grid    { grid-template-columns: 1fr; }
+    .rte-toolbar  { gap: 4px; }
+    .seo-title    { font-size: 14px; }
     .dm-btn-group { gap: 5px; }
 }
 @media (max-width: 480px) {
     .page-title    { font-size: 17px; }
     .rte-btn       { min-width: 26px; height: 26px; font-size: 11px; }
-    .dm-btn        { font-size: 11px; height: 30px; padding: 0 10px; }
+    .dm-btn        { font-size: 11px; padding: 4px 10px; }
     .status-toggle { flex-direction: column; }
     .status-opt + .status-opt { border-left: none; border-top: 1px solid var(--border); }
 }
