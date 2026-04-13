@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Bao cao" Language="C#"
+﻿<%@ Page Title="Báo cáo" Language="C#"
     MasterPageFile="~/Admin.Master" AutoEventWireup="true"
     CodeBehind="BaoCao.aspx.cs"
     Inherits="ThienNguyenViet.Admin.BaoCao" %>
@@ -15,33 +15,27 @@
     .bc-summary { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; }
     .bc-stat {
         background: var(--card); border: 1px solid var(--border);
-        border-radius: var(--r-card); padding: 18px 16px; text-align: center;
+        border-radius: var(--r-card); padding: 18px 16px;
         transition: box-shadow .2s;
     }
     .bc-stat:hover { box-shadow: 0 2px 12px rgba(49,130,206,.08); }
+
+    /* Stat card chỉ 2 thành phần: label + value */
     .bc-stat-label { font-size: 10px; font-weight: 600; color: var(--txt-sub); text-transform: uppercase; margin-bottom: 6px; }
     .bc-stat-value { font-size: 22px; font-weight: 700; }
 
     .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
     .chart-wrap { position: relative; height: 280px; }
-
     .tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
 
+    /* rank-num: BỎ bo tròn, chỉ hiển thị số thuần */
     .rank-num {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 24px; height: 24px; border-radius: 50%; font-size: 11px; font-weight: 700;
-        background: var(--bg); color: var(--txt-sub);
+        font-size: 13px; font-weight: 700; color: var(--txt);
     }
-    .rank-1 { background: #FEEBC8; color: #C05621; }
-    .rank-2 { background: #E2E8F0; color: #4A5568; }
-    .rank-3 { background: #FED7D7; color: #C53030; }
+    .rank-1 { color: #C05621; }
+    .rank-2 { color: #4A5568; }
+    .rank-3 { color: #C53030; }
 
-    .donor-av {
-        width: 28px; height: 28px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 10px; font-weight: 700; flex-shrink: 0;
-        background: var(--accent-light); color: var(--accent);
-    }
     .donor-name { font-size: 12px; font-weight: 500; }
     .donor-email { font-size: 10px; color: var(--txt-sub); }
     .amount-col { font-weight: 600; color: var(--ok); white-space: nowrap; }
@@ -55,10 +49,11 @@
         .charts-row { grid-template-columns: 1fr; }
         .tables-row { grid-template-columns: 1fr; }
     }
-    @media (max-width: 480px) {
-        .bc-summary { grid-template-columns: 1fr; }
+    @media (max-width: 425px) {
+        .bc-summary { grid-template-columns: 1fr 1fr; gap: 8px; }
         .chart-wrap { height: 200px; }
     }
+    @media (max-width: 375px) { .bc-summary { grid-template-columns: 1fr; } }
 </style>
 </asp:Content>
 
@@ -69,7 +64,6 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- Toolbar --%>
     <div class="bc-toolbar">
         <h3>Báo cáo năm <span id="lblNam"><%= DateTime.Now.Year %></span></h3>
         <div class="bc-toolbar-right">
@@ -81,15 +75,27 @@
         </div>
     </div>
 
-    <%-- Summary cards --%>
+    <%-- Thống kê - chỉ 2 thành phần: label + value --%>
     <div class="bc-summary" id="summaryRow">
-        <div class="bc-stat"><div class="bc-stat-label">Tổng tiền quyên góp</div><div class="bc-stat-value" id="bcTongTien" style="color:var(--accent)">--</div></div>
-        <div class="bc-stat"><div class="bc-stat-label">Tổng lượt quyên góp</div><div class="bc-stat-value" id="bcTongLuot">--</div></div>
-        <div class="bc-stat"><div class="bc-stat-label">Chiến dịch đang chạy</div><div class="bc-stat-value" id="bcChienDich" style="color:var(--ok)">--</div></div>
-        <div class="bc-stat"><div class="bc-stat-label">Người dùng hoạt động</div><div class="bc-stat-value" id="bcNguoiDung">--</div></div>
+        <div class="bc-stat">
+            <div class="bc-stat-label">Tổng tiền quyên góp</div>
+            <div class="bc-stat-value" id="bcTongTien" style="color:var(--accent)">--</div>
+        </div>
+        <div class="bc-stat">
+            <div class="bc-stat-label">Tổng lượt quyên góp</div>
+            <div class="bc-stat-value" id="bcTongLuot">--</div>
+        </div>
+        <div class="bc-stat">
+            <div class="bc-stat-label">Chiến dịch đang chạy</div>
+            <div class="bc-stat-value" id="bcChienDich" style="color:var(--ok)">--</div>
+        </div>
+        <div class="bc-stat">
+            <div class="bc-stat-label">Người dùng hoạt động</div>
+            <div class="bc-stat-value" id="bcNguoiDung">--</div>
+        </div>
     </div>
 
-    <%-- Charts --%>
+    <%-- Biểu đồ --%>
     <div class="charts-row">
         <div class="card">
             <div class="card-header">
@@ -109,7 +115,7 @@
         </div>
     </div>
 
-    <%-- Rankings --%>
+    <%-- Bảng xếp hạng --%>
     <div class="tables-row">
         <div class="card">
             <div class="card-header"><h3>Top 10 chiến dịch tiêu biểu</h3></div>
@@ -121,7 +127,7 @@
         <div class="card">
             <div class="card-header"><h3>Top 10 nhà hảo tâm</h3></div>
             <table class="tbl">
-                <thead><tr><th style="width:32px">STT</th><th>Họ và tên</th><th>Tổng tiền</th><th>Số lần quyên góp</th></tr></thead>
+                <thead><tr><th style="width:32px">STT</th><th>Họ và tên</th><th>Tổng tiền</th><th>Số lần</th></tr></thead>
                 <tbody id="topDonorBody"><tr><td colspan="4" class="empty-state">Đang tải...</td></tr></tbody>
             </table>
         </div>
@@ -130,21 +136,19 @@
 </asp:Content>
 
 <asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function(){
     'use strict';
     var BASE = '<%= ResolveUrl("~/Admin/BaoCao.aspx") %>';
-    var currentYear = '<%= DateTime.Now.Year %>';
+    var currentYear = <%= DateTime.Now.Year %>;
         var lineChart, pieChart;
 
         function fmtMoney(v) {
             if (v >= 1e9) return (v / 1e9).toFixed(1) + ' tỷ';
             if (v >= 1e6) return (v / 1e6).toFixed(1) + ' triệu';
-            return Number(v).toLocaleString('vi-VN') + ' VND';
+            return Number(v).toLocaleString('vi-VN') + ' VNĐ';
         }
 
-        // Summary
         function loadSummary(year) {
             fetch(BASE + '?__ajax=true&action=summary&year=' + year)
                 .then(function (r) { return r.json(); })
@@ -158,7 +162,6 @@
                 });
         }
 
-        // Monthly chart
         function loadMonthlyChart(year) {
             fetch(BASE + '?__ajax=true&action=monthly&year=' + year)
                 .then(function (r) { return r.json(); })
@@ -187,7 +190,6 @@
                 });
         }
 
-        // Pie chart
         function loadPieChart() {
             fetch(BASE + '?__ajax=true&action=pie')
                 .then(function (r) { return r.json(); })
@@ -207,7 +209,6 @@
                         }
                     });
 
-                    // Legend
                     var leg = '';
                     d.data.forEach(function (x) {
                         leg += '<div class="pie-legend-item"><div class="pie-dot" style="background:' + (x.MauSac || '#3182CE') + '"></div>' + x.TenDanhMuc + '</div>';
@@ -216,7 +217,6 @@
                 });
         }
 
-        // Top campaigns
         function loadTopCD() {
             fetch(BASE + '?__ajax=true&action=topCD')
                 .then(function (r) { return r.json(); })
@@ -227,6 +227,7 @@
                         var rank = i + 1;
                         var cls = rank <= 3 ? 'rank-' + rank : '';
                         var pct = cd.MucTieu > 0 ? Math.min(100, Math.round(cd.TongTienDaQuyen * 100 / cd.MucTieu)) : 0;
+                        /* rank-num: BỎ bo tròn, chỉ hiển thị số thuần */
                         html += '<tr><td><span class="rank-num ' + cls + '">' + rank + '</span></td>' +
                             '<td style="font-size:12px;font-weight:500">' + cd.TenChienDich + '</td>' +
                             '<td class="amount-col">' + fmtMoney(cd.TongTienDaQuyen) + '</td>' +
@@ -236,7 +237,6 @@
                 });
         }
 
-        // Top donors
         function loadTopDonors() {
             fetch(BASE + '?__ajax=true&action=topDonors')
                 .then(function (r) { return r.json(); })
@@ -246,9 +246,9 @@
                     d.data.forEach(function (dn, i) {
                         var rank = i + 1;
                         var cls = rank <= 3 ? 'rank-' + rank : '';
-                        var ini = dn.HoTen ? dn.HoTen.trim().split(' ').pop().charAt(0).toUpperCase() : '?';
+                        /* BỎ donor-av avatar, chỉ hiển thị tên thuần */
                         html += '<tr><td><span class="rank-num ' + cls + '">' + rank + '</span></td>' +
-                            '<td><div style="display:flex;align-items:center;gap:8px"><div class="donor-av">' + ini + '</div><div><div class="donor-name">' + dn.HoTen + '</div><div class="donor-email">' + dn.Email + '</div></div></div></td>' +
+                            '<td><div><div class="donor-name">' + dn.HoTen + '</div><div class="donor-email">' + dn.Email + '</div></div></td>' +
                             '<td class="amount-col">' + fmtMoney(dn.TongTienDaQuyen) + '</td>' +
                             '<td style="font-size:12px;font-weight:600">' + dn.SoLanQuyen + ' lần</td></tr>';
                     });
@@ -256,7 +256,6 @@
                 });
         }
 
-        // Year change
         window.onYearChange = function () {
             currentYear = parseInt(document.getElementById('selNam').value);
             document.getElementById('lblNam').textContent = currentYear;
@@ -265,7 +264,6 @@
             loadMonthlyChart(currentYear);
         };
 
-        // Init
         loadSummary(currentYear);
         loadMonthlyChart(currentYear);
         loadPieChart();
