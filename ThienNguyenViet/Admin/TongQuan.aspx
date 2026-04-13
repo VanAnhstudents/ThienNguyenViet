@@ -5,13 +5,10 @@
 
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-    /* ── TongQuan: bo sung ── */
-    .s-blue .stat-value  { color: var(--accent); }
-    .s-green .stat-value { color: var(--ok); }
+    .s-blue .stat-card-value { color: var(--accent); }
+    .s-green .stat-card-value { color: var(--ok); }
 
     .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
-
-    .chart-wrap { position: relative; height: 280px; }
 
     /* Campaign list */
     .cd-list { list-style: none; }
@@ -24,34 +21,20 @@
     .cd-item-pct { font-size: 12px; font-weight: 600; color: var(--accent); white-space: nowrap; }
     .cd-item-bar { width: 100%; margin-top: 6px; }
 
-    /* Donor cell */
-    .donor-cell { display: flex; align-items: center; gap: 8px; }
-    .donor-av {
-        width: 28px; height: 28px; border-radius: 50%;
-        background: var(--accent-light); color: var(--accent);
-        display: flex; align-items: center; justify-content: center;
-        font-size: 10px; font-weight: 700; flex-shrink: 0;
-    }
-    .donor-name { font-size: 12px; font-weight: 500; }
-    .donor-email { font-size: 10px; color: var(--txt-sub); }
-
     .amount-cell { color: var(--ok); font-weight: 600; font-size: 12px; white-space: nowrap; }
 
     /* Proof image */
     .proof-wrap {
         margin-top: 6px; border: 1px solid var(--border);
         border-radius: var(--r); padding: 10px;
-        display: flex; align-items: center; justify-content: center;
-        background: var(--bg); min-height: 60px; font-size: 12px; color: var(--txt-sub);
+        display: flex; align-items: center;
+        justify-content: center; background: var(--bg);
+        min-height: 60px; font-size: 12px; color: var(--txt-sub);
     }
     .proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); }
 
-    @media (max-width: 1024px) {
-        .main-row { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 480px) {
-        .chart-wrap { height: 200px; }
-    }
+    @media (max-width: 1024px) { .main-row { grid-template-columns: 1fr; } }
+    @media (max-width: 425px) { .chart-wrap { height: 200px; } }
 </style>
 </asp:Content>
 
@@ -62,43 +45,33 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- 4 The thong ke --%>
+    <%-- 4 Thẻ thống kê - CHỈ 2 THÀNH PHẦN: label + value --%>
     <div class="stat-grid">
         <div class="stat-card s-blue">
-            <div class="stat-label">Tong quyen gop</div>
-            <div class="stat-value" id="statTongTien"><%= FormatTien(TongTienDaQuyen) %></div>
-            <div class="stat-sub">Tinh den hom nay</div>
+            <div class="stat-card-label">Tổng quyên góp</div>
+            <div class="stat-card-value" id="statTongTien"><%= FormatTien(TongTienDaQuyen) %></div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Chien dich dang chay</div>
-            <div class="stat-value" id="statChienDich"><%= ChienDichDangChay %></div>
-            <div class="stat-sub">Dang hoat dong</div>
+            <div class="stat-card-label">Chiến dịch đang chạy</div>
+            <div class="stat-card-value" id="statChienDich"><%= ChienDichDangChay %></div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Nguoi dung dang ky</div>
-            <div class="stat-value" id="statNguoiDung"><%= TongNguoiDung.ToString("N0") %></div>
-            <div class="stat-sub">Tai khoan nguoi dung</div>
+            <div class="stat-card-label">Người dùng đăng ký</div>
+            <div class="stat-card-value" id="statNguoiDung"><%= TongNguoiDung.ToString("N0") %></div>
         </div>
         <div class="stat-card s-green">
-            <div class="stat-label">Giao dich cho duyet</div>
-            <div class="stat-value" id="statChoDuyet"><%= TongChoXuLy %></div>
-            <div class="stat-sub">
-                <% if (TongChoXuLy > 0) { %>
-                    <span style="color:var(--err)">Can xu ly ngay</span>
-                <% } else { %>
-                    Khong co giao dich cho
-                <% } %>
-            </div>
+            <div class="stat-card-label">Giao dịch chờ duyệt</div>
+            <div class="stat-card-value" id="statChoDuyet"><%= TongChoXuLy %></div>
         </div>
     </div>
 
-    <%-- Bieu do + Chien dich tieu bieu --%>
+    <%-- Biểu đồ + Chiến dịch tiêu biểu --%>
     <div class="main-row">
         <div class="card">
             <div class="card-header">
                 <div>
-                    <h3>Quyen gop theo thang</h3>
-                    <div class="sub">Tong tien (trieu dong) — nam <%= DateTime.Now.Year %></div>
+                    <h3>Quyên góp theo tháng</h3>
+                    <div class="sub">Tổng tiền (triệu đồng) — năm <%= DateTime.Now.Year %></div>
                 </div>
             </div>
             <div class="chart-wrap">
@@ -107,30 +80,30 @@
         </div>
         <div class="card">
             <div class="card-header">
-                <h3>Chien dich tieu bieu</h3>
+                <h3>Chiến dịch tiêu biểu</h3>
             </div>
             <ul class="cd-list" id="cdList">
-                <li class="empty-state">Dang tai...</li>
+                <li class="empty-state">Đang tải...</li>
             </ul>
         </div>
     </div>
 
-    <%-- Bang giao dich gan day --%>
+    <%-- Bảng giao dịch gần đây --%>
     <div class="card">
         <div class="card-header">
-            <h3>Giao dich gan day</h3>
-            <a href="<%= ResolveUrl("~/Admin/QuanLyQuyenGop.aspx") %>" class="btn btn-outline btn-sm">Xem tat ca</a>
+            <h3>Giao dịch gần đây</h3>
+            <a href="<%= ResolveUrl("~/Admin/QuanLyQuyenGop.aspx") %>" class="btn btn-outline btn-sm">Xem tất cả</a>
         </div>
         <table class="tbl">
             <thead>
                 <tr>
-                    <th>Ma</th>
-                    <th>Nguoi quyen gop</th>
-                    <th>Chien dich</th>
-                    <th>So tien</th>
-                    <th>Ngay</th>
-                    <th>Trang thai</th>
-                    <th></th>
+                    <th>Mã</th>
+                    <th>Người quyên góp</th>
+                    <th>Chiến dịch</th>
+                    <th>Số tiền</th>
+                    <th>Ngày</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -146,89 +119,61 @@
                     string ngay = Convert.ToDateTime(r["NgayTao"]).ToString("dd/MM/yyyy");
                     string loiNhan = r["LoiNhan"] == DBNull.Value ? "" : r["LoiNhan"].ToString();
                     string anhXN = r["AnhXacNhan"] == DBNull.Value ? "" : r["AnhXacNhan"].ToString();
+
+                    string tsLabel = new[]{"Chờ duyệt","Đã duyệt","Từ chối"}[ts < 3 ? ts : 0];
+                    string tsCls = new[]{"badge-warn","badge-ok","badge-err"}[ts < 3 ? ts : 0];
             %>
                 <tr>
                     <td>#<%= maQG %></td>
+                    <%-- BỎ avatar, chỉ hiển thị tên thuần --%>
                     <td>
-                        <div class="donor-cell">
-                            <div class="donor-av"><%= Initials(hoTen) %></div>
-                            <div>
-                                <div class="donor-name"><%= Server.HtmlEncode(hoTen) %></div>
-                                <div class="donor-email"><%= Server.HtmlEncode(email) %></div>
-                            </div>
-                        </div>
+                        <div style="font-size:12px;font-weight:500"><%= Server.HtmlEncode(hoTen) %></div>
+                        <div style="font-size:10px;color:var(--txt-sub)"><%= Server.HtmlEncode(email) %></div>
                     </td>
-                    <td><%= Server.HtmlEncode(tenCD.Length > 40 ? tenCD.Substring(0,40) + "..." : tenCD) %></td>
-                    <td class="amount-cell"><%= soTien.ToString("N0") %> d</td>
-                    <td><%= ngay %></td>
-                    <td><%= BadgeTrangThai(ts) %></td>
+                    <td style="font-size:12px"><%= Server.HtmlEncode(tenCD) %></td>
+                    <td class="amount-cell"><%= soTien.ToString("N0") %> đ</td>
+                    <td style="font-size:11px;white-space:nowrap"><%= ngay %></td>
+                    <td><span class="badge <%= tsCls %>"><%= tsLabel %></span></td>
                     <td>
-                        <button type="button" class="btn btn-outline btn-xs"
-                            onclick='openDetail(<%= maQG %>,"<%= Server.HtmlEncode(hoTen).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(email).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(tenCD).Replace("\"","&quot;") %>",<%= soTien %>,"<%= ngay %>",<%= ts %>,<%= anDanh ? "true" : "false" %>,"<%= Server.HtmlEncode(loiNhan).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(anhXN).Replace("\"","&quot;") %>")'>
-                            Xem
-                        </button>
+                        <button type="button" class="btn btn-xs btn-outline"
+                            onclick="openDetail(<%= maQG %>,'<%= Server.HtmlEncode(hoTen).Replace("'","\\'") %>','<%= Server.HtmlEncode(email).Replace("'","\\'") %>','<%= Server.HtmlEncode(tenCD).Replace("'","\\'") %>',<%= soTien %>,'<%= ngay %>',<%= ts %>,<%= anDanh.ToString().ToLower() %>,'<%= Server.HtmlEncode(loiNhan).Replace("'","\\'") %>','<%= Server.HtmlEncode(anhXN).Replace("'","\\'") %>')">Xem</button>
+                        <% if (ts == 0) { %>
+                        <button type="button" class="btn btn-xs btn-success" onclick="ajaxDuyet(<%= maQG %>,'duyet')">Duyệt</button>
+                        <button type="button" class="btn btn-xs btn-danger" onclick="ajaxDuyet(<%= maQG %>,'tuchoi','Từ chối từ tổng quan')">Từ chối</button>
+                        <% } %>
                     </td>
                 </tr>
-            <% } } else { %>
-                <tr><td colspan="7" class="empty-state">Chua co giao dich nao.</td></tr>
+            <% }
+            } else { %>
+                <tr><td colspan="7" class="empty-state">Chưa có giao dịch nào.</td></tr>
             <% } %>
             </tbody>
         </table>
     </div>
 
-    <%-- Modal chi tiet giao dich --%>
+    <%-- Modal chi tiết --%>
     <div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
-        <div class="modal">
+        <div class="modal modal-wide">
             <div class="modal-hd">
-                <h3>Chi tiet giao dich</h3>
+                <h3>Chi tiết giao dịch</h3>
                 <button type="button" class="modal-close" onclick="closeDetail()">&#10005;</button>
             </div>
             <div class="modal-body">
                 <div class="detail-grid">
-                    <div class="detail-item">
-                        <label>Ma giao dich</label>
-                        <span class="detail-val" id="dlId"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Ngay tao</label>
-                        <span class="detail-val" id="dlNgay"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Nguoi quyen gop</label>
-                        <span class="detail-val" id="dlNguoi"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Email</label>
-                        <span class="detail-val" id="dlEmail"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Chien dich</label>
-                        <span class="detail-val" id="dlCD"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>So tien</label>
-                        <span class="detail-val" id="dlSoTien" style="font-size:15px;font-weight:700;color:var(--ok)"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Trang thai</label>
-                        <span class="detail-val" id="dlTT"></span>
-                    </div>
-                    <div class="detail-item">
-                        <label>An danh</label>
-                        <span class="detail-val" id="dlAnDanh"></span>
-                    </div>
-                    <div class="detail-item detail-full">
-                        <label>Loi nhan</label>
-                        <span class="detail-val" id="dlLoiNhan" style="font-style:italic;color:var(--txt-sub)"></span>
-                    </div>
-                    <div class="detail-item detail-full">
-                        <label>Anh xac nhan</label>
-                        <div class="proof-wrap" id="dlAnh"></div>
-                    </div>
+                    <div class="detail-item"><label>Mã giao dịch</label><span class="detail-val" id="dlId"></span></div>
+                    <div class="detail-item"><label>Ngày tạo</label><span class="detail-val" id="dlNgay"></span></div>
+                    <div class="detail-item"><label>Người góp</label><span class="detail-val" id="dlNguoi"></span></div>
+                    <div class="detail-item"><label>Email</label><span class="detail-val" id="dlEmail"></span></div>
+                    <div class="detail-item"><label>Chiến dịch</label><span class="detail-val" id="dlCD"></span></div>
+                    <div class="detail-item"><label>Số tiền</label><span class="detail-val" id="dlSoTien" style="font-size:15px;font-weight:700;color:var(--ok)"></span></div>
+                    <div class="detail-item"><label>Trạng thái</label><span class="detail-val" id="dlTT"></span></div>
+                    <div class="detail-item"><label>Ẩn danh</label><span class="detail-val" id="dlAnDanh"></span></div>
+                    <div class="detail-item detail-full"><label>Lời nhắn</label><span class="detail-val" id="dlLoiNhan" style="font-style:italic;color:var(--txt-sub)"></span></div>
+                    <div class="detail-item detail-full"><label>Ảnh xác nhận</label><div class="proof-wrap" id="dlAnh"></div></div>
                 </div>
             </div>
             <div class="modal-ft" id="detailFt">
-                <button type="button" class="btn btn-outline" onclick="closeDetail()">Dong</button>
+                <button type="button" class="btn btn-outline" onclick="closeDetail()">Đóng</button>
             </div>
         </div>
     </div>
@@ -236,14 +181,12 @@
 </asp:Content>
 
 <asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
     (function () {
         'use strict';
         var PAGE_URL = '<%= ResolveUrl("~/Admin/TongQuan.aspx") %>';
         var chart;
 
-        // Bieu do quyen gop theo thang
         function initChart(data) {
             var labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
             var tienTrieu = data.tien.map(function (v) { return Math.round(v / 1000000); });
@@ -253,7 +196,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Quyen gop (tr.d)',
+                        label: 'Quyên góp (triệu đồng)',
                         data: tienTrieu,
                         backgroundColor: '#3182CE',
                         borderRadius: 4,
@@ -262,13 +205,10 @@
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false, animation: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: function (c) { return ' ' + c.parsed.y.toLocaleString('vi-VN') + ' tr.d'; } } }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { beginAtZero: true, ticks: { callback: function (v) { return v.toLocaleString('vi-VN') + ' tr'; } } }
+                        y: { beginAtZero: true, ticks: { callback: function (v) { return v + ' Tr'; } } }
                     }
                 }
             });
@@ -281,15 +221,10 @@
                 body: '__ajax=true&action=chartdata'
             })
                 .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (d.ok) initChart(d);
-                })
-                .catch(function () {
-                    initChart({ tien: new Array(12).fill(0), luot: new Array(12).fill(0) });
-                });
+                .then(function (d) { if (d.ok) initChart(d.data); })
+                .catch(function () { });
         }
 
-        // Load chien dich tieu bieu
         function fetchCampaigns() {
             fetch(PAGE_URL, {
                 method: 'POST',
@@ -300,7 +235,7 @@
                 .then(function (d) {
                     var list = document.getElementById('cdList');
                     if (!d.ok || !d.data || d.data.length === 0) {
-                        list.innerHTML = '<li class="empty-state">Chua co chien dich tieu bieu.</li>';
+                        list.innerHTML = '<li class="empty-state">Chưa có chiến dịch tiêu biểu.</li>';
                         return;
                     }
                     var html = '';
@@ -317,25 +252,25 @@
                 .catch(function () { });
         }
 
-        // Modal chi tiet
+        // Modal chi tiết
         window.openDetail = function (id, nguoi, email, cd, soTien, ngay, tt, anDanh, loiNhan, anhXN) {
             document.getElementById('dlId').textContent = '#' + id;
             document.getElementById('dlNgay').textContent = ngay;
             document.getElementById('dlNguoi').textContent = nguoi;
-            document.getElementById('dlEmail').textContent = email || '(khong co)';
+            document.getElementById('dlEmail').textContent = email || '(không có)';
             document.getElementById('dlCD').textContent = cd;
-            document.getElementById('dlSoTien').textContent = Number(soTien).toLocaleString('vi-VN') + ' d';
-            var ttNames = ['Cho duyet', 'Da duyet', 'Tu choi'];
+            document.getElementById('dlSoTien').textContent = Number(soTien).toLocaleString('vi-VN') + ' đ';
+            var ttNames = ['Chờ duyệt', 'Đã duyệt', 'Từ chối'];
             var ttClasses = ['badge-warn', 'badge-ok', 'badge-err'];
             document.getElementById('dlTT').innerHTML = '<span class="badge ' + (ttClasses[tt] || '') + '">' + (ttNames[tt] || '') + '</span>';
-            document.getElementById('dlAnDanh').textContent = anDanh ? 'Co' : 'Khong';
-            document.getElementById('dlLoiNhan').textContent = loiNhan || '(khong co loi nhan)';
+            document.getElementById('dlAnDanh').textContent = anDanh ? 'Có' : 'Không';
+            document.getElementById('dlLoiNhan').textContent = loiNhan || '(không có lời nhắn)';
 
             var anhEl = document.getElementById('dlAnh');
             if (anhXN) {
-                anhEl.innerHTML = '<img src="' + anhXN + '" alt="Anh xac nhan" />';
+                anhEl.innerHTML = '<img src="' + anhXN + '" alt="Ảnh xác nhận" />';
             } else {
-                anhEl.innerHTML = 'Chua co anh xac nhan';
+                anhEl.innerHTML = 'Chưa có ảnh xác nhận';
             }
             document.getElementById('detailOverlay').classList.add('show');
         };
@@ -343,7 +278,7 @@
             document.getElementById('detailOverlay').classList.remove('show');
         };
 
-        // Duyet / Tu choi tu TongQuan
+        // Duyệt / Từ chối từ Tổng quan
         window.ajaxDuyet = function (id, action, lydo) {
             var body = '__ajax=true&action=' + action + '&id=' + id;
             if (lydo) body += '&lydo=' + encodeURIComponent(lydo);
@@ -355,16 +290,15 @@
                 .then(function (r) { return r.json(); })
                 .then(function (d) {
                     if (d.ok) {
-                        showToast('Thanh cong', d.msg, 'ok');
+                        showToast('Thành công', d.msg, 'ok');
                         setTimeout(function () { location.reload(); }, 1200);
                     } else {
-                        showToast('Loi', d.msg || 'Co loi xay ra', 'err');
+                        showToast('Lỗi', d.msg || 'Có lỗi xảy ra', 'err');
                     }
                 })
-                .catch(function () { showToast('Loi', 'Khong the ket noi server.', 'err'); });
+                .catch(function () { showToast('Lỗi', 'Không thể kết nối server.', 'err'); });
         };
 
-        // Khoi chay
         fetchChartData();
         fetchCampaigns();
     })();
