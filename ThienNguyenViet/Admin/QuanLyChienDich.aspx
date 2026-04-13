@@ -109,7 +109,7 @@
             <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>"
                class="btn-primary"
                style="margin-left:auto;text-decoration:none;height:36px;display:inline-flex;align-items:center;padding:0 14px;font-size:13px">
-                ＋ Thêm chiến dịch mới
+                + Thêm chiến dịch mới
             </a>
         </div>
     </div>

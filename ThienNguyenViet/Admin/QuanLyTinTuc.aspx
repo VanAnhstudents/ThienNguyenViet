@@ -6,67 +6,68 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
 /* ═══════════════════════════════════════════════════════
-   QuanLyTinTuc — synced with QuanLyQuyenGop master
+   QuanLyTinTuc — synced with QuanLyChienDich + TongQuan
 ═══════════════════════════════════════════════════════ */
 
-/* ── Stat row ── */
+/* ── Stat cards (chuẩn stat-card TongQuan) ── */
 .tt-stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px; margin-bottom: 20px;
+    gap: 14px; margin-bottom: 18px;
 }
 .tt-stat-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 20px 18px; text-align: center;
+    border-radius: var(--r-card); padding: 18px 16px;
+    text-align: center; position: relative; overflow: hidden;
     transition: box-shadow .2s;
 }
 .tt-stat-card:hover { box-shadow: 0 2px 12px rgba(49,130,206,.1); }
 .tt-stat-card strong {
-    display: block; font-size: 26px; font-weight: 700;
-    line-height: 1.1; margin-bottom: 4px;
+    display: block; font-size: 24px; font-weight: 700;
+    line-height: 1.1; margin-bottom: 6px;
 }
 .tt-stat-card span {
-    font-size: 11px; color: var(--txt-sub);
-    text-transform: uppercase; letter-spacing: .04em; font-weight: 500;
+    font-size: 10px; color: var(--txt-sub);
+    text-transform: uppercase; letter-spacing: .04em; font-weight: 600;
 }
 
-/* ── Admin card ── */
+/* ── Admin card (chuẩn adm-card) ── */
 .admin-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 14px;
+    border-radius: var(--r-card); padding: 18px 20px; margin-bottom: 18px;
 }
 
 /* ── Page topbar ── */
 .page-topbar {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
 }
 .page-topbar-title { font-size: 13px; font-weight: 600; color: var(--txt); }
 .btn-add-link {
     display: inline-flex; align-items: center; gap: 5px;
-    height: 34px; padding: 0 16px;
+    height: 36px; padding: 0 14px;
     background: var(--accent); color: #fff;
-    border-radius: var(--r); font-size: 12px; font-weight: 600;
+    border-radius: var(--r); font-size: 13px; font-weight: 500;
     text-decoration: none; font-family: var(--font);
     transition: background .15s;
 }
 .btn-add-link:hover { background: #2B6CB0; }
 
-/* ── Tab bar ── */
+/* ── Tab bar (chuẩn status-btn-group) ── */
 .tab-bar {
     display: flex; align-items: center; gap: 5px;
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 6px; margin-bottom: 12px;
+    border-radius: var(--r-card); padding: 8px 14px; margin-bottom: 18px;
     flex-wrap: wrap;
 }
 .tab-btn {
-    height: 34px; padding: 0 16px; border-radius: var(--r);
-    border: 1px solid transparent; background: transparent;
+    height: 36px; padding: 0 13px; border-radius: var(--r);
+    border: 1px solid var(--border); background: var(--bg);
     font-family: var(--font); font-size: 12px; font-weight: 500;
     color: var(--txt-sub); cursor: pointer;
     transition: all .15s; white-space: nowrap;
 }
-.tab-btn:hover  { background: var(--bg); color: var(--txt); }
+.tab-btn:hover  { background: #e2e8f0; color: var(--txt); }
 .tab-btn.active {
     background: var(--accent); color: #fff;
     border-color: var(--accent); font-weight: 600;
@@ -80,27 +81,29 @@
     background: var(--border); color: var(--txt-sub);
 }
 
-/* ── Filter bar ── */
+/* ── Filter bar (chuẩn QuanLyChienDich) ── */
 .filter-bar {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    display: flex; align-items: center;
+    gap: 10px; flex-wrap: wrap;
 }
 .input-search {
-    height: 34px; padding: 0 12px;
+    flex: 1; min-width: 180px; max-width: 280px;
+    height: 36px; padding: 0 12px;
     border: 1px solid var(--border); border-radius: var(--r);
-    font-size: 12px; font-family: var(--font); color: var(--txt);
-    background: var(--bg); min-width: 200px; flex: 1; max-width: 280px;
-    transition: border-color .15s;
+    font-size: 13px; font-family: var(--font); color: var(--txt);
+    background: #fff; transition: border-color .15s;
 }
-.input-search:focus { outline: none; border-color: var(--accent); background: #fff; }
+.input-search:focus { outline: none; border-color: var(--accent); }
 
-/* ── Button group ── */
-.btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+/* ── Button group (chuẩn status-btn-group) ── */
+.btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
 .btn-grp-item {
-    height: 34px; padding: 0 13px;
+    height: 36px; padding: 0 13px;
     border: 1px solid var(--border); border-radius: var(--r);
     background: var(--bg); font-family: var(--font);
     font-size: 12px; font-weight: 500; color: var(--txt-sub);
-    cursor: pointer; white-space: nowrap; transition: all .15s;
+    cursor: pointer; white-space: nowrap;
+    transition: all .15s;
 }
 .btn-grp-item:hover  { background: #e2e8f0; color: var(--txt); }
 .btn-grp-item.active {
@@ -108,9 +111,9 @@
     border-color: var(--accent); font-weight: 600;
 }
 
-/* ── Reset button ── */
+/* ── Reset button (chuẩn btn-outline) ── */
 .btn-outline-sm {
-    height: 34px; padding: 0 14px;
+    height: 36px; padding: 0 14px;
     border: 1px solid var(--border); border-radius: var(--r);
     background: transparent; color: var(--txt-sub);
     font-family: var(--font); font-size: 12px; font-weight: 500;
@@ -127,7 +130,7 @@
 .section-title { font-size: 13px; font-weight: 600; color: var(--txt); }
 .section-count { font-size: 11px; color: var(--txt-sub); }
 
-/* ── Table ── */
+/* ── Table (chuẩn adm-table) ── */
 .admin-table {
     width: 100%; border-collapse: collapse; font-size: 12px;
 }
@@ -139,7 +142,7 @@
     border-bottom: 1px solid var(--border); white-space: nowrap;
 }
 .admin-table tbody td {
-    padding: 10px 12px; border-bottom: 1px solid var(--border);
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
     vertical-align: middle; color: var(--txt);
 }
 .admin-table tbody tr:last-child td { border-bottom: none; }
@@ -148,7 +151,7 @@
 /* ── News cell ── */
 .news-cell  { display: flex; align-items: center; gap: 12px; }
 .news-thumb {
-    width: 64px; height: 44px; border-radius: 6px; overflow: hidden;
+    width: 64px; height: 44px; border-radius: var(--r); overflow: hidden;
     background: var(--bg); border: 1px solid var(--border);
     flex-shrink: 0;
 }
@@ -157,30 +160,30 @@
     width: 100%; height: 100%; display: flex; align-items: center;
     justify-content: center; font-size: 10px; color: var(--txt-sub);
 }
-.news-title   { font-size: 12px; font-weight: 600; color: var(--txt);
+.news-title   { font-size: 13px; font-weight: 600; color: var(--txt);
                  max-width: 260px; white-space: nowrap; overflow: hidden;
                  text-overflow: ellipsis; }
 .news-summary { font-size: 11px; color: var(--txt-sub); margin-top: 2px;
                  max-width: 260px; white-space: nowrap; overflow: hidden;
                  text-overflow: ellipsis; }
 
-/* ── Cat badge ── */
+/* ── Cat badge (chuẩn badge admin.css) ── */
 .cat-badge {
-    display: inline-block; font-size: 10px; font-weight: 600;
-    padding: 3px 9px; border-radius: 4px;
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 4px;
 }
 .view-count { font-size: 12px; font-weight: 500; color: var(--txt); }
 .date-col   { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
 
-/* ── Status badges ── */
-.badge-admin      { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 4px; }
+/* ── Status badges (chuẩn badge admin.css) ── */
+.badge-admin      { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
 .badge-thanh-cong { background: var(--ok-bg);   color: var(--ok-txt); }
 .badge-nhap       { background: var(--warn-bg);  color: var(--warn-txt); }
 
-/* ── Action buttons ── */
+/* ── Action buttons (chuẩn btn-action) ── */
 .btn-sua, .btn-toggle, .btn-xoa {
     display: inline-flex; align-items: center;
-    font-size: 11px; padding: 4px 11px; border-radius: var(--r);
+    font-size: 11px; padding: 3px 9px; border-radius: var(--r);
     border: none; cursor: pointer; font-family: var(--font);
     font-weight: 500; white-space: nowrap; transition: opacity .15s;
     text-decoration: none;
@@ -195,23 +198,24 @@
 .tbl-loading { text-align: center; padding: 32px; color: var(--txt-sub); font-size: 12px; }
 .empty-state { text-align: center; padding: 48px 20px; color: var(--txt-sub); font-size: 13px; }
 
-/* ── Pagination ── */
+/* ── Pagination (chuẩn QuanLyChienDich) ── */
 .pagination-wrap {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 0 2px; gap: 12px; flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: center;
+    gap: 15px; padding: 15px 0;
+    border-top: 1px solid var(--border);
 }
-.paging-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+.paging-btns { display: flex; align-items: center; gap: 6px; }
 .paging-btn {
-    min-width: 36px; height: 36px; padding: 0 10px;
-    border: 1px solid var(--border); border-radius: var(--r);
-    background: var(--card); font-family: var(--font); font-size: 12px;
+    min-width: 38px; height: 38px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--card); font-family: var(--font); font-size: 13px;
     font-weight: 500; color: var(--txt); cursor: pointer;
     transition: background .15s, border-color .15s;
 }
 .paging-btn:hover  { background: var(--bg); border-color: #cbd5e1; }
 .paging-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .paging-btn:disabled { opacity: .4; cursor: not-allowed; }
-.paging-info { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
+.paging-info { font-size: 13px; color: var(--txt-sub); white-space: nowrap; }
 
 /* ── Toast ── */
 #toastWrap {
@@ -222,15 +226,15 @@
     display: flex; align-items: flex-start; gap: 10px;
     background: var(--card); border: 1px solid var(--border);
     border-left: 4px solid var(--accent); border-radius: var(--r-card);
-    padding: 10px 14px; min-width: 240px; max-width: 320px;
+    padding: 10px 14px; min-width: 260px; max-width: 340px;
     pointer-events: all; box-shadow: 0 2px 10px rgba(0,0,0,.08);
     animation: toastIn .2s ease;
 }
 .toast-item.toast-ok  { border-left-color: var(--ok); }
 .toast-item.toast-err { border-left-color: var(--err); }
-.t-msg   { font-size: 12px; color: var(--txt); flex: 1; }
+.t-msg   { font-size: 13px; color: var(--txt); flex: 1; }
 .t-close { font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; }
-@keyframes toastIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:none; } }
+@keyframes toastIn { from { opacity:0; transform:translateX(12px); } to { opacity:1; transform:none; } }
 
 /* ════════════════════════════════════════════════════════
    MODAL: Xóa bài viết
@@ -245,7 +249,8 @@
 .modal-box {
     background: var(--card); border: 1px solid var(--border);
     border-radius: var(--r-card); width: 90%; max-width: 440px;
-    box-shadow: 0 8px 32px rgba(0,0,0,.15); overflow: hidden;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,.15);
 }
 .modal-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -253,29 +258,30 @@
 }
 .modal-header h3 { font-size: 14px; font-weight: 600; color: var(--txt); }
 .modal-close {
-    background: none; border: none; font-size: 17px; color: var(--txt-sub);
-    cursor: pointer; padding: 2px 6px; border-radius: var(--r);
-    transition: background .15s; line-height: 1;
+    background: none; border: none; font-size: 18px;
+    color: var(--txt-sub); cursor: pointer; padding: 2px 6px;
+    border-radius: var(--r); line-height: 1;
+    transition: background .15s, color .15s;
 }
-.modal-close:hover { background: var(--bg); }
+.modal-close:hover { background: var(--bg); color: var(--txt); }
 
-.modal-body { padding: 20px 18px; }
+.modal-body { padding: 18px; }
 .confirm-msg { font-size: 13px; color: var(--txt); margin-bottom: 6px; }
 .confirm-sub { font-size: 12px; color: var(--txt-sub); }
 
 .modal-footer {
     padding: 12px 18px; border-top: 1px solid var(--border);
-    display: flex; justify-content: flex-end; gap: 8px;
+    display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
 }
 .btn-confirm-danger {
-    padding: 7px 18px; font-size: 12px; font-weight: 600;
+    height: 38px; padding: 0 18px; font-size: 13px; font-weight: 500;
     background: var(--err); color: #fff; border: none;
     border-radius: var(--r); cursor: pointer; font-family: var(--font);
     transition: opacity .15s;
 }
 .btn-confirm-danger:hover { opacity: .88; }
 .btn-cancel {
-    padding: 7px 18px; font-size: 12px; font-weight: 500;
+    padding: 6px 16px; font-size: 12px; font-weight: 500;
     background: transparent; color: var(--txt-sub);
     border: 1px solid var(--border); border-radius: var(--r);
     cursor: pointer; font-family: var(--font);
@@ -289,17 +295,23 @@
 }
 @media (max-width: 768px) {
     .tt-stats-row  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .filter-bar    { gap: 8px; }
+    .input-search  { min-width: 100%; max-width: 100%; }
     .admin-table   { display: block; overflow-x: auto; white-space: nowrap; }
     .tab-bar       { gap: 4px; }
-    .tab-btn       { font-size: 11px; padding: 0 10px; }
+    .tab-btn       { font-size: 11px; padding: 0 10px; height: 32px; }
     .news-title, .news-summary { max-width: 180px; }
-    .pagination-wrap { flex-direction: column; align-items: flex-start; }
+    .pagination-wrap { flex-direction: column; gap: 10px; }
+    .modal-box     { width: 95vw; max-width: 95vw; }
 }
 @media (max-width: 480px) {
-    .tt-stats-row { grid-template-columns: 1fr 1fr; }
+    .tt-stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
     .tt-stat-card strong { font-size: 20px; }
     .news-cell { gap: 8px; }
     .news-thumb { width: 48px; height: 34px; }
+    .btn-grp-item { font-size: 11px; padding: 0 10px; height: 32px; }
+    .modal-footer { justify-content: stretch; }
+    .modal-footer button { flex: 1; }
 }
 </style>
 </asp:Content>
@@ -323,7 +335,7 @@
 <%-- Topbar --%>
 <div class="page-topbar">
     <span class="page-topbar-title">Danh sách bài viết</span>
-    <a href="/Admin/FormTinTuc.aspx" class="btn-add-link">Viết bài mới</a>
+    <a href="/Admin/FormTinTuc.aspx" class="btn-add-link">+ Viết bài mới</a>
 </div>
 
 <%-- Tab lọc trạng thái --%>

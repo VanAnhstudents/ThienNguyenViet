@@ -5,20 +5,24 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── Stat cards: căn giữa ──────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   QuanLyQuyenGop — synced with QuanLyChienDich + TongQuan
+═══════════════════════════════════════════════════════ */
+
+/* ── Stat cards (chuẩn stat-card TongQuan) ── */
 .qg-stat-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 18px;
 }
 .qg-stat-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 14px 16px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center;
+    border-radius: var(--r-card); padding: 18px 16px;
+    text-align: center; position: relative; overflow: hidden;
+    transition: box-shadow .2s;
 }
+.qg-stat-card:hover { box-shadow: 0 2px 12px rgba(49,130,206,.1); }
 .qg-stat-icon {
     width: 38px; height: 38px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
@@ -26,28 +30,31 @@
 }
 .qg-stat-info { text-align: center; }
 .qg-stat-info strong {
-    display: block; font-size: 18px; font-weight: 700; line-height: 1.1;
+    display: block; font-size: 24px; font-weight: 700; line-height: 1.1;
+    margin-bottom: 6px;
 }
 .qg-stat-info span {
-    font-size: 10px; color: var(--txt-sub); font-weight: 500;
-    text-transform: uppercase; letter-spacing: .03em;
+    font-size: 10px; color: var(--txt-sub); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .04em;
 }
 
-/* ── Toolbar ─────────────────────────────────────────────── */
+/* ── Toolbar (chuẩn adm-card + filter-bar) ── */
 .qg-toolbar {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 12px 16px;
-    margin-bottom: 14px; display: flex;
+    border-radius: var(--r-card); padding: 14px 18px;
+    margin-bottom: 18px; display: flex;
     align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.qg-tab-group { display: flex; gap: 4px; margin-right: 4px; }
+.qg-tab-group { display: flex; gap: 5px; margin-right: 4px; }
 .qg-tab {
-    padding: 5px 12px; border-radius: var(--r);
-    border: 1px solid var(--border); background: transparent;
-    font-family: var(--font); font-size: 12px; color: var(--txt-sub);
-    cursor: pointer; transition: all .15s; white-space: nowrap;
+    height: 36px; padding: 0 13px; border-radius: var(--r);
+    border: 1px solid var(--border); background: var(--bg);
+    font-family: var(--font); font-size: 12px; font-weight: 500;
+    color: var(--txt-sub); cursor: pointer;
+    transition: all .15s; white-space: nowrap;
+    display: inline-flex; align-items: center;
 }
-.qg-tab:hover   { background: var(--bg); color: var(--txt); }
+.qg-tab:hover   { background: #e2e8f0; color: var(--txt); }
 .qg-tab.active  { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
 .qg-tab .cnt {
     display: inline-block; margin-left: 5px;
@@ -57,30 +64,38 @@
 .qg-tab:not(.active) .cnt { background: var(--border); color: var(--txt-sub); }
 .qg-divider { width: 1px; height: 24px; background: var(--border); }
 .qg-search {
-    flex: 1; min-width: 180px; max-width: 280px; height: 30px;
+    flex: 1; min-width: 180px; max-width: 280px; height: 36px;
     border: 1px solid var(--border); border-radius: var(--r);
-    padding: 0 10px; font-family: var(--font); font-size: 12px;
-    color: var(--txt); background: var(--bg);
+    padding: 0 12px; font-family: var(--font); font-size: 13px;
+    color: var(--txt); background: #fff;
 }
-.qg-search:focus { outline: none; border-color: var(--accent); background: var(--card); }
+.qg-search:focus { outline: none; border-color: var(--accent); }
 .qg-select {
-    height: 30px; border: 1px solid var(--border);
-    border-radius: var(--r); padding: 0 8px;
-    font-family: var(--font); font-size: 12px; color: var(--txt);
-    background: var(--bg); cursor: pointer;
+    height: 36px; border: 1px solid var(--border);
+    border-radius: var(--r); padding: 0 10px;
+    font-family: var(--font); font-size: 13px; color: var(--txt);
+    background: #fff; cursor: pointer;
 }
 .qg-select:focus { outline: none; border-color: var(--accent); }
 .qg-btn-reset {
-    height: 30px; padding: 0 12px; background: transparent;
+    height: 36px; padding: 0 14px; background: transparent;
     color: var(--txt-sub); border: 1px solid var(--border);
-    border-radius: var(--r); font-family: var(--font); font-size: 12px; cursor: pointer;
+    border-radius: var(--r); font-family: var(--font);
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    transition: background .15s, color .15s;
 }
 .qg-btn-reset:hover { background: var(--bg); color: var(--txt); }
 
-/* ── Table card ──────────────────────────────────────────── */
-.qg-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-card); overflow: hidden; }
-.qg-card-hd { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--border); }
-.qg-card-hd-title { font-size: 13px; font-weight: 600; }
+/* ── Table card (chuẩn adm-card) ── */
+.qg-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r-card); overflow: hidden;
+}
+.qg-card-hd {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+}
+.qg-card-hd-title { font-size: 13px; font-weight: 600; color: var(--txt); }
 .qg-count-label   { font-size: 11px; color: var(--txt-sub); }
 
 /* Loading overlay */
@@ -97,41 +112,42 @@
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Table */
+/* Table (chuẩn adm-table) */
 .qg-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .qg-table thead tr { background: var(--thead); }
 .qg-table thead th {
-    padding: 8px 12px; font-size: 10px; font-weight: 600;
+    padding: 9px 12px; font-size: 10px; font-weight: 600;
     color: var(--txt-sub); text-transform: uppercase; letter-spacing: .05em;
     text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap;
 }
-.qg-table tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.qg-table tbody td {
+    padding: 9px 12px; border-bottom: 1px solid var(--border);
+    vertical-align: middle; color: var(--txt);
+}
 .qg-table tbody tr:last-child td { border-bottom: none; }
 .qg-table tbody tr:hover { background: var(--accent-light); }
 
-/* Donor cell */
-.qg-donor { display: flex; align-items: center; gap: 7px; }
+/* Donor cell (chuẩn donor-cell TongQuan) */
+.qg-donor { display: flex; align-items: center; gap: 8px; }
 .qg-av {
     width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 10px; font-weight: 700; flex-shrink: 0;
-    background: var(--stat-blue-bg); color: var(--stat-blue);
+    background: #EBF8FF; color: #2B6CB0;
 }
-.qg-donor-name  { font-size: 12px; font-weight: 500; }
+.qg-donor-name  { font-size: 12px; font-weight: 500; color: var(--txt); }
 .qg-donor-email { font-size: 10px; color: var(--txt-sub); }
 
-/* Campaign cell: tăng độ rộng để không bị cắt */
+/* Campaign cell */
 .qg-cd-name {
-    font-size: 12px; font-weight: 500;
-    max-width: 280px;       /* tăng từ 200px lên 280px */
-    white-space: normal;    /* cho phép xuống dòng thay vì cắt */
-    word-break: break-word;
+    font-size: 12px; font-weight: 500; color: var(--txt);
+    max-width: 280px; white-space: normal; word-break: break-word;
 }
 
 /* Amount */
 .qg-amount { color: var(--ok); font-weight: 600; font-size: 12px; white-space: nowrap; }
 
-/* Lời nhắn */
+/* Message */
 .qg-msg {
     max-width: 160px; font-size: 11px; color: var(--txt-sub);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic;
@@ -144,31 +160,35 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* Actions */
+/* Actions (chuẩn btn-action) */
 .qg-actions { display: flex; gap: 4px; flex-wrap: nowrap; }
 .qg-btn-approve {
     padding: 3px 9px; font-size: 11px; background: var(--ok-bg); color: var(--ok-txt);
-    border: none; border-radius: var(--r); cursor: pointer; font-family: var(--font); font-weight: 500; white-space: nowrap;
+    border: none; border-radius: var(--r); cursor: pointer;
+    font-family: var(--font); font-weight: 500; white-space: nowrap;
 }
 .qg-btn-approve:hover { background: #9ae6b4; }
 .qg-btn-reject {
     padding: 3px 9px; font-size: 11px; background: var(--err-bg); color: var(--err-txt);
-    border: none; border-radius: var(--r); cursor: pointer; font-family: var(--font); font-weight: 500; white-space: nowrap;
+    border: none; border-radius: var(--r); cursor: pointer;
+    font-family: var(--font); font-weight: 500; white-space: nowrap;
 }
 .qg-btn-reject:hover { background: #feb2b2; }
 .qg-btn-view {
     padding: 3px 9px; font-size: 11px; background: var(--info-bg); color: var(--info-txt);
-    border: none; border-radius: var(--r); cursor: pointer; font-family: var(--font); white-space: nowrap;
+    border: none; border-radius: var(--r); cursor: pointer;
+    font-family: var(--font); white-space: nowrap;
 }
 .qg-btn-view:hover { background: #90cdf4; }
 
 /* Empty state */
-.qg-empty { padding: 40px 20px; text-align: center; color: var(--txt-sub); font-size: 12px; }
+.qg-empty { padding: 48px 20px; text-align: center; color: var(--txt-sub); font-size: 13px; }
 
-/* Pagination */
+/* Pagination (chuẩn QuanLyChienDich) */
 .qg-paging {
     display: flex; justify-content: center; align-items: center;
-    gap: 15px; padding: 14px 16px; border-top: 1px solid var(--border);
+    gap: 15px; padding: 15px 0;
+    border-top: 1px solid var(--border);
     font-size: 13px; color: var(--txt-sub);
 }
 .qg-paging-btns { display: flex; align-items: center; gap: 6px; }
@@ -177,12 +197,13 @@
     border: 1px solid var(--border); border-radius: 8px;
     background: var(--card); font-family: var(--font); font-size: 13px;
     font-weight: 500; color: var(--txt); cursor: pointer;
+    transition: background .15s, border-color .15s;
 }
 .qg-page-btn:hover   { background: var(--bg); border-color: #cbd5e1; }
 .qg-page-btn.active  { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
-.qg-page-btn:disabled{ opacity: .4; cursor: not-allowed; pointer-events: none; }
+.qg-page-btn:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
 
-/* ── Modal ───────────────────────────────────────────────── */
+/* ── Modal (chuẩn TongQuan modal) ── */
 .qg-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,.35); z-index: 200;
@@ -200,36 +221,92 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: 14px 18px; border-bottom: 1px solid var(--border);
 }
-.qg-modal-hd h3 { font-size: 14px; font-weight: 600; }
-.qg-modal-close { background: none; border: none; font-size: 16px; color: var(--txt-sub); cursor: pointer; line-height: 1; padding: 2px 4px; }
-.qg-modal-close:hover { color: var(--txt); }
+.qg-modal-hd h3 { font-size: 14px; font-weight: 600; color: var(--txt); }
+.qg-modal-close {
+    background: none; border: none; font-size: 18px;
+    color: var(--txt-sub); cursor: pointer; line-height: 1;
+    padding: 2px 6px; border-radius: var(--r);
+    transition: background .15s, color .15s;
+}
+.qg-modal-close:hover { background: var(--bg); color: var(--txt); }
 .qg-modal-body { padding: 18px; }
-.qg-modal-ft { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+.qg-modal-ft {
+    padding: 12px 18px; border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
+}
 
 /* Detail grid */
-.qg-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.qg-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .qg-detail-full { grid-column: 1 / -1; }
-.qg-detail-item label { display: block; font-size: 10px; font-weight: 600; color: var(--txt-sub); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 3px; }
-.qg-detail-val { font-size: 13px; color: var(--txt); }
+.qg-detail-item label {
+    display: block; font-size: 10px; font-weight: 600;
+    color: var(--txt-sub); text-transform: uppercase;
+    letter-spacing: .05em; margin-bottom: 4px;
+}
+.qg-detail-val { font-size: 13px; color: var(--txt); line-height: 1.5; }
 
 /* Reject modal textarea */
-.qg-form-label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; }
-.qg-textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--r); font-family: var(--font); font-size: 12px; resize: vertical; min-height: 80px; color: var(--txt); }
-.qg-textarea:focus { outline: none; border-color: var(--accent); }
+.qg-form-label { display: block; font-size: 12px; font-weight: 600; color: var(--txt); margin-bottom: 6px; }
+.qg-textarea {
+    width: 100%; padding: 8px 10px;
+    border: 1px solid var(--border); border-radius: var(--r);
+    font-family: var(--font); font-size: 13px;
+    resize: vertical; min-height: 80px; color: var(--txt);
+    outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.qg-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(49,130,206,.1); }
 .qg-textarea.err  { border-color: var(--err); }
 .qg-confirm-msg  { font-size: 13px; color: var(--txt); margin-bottom: 6px; }
 .qg-confirm-sub  { font-size: 12px; color: var(--txt-sub); margin-bottom: 14px; }
 
 /* Modal buttons */
-.qg-btn-yes { padding: 7px 16px; font-size: 12px; font-weight: 500; background: var(--accent); color: #fff; border: none; border-radius: var(--r); cursor: pointer; font-family: var(--font); }
+.qg-btn-yes {
+    height: 38px; padding: 0 18px; font-size: 13px; font-weight: 500;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--r); cursor: pointer; font-family: var(--font);
+}
 .qg-btn-yes.danger { background: var(--err); }
 .qg-btn-yes:hover  { opacity: .9; }
-.qg-btn-cancel { padding: 6px 14px; font-size: 12px; background: transparent; color: var(--txt-sub); border: 1px solid var(--border); border-radius: var(--r); cursor: pointer; font-family: var(--font); }
-.qg-btn-cancel:hover { background: var(--bg); }
+.qg-btn-cancel {
+    padding: 6px 16px; font-size: 12px; font-weight: 500;
+    background: transparent; color: var(--txt-sub);
+    border: 1px solid var(--border); border-radius: var(--r);
+    cursor: pointer; font-family: var(--font);
+    transition: background .15s, color .15s;
+}
+.qg-btn-cancel:hover { background: var(--bg); color: var(--txt); }
 
 /* Proof image */
-.qg-proof-wrap { margin-top: 6px; border: 1px solid var(--border); border-radius: var(--r); padding: 10px; min-height: 80px; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--txt-sub); font-size: 12px; }
-.qg-proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); object-fit: contain; }
+.qg-proof-wrap {
+    margin-top: 6px; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 12px; min-height: 70px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--txt-sub); font-size: 12px;
+}
+.qg-proof-wrap img {
+    max-width: 100%; max-height: 260px;
+    border-radius: var(--r); object-fit: contain;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .qg-stat-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    .qg-stat-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .qg-toolbar      { gap: 8px; }
+    .qg-search       { min-width: 100%; max-width: 100%; }
+    .qg-table        { display: block; overflow-x: auto; white-space: nowrap; }
+    .qg-modal        { width: 95vw; max-width: 95vw; }
+    .qg-detail-grid  { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .qg-stat-grid    { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .qg-stat-info strong { font-size: 20px; }
+    .qg-tab          { font-size: 11px; padding: 0 10px; height: 32px; }
+    .qg-modal-ft     { justify-content: stretch; }
+    .qg-modal-ft button { flex: 1; }
+}
 </style>
 </asp:Content>
 
