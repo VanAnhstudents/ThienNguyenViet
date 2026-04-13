@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Text;
-using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -15,53 +13,71 @@ namespace ThienNguyenViet.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // PhanQuyenHelper.YeuCauAdmin(this);
+            PhanQuyenHelper.YeuCauAdmin(this);
 
             if (Request.QueryString["__ajax"] == "true")
             {
                 Response.ContentType = "application/json; charset=utf-8";
                 Response.Cache.SetNoStore();
-                string action = Request.QueryString["action"] ?? "";
-                try
-                {
-                    switch (action)
-                    {
-                        case "stats": HandleStats(); break;
-                        case "list": HandleList(); break;
-                        case "toggle": HandleToggle(); break;
-                        case "delete": HandleDelete(); break;
-                        default:
-                            Response.Write("{\"ok\":false,\"msg\":\"Unknown action\"}");
-                            break;
-                    }
-                }
+                try { HandleAjax(); }
                 catch (Exception ex)
                 {
-                    Response.Write("{\"ok\":false,\"msg\":" + JsonStr(ex.Message) + "}");
+                    Response.Write("{\"ok\":false,\"msg\":\"" +
+                        ex.Message.Replace("\"", "\\\"") + "\"}");
                 }
                 Response.End();
             }
         }
 
-        /* ── Stats ──────────────────────────────────────────────────── */
+        private void HandleAjax()
+        {
+            switch (Request.QueryString["action"] ?? "")
+            {
+                case "stats": HandleStats(); break;
+                case "danhMuc": HandleDanhMuc(); break;
+                case "list": HandleList(); break;
+                case "toggle": HandleToggle(); break;
+                case "delete": HandleDelete(); break;
+                default:
+                    Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
+                    break;
+            }
+        }
+
+        // Thong ke
         private void HandleStats()
         {
             const string sql = @"
 SELECT
-    COUNT(*)                                           AS Tong,
-    SUM(CASE WHEN TrangThai=1 THEN 1 ELSE 0 END)      AS DaDang,
-    SUM(CASE WHEN TrangThai=0 THEN 1 ELSE 0 END)      AS Nhap,
-    ISNULL(SUM(LuotXem),0)                            AS TongView
+    COUNT(*) AS Tong,
+    SUM(CASE WHEN TrangThai=1 THEN 1 ELSE 0 END) AS XuatBan,
+    SUM(CASE WHEN TrangThai=0 THEN 1 ELSE 0 END) AS Nhap,
+    ISNULL(SUM(LuotXem),0) AS LuotXem
 FROM dbo.TinTuc";
             DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
             if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false}"); return; }
             DataRow r = dt.Rows[0];
             Response.Write(string.Format(
-                "{{\"ok\":true,\"data\":{{\"tong\":{0},\"daDang\":{1},\"nhap\":{2},\"tongView\":{3}}}}}",
-                r["Tong"], r["DaDang"], r["Nhap"], r["TongView"]));
+                "{{\"ok\":true,\"tong\":{0},\"xuatBan\":{1},\"nhap\":{2},\"luotXem\":{3}}}",
+                r["Tong"], r["XuatBan"], r["Nhap"], r["LuotXem"]));
         }
 
-        /* ── List (paginated) ────────────────────────────────────────── */
+        // Danh muc tin tuc
+        private void HandleDanhMuc()
+        {
+            DataTable dt = KetNoiDB.GetDataTable(
+                "SELECT MaDanhMuc, TenDanhMuc FROM dbo.DanhMucTinTuc ORDER BY TenDanhMuc",
+                CommandType.Text);
+            var jss = new JavaScriptSerializer();
+            var rows = new List<object>();
+            foreach (DataRow r in dt.Rows)
+            {
+                rows.Add(new { MaDanhMuc = r["MaDanhMuc"], TenDanhMuc = r["TenDanhMuc"].ToString() });
+            }
+            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(rows) + "}");
+        }
+
+        // Danh sach bai viet
         private void HandleList()
         {
             string tuKhoa = Request.QueryString["tuKhoa"] ?? "";
@@ -71,7 +87,7 @@ FROM dbo.TinTuc";
             int soDong = int.TryParse(Request.QueryString["soDong"], out int s) ? s : 10;
             int offset = (trang - 1) * soDong;
 
-            var prms = new System.Collections.Generic.List<System.Data.SqlClient.SqlParameter>();
+            var prms = new List<SqlParameter>();
             var where = new StringBuilder(" WHERE 1=1");
 
             if (!string.IsNullOrWhiteSpace(tuKhoa))
@@ -99,7 +115,7 @@ INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung"
 
             DataTable dt = KetNoiDB.GetDataTable(sqlData, CommandType.Text, prms.ToArray());
             var jss = new JavaScriptSerializer();
-            var rows = new System.Collections.Generic.List<object>();
+            var rows = new List<object>();
             foreach (DataRow r in dt.Rows)
             {
                 rows.Add(new
@@ -118,50 +134,34 @@ INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung"
             Response.Write("{\"ok\":true,\"total\":" + total + ",\"data\":" + jss.Serialize(rows) + "}");
         }
 
-        /* ── Toggle trạng thái ───────────────────────────────────────── */
+        // Toggle trang thai (an/hien)
         private void HandleToggle()
         {
             int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
-            object current = KetNoiDB.ExecuteScalar(
-                "SELECT TrangThai FROM dbo.TinTuc WHERE MaTinTuc=@id",
-                CommandType.Text, KetNoiDB.P("@id", id));
-            if (current == null || current == DBNull.Value)
-            { Response.Write("{\"ok\":false,\"msg\":\"Không tìm thấy bài viết.\"}"); return; }
-
-            int newStatus = Convert.ToInt32(current) == 1 ? 0 : 1;
             KetNoiDB.ExecuteNonQuery(
-                "UPDATE dbo.TinTuc SET TrangThai=@ts, NgayCapNhat=GETDATE() WHERE MaTinTuc=@id",
-                CommandType.Text,
-                KetNoiDB.P("@ts", newStatus),
-                KetNoiDB.P("@id", id));
-            Response.Write("{\"ok\":true,\"newStatus\":" + newStatus + "}");
+                "UPDATE dbo.TinTuc SET TrangThai = CASE WHEN TrangThai=1 THEN 0 ELSE 1 END WHERE MaTinTuc=@id",
+                CommandType.Text, KetNoiDB.P("@id", id));
+            Response.Write("{\"ok\":true}");
         }
 
-        /* ── Delete ──────────────────────────────────────────────────── */
+        // Xoa bai viet
         private void HandleDelete()
         {
             int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
             try
             {
-                KetNoiDB.ExecuteNonQuery(
-                    "DELETE FROM dbo.TinTuc WHERE MaTinTuc=@id",
+                KetNoiDB.ExecuteNonQuery("DELETE FROM dbo.TinTuc WHERE MaTinTuc=@id",
                     CommandType.Text, KetNoiDB.P("@id", id));
                 Response.Write("{\"ok\":true}");
             }
-            catch (Exception ex)
+            catch
             {
-                Response.Write("{\"ok\":false,\"msg\":" + JsonStr(ex.Message) + "}");
+                Response.Write("{\"ok\":false,\"msg\":\"Khong the xoa bai viet nay.\"}");
             }
-        }
-
-        private static string JsonStr(string s)
-        {
-            if (s == null) return "null";
-            return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
         }
     }
 }

@@ -5,196 +5,53 @@
 
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── TongQuan: Chart + Campaign row ── */
-.tq-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,.35); z-index: 200;
-    align-items: center; justify-content: center;
-}
-.tq-overlay.show { display: flex; }
+    /* ── TongQuan: bo sung ── */
+    .s-blue .stat-value  { color: var(--accent); }
+    .s-green .stat-value { color: var(--ok); }
 
-.tq-modal {
-    background: var(--card); border-radius: var(--r-card);
-    border: 1px solid var(--border); width: 90%; max-width: 540px;
-    max-height: 90vh; overflow-y: auto;
-    box-shadow: 0 8px 32px rgba(0,0,0,.15);
-}
+    .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
 
-/* ── Top bar modal ── */
-.tq-modal-hd {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 18px; border-bottom: 1px solid var(--border);
-}
-.tq-modal-hd h3 { font-size: 14px; font-weight: 600; color: var(--txt); }
-.tq-modal-close {
-    background: none; border: none; font-size: 18px;
-    color: var(--txt-sub); cursor: pointer; line-height: 1;
-    padding: 2px 6px; border-radius: var(--r);
-    transition: background .15s, color .15s;
-}
-.tq-modal-close:hover { background: var(--bg); color: var(--txt); }
+    .chart-wrap { position: relative; height: 280px; }
 
-.tq-modal-body { padding: 18px; }
+    /* Campaign list */
+    .cd-list { list-style: none; }
+    .cd-item {
+        padding: 12px 0; border-bottom: 1px solid var(--border);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .cd-item:last-child { border-bottom: none; }
+    .cd-item-name { font-size: 13px; font-weight: 500; flex: 1; margin-right: 10px; }
+    .cd-item-pct { font-size: 12px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+    .cd-item-bar { width: 100%; margin-top: 6px; }
 
-/* ── Detail grid ── */
-.tq-detail-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-}
-.tq-detail-full { grid-column: 1 / -1; }
-.tq-detail-item label {
-    display: block; font-size: 10px; font-weight: 600;
-    color: var(--txt-sub); text-transform: uppercase;
-    letter-spacing: .05em; margin-bottom: 4px;
-}
-.tq-detail-val { font-size: 13px; color: var(--txt); line-height: 1.5; }
+    /* Donor cell */
+    .donor-cell { display: flex; align-items: center; gap: 8px; }
+    .donor-av {
+        width: 28px; height: 28px; border-radius: 50%;
+        background: var(--accent-light); color: var(--accent);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 10px; font-weight: 700; flex-shrink: 0;
+    }
+    .donor-name { font-size: 12px; font-weight: 500; }
+    .donor-email { font-size: 10px; color: var(--txt-sub); }
 
-/* ── Modal footer ── */
-.tq-modal-ft {
-    padding: 12px 18px; border-top: 1px solid var(--border);
-    display: flex; justify-content: flex-end; gap: 8px;
-    flex-wrap: wrap;
-}
-.tq-btn-close {
-    padding: 6px 16px; font-size: 12px; font-weight: 500;
-    background: transparent; color: var(--txt-sub);
-    border: 1px solid var(--border); border-radius: var(--r);
-    cursor: pointer; font-family: var(--font);
-    transition: background .15s, color .15s;
-}
-.tq-btn-close:hover { background: var(--bg); color: var(--txt); }
+    .amount-cell { color: var(--ok); font-weight: 600; font-size: 12px; white-space: nowrap; }
 
-/* ── Proof image wrap ── */
-.tq-proof-wrap {
-    margin-top: 6px; border: 1px solid var(--border); border-radius: var(--r);
-    padding: 12px; min-height: 70px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg); color: var(--txt-sub); font-size: 12px;
-}
-.tq-proof-wrap img {
-    max-width: 100%; max-height: 260px;
-    border-radius: var(--r); object-fit: contain;
-}
+    /* Proof image */
+    .proof-wrap {
+        margin-top: 6px; border: 1px solid var(--border);
+        border-radius: var(--r); padding: 10px;
+        display: flex; align-items: center; justify-content: center;
+        background: var(--bg); min-height: 60px; font-size: 12px; color: var(--txt-sub);
+    }
+    .proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); }
 
-/* ── Stat cards: center ── */
-.stat-card           { position: relative; overflow: hidden; }
-.stat-card-top       { text-align: center; margin-bottom: 8px; }
-.stat-label          { font-size: 10px; font-weight: 600; color: var(--txt-sub);
-                        text-transform: uppercase; letter-spacing: .04em;
-                        margin-bottom: 6px; text-align: center; }
-.stat-value          { font-size: 24px; font-weight: 700; color: var(--txt);
-                        line-height: 1.1; text-align: center; }
-.stat-sub            { font-size: 11px; color: var(--txt-sub); text-align: center; }
-.stat-sub .up        { color: var(--ok); font-weight: 600; }
-.stat-sub .down      { color: var(--err); font-weight: 600; }
-
-/* ── s- color variants ── */
-.s-blue   .stat-value { color: #3182CE; }
-.s-orange .stat-value { color: #C05621; }
-.s-purple .stat-value { color: #6B46C1; }
-.s-green  .stat-value { color: var(--ok); }
-
-/* ── Main row: chart = 2 stat cards, campaigns = remaining ──
-   stat-grid = 4 cols → chart should be 2/4 = 50%
-   Campaign = 50%  → grid 1fr 1fr works fine                 */
-.main-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin-bottom: 18px;
-    align-items: stretch;
-}
-
-/* Chart height matches its card flexibly */
-.chart-wrap {
-    position: relative;
-    height: 240px;
-}
-
-/* Campaign list */
-.campaign-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    overflow-y: auto;
-    max-height: 240px;
-    padding-right: 2px;
-}
-.campaign-list::-webkit-scrollbar { width: 4px; }
-.campaign-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-.c-item-top {
-    display: flex; justify-content: space-between;
-    align-items: flex-start; margin-bottom: 5px; gap: 8px;
-}
-.c-name {
-    font-size: 12px; font-weight: 500; color: var(--txt);
-    white-space: normal; word-break: break-word;
-    flex: 1;
-}
-.c-pct { font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
-
-.progress-bar  { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 99px; background: var(--accent); transition: width .4s ease; }
-
-.c-item-bot {
-    display: flex; justify-content: space-between; margin-top: 4px;
-}
-.c-item-bot span { font-size: 10px; color: var(--txt-sub); }
-
-/* ── Summary row ── */
-.summary-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-bottom: 18px;
-}
-.summary-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: var(--r-card); padding: 16px 18px; text-align: center;
-}
-.summary-card strong { display: block; font-size: 22px; font-weight: 700; color: var(--txt); }
-.summary-card span   { font-size: 11px; color: var(--txt-sub); }
-
-/* ── Donor cell ── */
-.donor-cell { display: flex; align-items: center; gap: 8px; }
-.donor-av {
-    width: 28px; height: 28px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700; flex-shrink: 0;
-    background: #EBF8FF; color: #2B6CB0;
-}
-.donor-name  { font-size: 12px; font-weight: 500; color: var(--txt); }
-.donor-email { font-size: 10px; color: var(--txt-sub); }
-.amount-pos  { color: var(--ok); font-weight: 600; }
-
-/* ── Table footer ── */
-.tbl-footer {
-    display: flex; justify-content: flex-end; align-items: center;
-    padding-top: 10px; border-top: 1px solid var(--border); margin-top: 4px;
-}
-.tbl-footer a { font-size: 12px; color: var(--accent); font-weight: 500; text-decoration: none; }
-.tbl-footer a:hover { text-decoration: underline; }
-
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-    .main-row         { grid-template-columns: 1fr; }
-    .summary-row      { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 768px) {
-    .stat-grid        { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .summary-row      { grid-template-columns: 1fr; }
-    .main-row         { grid-template-columns: 1fr; }
-    .tq-detail-grid   { grid-template-columns: 1fr; }
-    .tq-modal         { width: 95vw; max-width: 95vw; }
-    .chart-wrap       { height: 200px; }
-    .campaign-list    { max-height: none; }
-}
-@media (max-width: 480px) {
-    .stat-grid        { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .stat-value       { font-size: 20px; }
-    .tq-modal-ft      { justify-content: stretch; }
-    .tq-modal-ft button { flex: 1; justify-content: center; }
-}
+    @media (max-width: 1024px) {
+        .main-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+        .chart-wrap { height: 200px; }
+    }
 </style>
 </asp:Content>
 
@@ -205,236 +62,173 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- 4 Thẻ thống kê --%>
+    <%-- 4 The thong ke --%>
     <div class="stat-grid">
-
         <div class="stat-card s-blue">
-            <div class="stat-card-top">
-                <div class="stat-label">Tổng quyên góp</div>
-                <div class="stat-value" id="statTongTien"><%= FormatTien(TongTienDaQuyen) %></div>
-            </div>
-            <div class="stat-sub">Tính đến hôm nay</div>
+            <div class="stat-label">Tong quyen gop</div>
+            <div class="stat-value" id="statTongTien"><%= FormatTien(TongTienDaQuyen) %></div>
+            <div class="stat-sub">Tinh den hom nay</div>
         </div>
-
-        <div class="stat-card s-orange">
-            <div class="stat-card-top">
-                <div class="stat-label">Chiến dịch đang chạy</div>
-                <div class="stat-value" id="statChienDich"><%= ChienDichDangChay %></div>
-            </div>
-            <div class="stat-sub">Đang hoạt động</div>
+        <div class="stat-card">
+            <div class="stat-label">Chien dich dang chay</div>
+            <div class="stat-value" id="statChienDich"><%= ChienDichDangChay %></div>
+            <div class="stat-sub">Dang hoat dong</div>
         </div>
-
-        <div class="stat-card s-purple">
-            <div class="stat-card-top">
-                <div class="stat-label">Người dùng đăng ký</div>
-                <div class="stat-value" id="statNguoiDung"><%= TongNguoiDung.ToString("N0") %></div>
-            </div>
-            <div class="stat-sub">Tài khoản người dùng</div>
+        <div class="stat-card">
+            <div class="stat-label">Nguoi dung dang ky</div>
+            <div class="stat-value" id="statNguoiDung"><%= TongNguoiDung.ToString("N0") %></div>
+            <div class="stat-sub">Tai khoan nguoi dung</div>
         </div>
-
         <div class="stat-card s-green">
-            <div class="stat-card-top">
-                <div class="stat-label">Giao dịch chờ duyệt</div>
-                <div class="stat-value" id="statChoDuyet"><%= TongChoXuLy %></div>
-            </div>
+            <div class="stat-label">Giao dich cho duyet</div>
+            <div class="stat-value" id="statChoDuyet"><%= TongChoXuLy %></div>
             <div class="stat-sub">
                 <% if (TongChoXuLy > 0) { %>
-                    <span class="down">Cần xử lý ngay</span>
+                    <span style="color:var(--err)">Can xu ly ngay</span>
                 <% } else { %>
-                    Không có giao dịch chờ
+                    Khong co giao dich cho
                 <% } %>
             </div>
         </div>
-
     </div>
 
-    <%-- Biểu đồ + Chiến dịch tiêu biểu --%>
+    <%-- Bieu do + Chien dich tieu bieu --%>
     <div class="main-row">
-
-        <div class="adm-card">
-            <div class="adm-card-hd">
+        <div class="card">
+            <div class="card-header">
                 <div>
-                    <h3>Quyên góp theo tháng</h3>
-                    <div class="sub">Tổng tiền (triệu đồng) — năm <%= DateTime.Now.Year %></div>
+                    <h3>Quyen gop theo thang</h3>
+                    <div class="sub">Tong tien (trieu dong) — nam <%= DateTime.Now.Year %></div>
                 </div>
-                <button type="button" class="btn-outline" onclick="exportCSV()">Xuất CSV</button>
             </div>
             <div class="chart-wrap">
                 <canvas id="chartQG"></canvas>
             </div>
         </div>
-
-        <div class="adm-card">
-            <div class="adm-card-hd">
-                <div>
-                    <h3>Chiến dịch tiêu biểu</h3>
-                    <div class="sub">Tiến độ theo mục tiêu</div>
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Chien dich tieu bieu</h3>
             </div>
-            <div class="campaign-list" id="campaignList">
-                <% for (int i = 0; i < 4; i++) { %>
-                <div>
-                    <div class="skeleton" style="width:70%;margin-bottom:6px"></div>
-                    <div class="skeleton" style="width:100%;height:4px;border-radius:99px"></div>
-                </div>
-                <% } %>
-            </div>
-        </div>
-
-    </div>
-
-    <%-- 3 Summary cards --%>
-    <div class="summary-row">
-        <div class="summary-card">
-            <strong><%= GiaoDichThang.ToString("N0") %></strong>
-            <span>Giao dịch trong tháng <%= DateTime.Now.Month %></span>
-        </div>
-        <div class="summary-card">
-            <strong><%= GiaoDichDaDuyet.ToString("N0") %></strong>
-            <span>Giao dịch đã được duyệt</span>
-        </div>
-        <div class="summary-card">
-            <strong><%= ChienDichHoanThanh %></strong>
-            <span>Chiến dịch hoàn thành mục tiêu</span>
+            <ul class="cd-list" id="cdList">
+                <li class="empty-state">Dang tai...</li>
+            </ul>
         </div>
     </div>
 
-    <%-- Bảng giao dịch gần đây --%>
-    <div class="adm-card">
-        <div class="adm-card-hd">
-            <div>
-                <h3>Giao dịch quyên góp gần đây</h3>
-                <div class="sub">10 giao dịch mới nhất</div>
-            </div>
+    <%-- Bang giao dich gan day --%>
+    <div class="card">
+        <div class="card-header">
+            <h3>Giao dich gan day</h3>
+            <a href="<%= ResolveUrl("~/Admin/QuanLyQuyenGop.aspx") %>" class="btn btn-outline btn-sm">Xem tat ca</a>
         </div>
-
-        <table class="adm-table" id="tblGiaoDich">
+        <table class="tbl">
             <thead>
                 <tr>
-                    <th>Mã GD</th>
-                    <th>Người quyên góp</th>
-                    <th>Chiến dịch</th>
-                    <th>Số tiền</th>
-                    <th>Ngày</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
+                    <th>Ma</th>
+                    <th>Nguoi quyen gop</th>
+                    <th>Chien dich</th>
+                    <th>So tien</th>
+                    <th>Ngay</th>
+                    <th>Trang thai</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
             <% if (DtGiaoDich != null && DtGiaoDich.Rows.Count > 0) {
-                   foreach (System.Data.DataRow r in DtGiaoDich.Rows) {
-                       int      ma      = Convert.ToInt32(r["MaQuyenGop"]);
-                       string   hoTen   = r["HoTen"].ToString();
-                       string   email   = r["Email"]    == DBNull.Value ? "" : r["Email"].ToString();
-                       string   chiDich = r["TenChienDich"].ToString();
-                       long     soTien  = Convert.ToInt64(r["SoTien"]);
-                       int      ts      = Convert.ToInt32(r["TrangThai"]);
-                       DateTime ngay    = Convert.ToDateTime(r["NgayTao"]);
-                       bool     anDanh  = Convert.ToBoolean(r["AnDanh"]);
-                       string   loiNhan = r.Table.Columns.Contains("LoiNhan") && r["LoiNhan"] != DBNull.Value ? r["LoiNhan"].ToString() : "";
-                       string   anhXN   = r.Table.Columns.Contains("AnhXacNhan") && r["AnhXacNhan"] != DBNull.Value ? r["AnhXacNhan"].ToString() : "";
+                foreach (System.Data.DataRow r in DtGiaoDich.Rows) {
+                    int maQG = Convert.ToInt32(r["MaQuyenGop"]);
+                    string hoTen = r["HoTen"].ToString();
+                    string email = r["Email"] == DBNull.Value ? "" : r["Email"].ToString();
+                    string tenCD = r["TenChienDich"].ToString();
+                    long soTien = Convert.ToInt64(r["SoTien"]);
+                    int ts = Convert.ToInt32(r["TrangThai"]);
+                    bool anDanh = r["AnDanh"] != DBNull.Value && Convert.ToBoolean(r["AnDanh"]);
+                    string ngay = Convert.ToDateTime(r["NgayTao"]).ToString("dd/MM/yyyy");
+                    string loiNhan = r["LoiNhan"] == DBNull.Value ? "" : r["LoiNhan"].ToString();
+                    string anhXN = r["AnhXacNhan"] == DBNull.Value ? "" : r["AnhXacNhan"].ToString();
             %>
-                <tr id="row-<%= ma %>">
-                    <td>#<%= ma %></td>
+                <tr>
+                    <td>#<%= maQG %></td>
                     <td>
                         <div class="donor-cell">
                             <div class="donor-av"><%= Initials(hoTen) %></div>
                             <div>
                                 <div class="donor-name"><%= Server.HtmlEncode(hoTen) %></div>
-                                <% if (!anDanh && !string.IsNullOrEmpty(email)) { %>
                                 <div class="donor-email"><%= Server.HtmlEncode(email) %></div>
-                                <% } %>
                             </div>
                         </div>
                     </td>
-                    <td><%= Server.HtmlEncode(chiDich) %></td>
-                    <td class="amount-pos"><%= string.Format("{0:N0}", soTien) %> ₫</td>
-                    <td><%= ngay.ToString("dd/MM/yy HH:mm") %></td>
+                    <td><%= Server.HtmlEncode(tenCD.Length > 40 ? tenCD.Substring(0,40) + "..." : tenCD) %></td>
+                    <td class="amount-cell"><%= soTien.ToString("N0") %> d</td>
+                    <td><%= ngay %></td>
                     <td><%= BadgeTrangThai(ts) %></td>
-                    <td style="white-space:nowrap">
-                        <% if (ts == 0) { %>
-                        <button type="button" class="btn-approve"
-                            onclick="doAction(<%= ma %>,'duyet')">Duyệt</button>
-                        <button type="button" class="btn-reject"
-                            onclick="doAction(<%= ma %>,'tuchoi')">Từ chối</button>
-                        <% } %>
-                        <button type="button" class="btn-edit"
-                            onclick='openDetail(<%= ma %>,"<%= Server.HtmlEncode(hoTen).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(email).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(chiDich).Replace("\"","&quot;") %>",<%= soTien %>,"<%= ngay.ToString("dd/MM/yyyy HH:mm") %>",<%= ts %>,<%= anDanh ? "true" : "false" %>,"<%= Server.HtmlEncode(loiNhan).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(anhXN).Replace("\"","&quot;") %>")'>
+                    <td>
+                        <button type="button" class="btn btn-outline btn-xs"
+                            onclick='openDetail(<%= maQG %>,"<%= Server.HtmlEncode(hoTen).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(email).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(tenCD).Replace("\"","&quot;") %>",<%= soTien %>,"<%= ngay %>",<%= ts %>,<%= anDanh ? "true" : "false" %>,"<%= Server.HtmlEncode(loiNhan).Replace("\"","&quot;") %>","<%= Server.HtmlEncode(anhXN).Replace("\"","&quot;") %>")'>
                             Xem
                         </button>
                     </td>
                 </tr>
-            <%  }
-               } else { %>
-                <tr>
-                    <td colspan="7" style="text-align:center;color:var(--txt-sub);padding:20px">
-                        Chưa có giao dịch nào.
-                    </td>
-                </tr>
+            <% } } else { %>
+                <tr><td colspan="7" class="empty-state">Chua co giao dich nao.</td></tr>
             <% } %>
             </tbody>
         </table>
-
-        <div class="tbl-footer">
-            <a href="<%= ResolveUrl("~/Admin/QuanLyQuyenGop.aspx") %>">
-                Xem toàn bộ lịch sử →
-            </a>
-        </div>
     </div>
 
-    <%-- Modal chi tiết giao dịch --%>
-    <div class="tq-overlay" id="tqModalOverlay" onclick="closeTqOverlay(event)">
-        <div class="tq-modal">
-            <div class="tq-modal-hd">
-                <h3>Chi tiết giao dịch</h3>
-                <button type="button" class="tq-modal-close" onclick="closeTqModal()">✕</button>
+    <%-- Modal chi tiet giao dich --%>
+    <div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+        <div class="modal">
+            <div class="modal-hd">
+                <h3>Chi tiet giao dich</h3>
+                <button type="button" class="modal-close" onclick="closeDetail()">&#10005;</button>
             </div>
-            <div class="tq-modal-body">
-                <div class="tq-detail-grid">
-                    <div class="tq-detail-item">
-                        <label>Mã giao dịch</label>
-                        <span class="tq-detail-val" id="tq-id"></span>
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>Ma giao dich</label>
+                        <span class="detail-val" id="dlId"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Ngày tạo</label>
-                        <span class="tq-detail-val" id="tq-ngay"></span>
+                    <div class="detail-item">
+                        <label>Ngay tao</label>
+                        <span class="detail-val" id="dlNgay"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Người quyên góp</label>
-                        <span class="tq-detail-val" id="tq-nguoi"></span>
+                    <div class="detail-item">
+                        <label>Nguoi quyen gop</label>
+                        <span class="detail-val" id="dlNguoi"></span>
                     </div>
-                    <div class="tq-detail-item">
+                    <div class="detail-item">
                         <label>Email</label>
-                        <span class="tq-detail-val" id="tq-email"></span>
+                        <span class="detail-val" id="dlEmail"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Chiến dịch</label>
-                        <span class="tq-detail-val" id="tq-cd"></span>
+                    <div class="detail-item">
+                        <label>Chien dich</label>
+                        <span class="detail-val" id="dlCD"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Số tiền</label>
-                        <span class="tq-detail-val" id="tq-sotien" style="font-size:15px;font-weight:700;color:var(--ok)"></span>
+                    <div class="detail-item">
+                        <label>So tien</label>
+                        <span class="detail-val" id="dlSoTien" style="font-size:15px;font-weight:700;color:var(--ok)"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Trạng thái</label>
-                        <span class="tq-detail-val" id="tq-tt"></span>
+                    <div class="detail-item">
+                        <label>Trang thai</label>
+                        <span class="detail-val" id="dlTT"></span>
                     </div>
-                    <div class="tq-detail-item">
-                        <label>Ẩn danh</label>
-                        <span class="tq-detail-val" id="tq-andanh"></span>
+                    <div class="detail-item">
+                        <label>An danh</label>
+                        <span class="detail-val" id="dlAnDanh"></span>
                     </div>
-                    <div class="tq-detail-item tq-detail-full">
-                        <label>Lời nhắn</label>
-                        <span class="tq-detail-val" id="tq-loinhan" style="font-style:italic;color:var(--txt-sub)"></span>
+                    <div class="detail-item detail-full">
+                        <label>Loi nhan</label>
+                        <span class="detail-val" id="dlLoiNhan" style="font-style:italic;color:var(--txt-sub)"></span>
                     </div>
-                    <div class="tq-detail-item tq-detail-full">
-                        <label>Ảnh xác nhận</label>
-                        <div class="tq-proof-wrap" id="tq-anh"></div>
+                    <div class="detail-item detail-full">
+                        <label>Anh xac nhan</label>
+                        <div class="proof-wrap" id="dlAnh"></div>
                     </div>
                 </div>
             </div>
-            <div class="tq-modal-ft" id="tqModalFt">
-                <button type="button" class="tq-btn-close" onclick="closeTqModal()">Đóng</button>
+            <div class="modal-ft" id="detailFt">
+                <button type="button" class="btn btn-outline" onclick="closeDetail()">Dong</button>
             </div>
         </div>
     </div>
@@ -446,232 +240,133 @@
 <script>
     (function () {
         'use strict';
-
         var PAGE_URL = '<%= ResolveUrl("~/Admin/TongQuan.aspx") %>';
+        var chart;
 
-    /* ── 1. Biểu đồ qua AJAX ─────────────────────────────────── */
-    var chart;
-
-    function initChart(data) {
-        var labels     = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
-        var tienTrieu  = data.tien.map(function (v) { return Math.round(v / 1000000); });
-
-        var ctx = document.getElementById('chartQG').getContext('2d');
-        chart   = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{ label: 'Quyên góp (tr.đ)', data: tienTrieu,
-                    backgroundColor: '#3182CE', borderRadius: 4, borderSkipped: false }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, animation: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { callbacks: { label: function (ctx) {
-                        return ' ' + ctx.parsed.y.toLocaleString('vi-VN') + ' tr.đ';
-                    }}}
+        // Bieu do quyen gop theo thang
+        function initChart(data) {
+            var labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
+            var tienTrieu = data.tien.map(function (v) { return Math.round(v / 1000000); });
+            var ctx = document.getElementById('chartQG').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Quyen gop (tr.d)',
+                        data: tienTrieu,
+                        backgroundColor: '#3182CE',
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
                 },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: { beginAtZero: true,
-                         ticks: { callback: function (v) { return v.toLocaleString('vi-VN') + ' tr'; }}}
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function (c) { return ' ' + c.parsed.y.toLocaleString('vi-VN') + ' tr.d'; } } }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { callback: function (v) { return v.toLocaleString('vi-VN') + ' tr'; } } }
+                    }
                 }
-            }
-        });
-    }
-
-    function fetchChartData() {
-        fetch(PAGE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: '__ajax=true&action=chartdata'
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-            if (d.ok) initChart(d);
-        })
-        .catch(function () {
-            initChart({ tien: new Array(12).fill(0), luot: new Array(12).fill(0) });
-        });
-    }
-
-    /* ── 2. Chiến dịch nổi bật ────────────────────────────────── */
-    function fetchCampaigns() {
-        fetch(PAGE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: '__ajax=true&action=campaigns'
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-            if (!d.ok) return;
-            var wrap = document.getElementById('campaignList');
-            if (!d.data.length) {
-                wrap.innerHTML = '<p style="font-size:12px;color:var(--txt-sub)">Chưa có chiến dịch nổi bật.</p>';
-                return;
-            }
-            var html = '';
-            d.data.forEach(function (c) {
-                var pct  = Math.min(c.pct, 100);
-                var daDat = Math.round(c.quyen   / 1000000);
-                var mt    = Math.round(c.muctieu / 1000000);
-                html +=
-                    '<div>' +
-                    '<div class="c-item-top">' +
-                    '<span class="c-name" title="' + c.ten + '">' + c.ten + '</span>' +
-                    '<span class="c-pct">' + pct + '%</span>' +
-                    '</div>' +
-                    '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-                    '<div class="c-item-bot">' +
-                    '<span>' + daDat.toLocaleString('vi-VN') + ' tr.đ</span>' +
-                    '<span>MĐ: ' + mt.toLocaleString('vi-VN') + ' tr.đ</span>' +
-                    '</div></div>';
             });
-            wrap.innerHTML = html;
-        });
-    }
+        }
 
-    /* ── 3. Duyệt / Từ chối (với confirm dialog) ──────────────── */
-    window.doAction = function (id, action) {
-        var title = action === 'duyet' ? 'Duyệt giao dịch' : 'Từ chối giao dịch';
-        var msg   = action === 'duyet'
-            ? 'Xác nhận duyệt giao dịch #' + id + '?'
-            : 'Xác nhận từ chối giao dịch #' + id + '?';
-        var cls   = action === 'tuchoi' ? 'btn-reject' : '';
+        function fetchChartData() {
+            fetch(PAGE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: '__ajax=true&action=chartdata'
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (d.ok) initChart(d);
+                })
+                .catch(function () {
+                    initChart({ tien: new Array(12).fill(0), luot: new Array(12).fill(0) });
+                });
+        }
 
-        admConfirm({
-            title: title, msg: msg, okLabel: title, okClass: cls,
-            onOk: function () { sendAction(id, action); }
-        });
-    };
+        // Load chien dich tieu bieu
+        function fetchCampaigns() {
+            fetch(PAGE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: '__ajax=true&action=campaigns'
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    var list = document.getElementById('cdList');
+                    if (!d.ok || !d.data || d.data.length === 0) {
+                        list.innerHTML = '<li class="empty-state">Chua co chien dich tieu bieu.</li>';
+                        return;
+                    }
+                    var html = '';
+                    d.data.forEach(function (cd) {
+                        var pct = cd.PhanTram || 0;
+                        if (pct > 100) pct = 100;
+                        html += '<li class="cd-item"><div style="flex:1">' +
+                            '<div class="cd-item-name">' + cd.TenChienDich + '</div>' +
+                            '<div class="cd-item-bar"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div></div>' +
+                            '</div><div class="cd-item-pct">' + pct.toFixed(1) + '%</div></li>';
+                    });
+                    list.innerHTML = html;
+                })
+                .catch(function () { });
+        }
 
-    function sendAction(id, action) {
-        fetch(PAGE_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: '__ajax=true&action=' + action + '&id=' + id
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-            if (d.ok) {
-                admToast('Thành công', d.msg, 'ok');
-                updateRow(id, action);
+        // Modal chi tiet
+        window.openDetail = function (id, nguoi, email, cd, soTien, ngay, tt, anDanh, loiNhan, anhXN) {
+            document.getElementById('dlId').textContent = '#' + id;
+            document.getElementById('dlNgay').textContent = ngay;
+            document.getElementById('dlNguoi').textContent = nguoi;
+            document.getElementById('dlEmail').textContent = email || '(khong co)';
+            document.getElementById('dlCD').textContent = cd;
+            document.getElementById('dlSoTien').textContent = Number(soTien).toLocaleString('vi-VN') + ' d';
+            var ttNames = ['Cho duyet', 'Da duyet', 'Tu choi'];
+            var ttClasses = ['badge-warn', 'badge-ok', 'badge-err'];
+            document.getElementById('dlTT').innerHTML = '<span class="badge ' + (ttClasses[tt] || '') + '">' + (ttNames[tt] || '') + '</span>';
+            document.getElementById('dlAnDanh').textContent = anDanh ? 'Co' : 'Khong';
+            document.getElementById('dlLoiNhan').textContent = loiNhan || '(khong co loi nhan)';
+
+            var anhEl = document.getElementById('dlAnh');
+            if (anhXN) {
+                anhEl.innerHTML = '<img src="' + anhXN + '" alt="Anh xac nhan" />';
             } else {
-                admToast('Không thể thực hiện', d.msg, 'err');
+                anhEl.innerHTML = 'Chua co anh xac nhan';
             }
-        })
-        .catch(function () { admToast('Lỗi kết nối', 'Không thể kết nối máy chủ.', 'err'); });
-    }
-
-    function updateRow(id, action) {
-        var row = document.getElementById('row-' + id);
-        if (!row) return;
-        var cells = row.querySelectorAll('td');
-        if (action === 'duyet') {
-            cells[5].innerHTML = '<span class="badge badge-ok">Đã duyệt</span>';
-        } else {
-            cells[5].innerHTML = '<span class="badge badge-reject">Từ chối</span>';
-        }
-        // Giữ nút Xem, bỏ Duyệt/Từ chối
-        var actCell = cells[6];
-        var viewBtn = actCell.querySelector('.btn-edit');
-        actCell.innerHTML = '';
-        if (viewBtn) actCell.appendChild(viewBtn);
-
-        var statEl = document.getElementById('statChoDuyet');
-        if (statEl) {
-            var cur = parseInt(statEl.textContent) || 0;
-            if (cur > 0) statEl.textContent = cur - 1;
-        }
-    }
-
-    /* ── 4. Modal chi tiết ───────────────────────────────────── */
-    function badgeHtml(ts) {
-        var map = {
-            0: ['badge badge-wait',   'Chờ duyệt'],
-            1: ['badge badge-ok',     'Đã duyệt'],
-            2: ['badge badge-reject', 'Từ chối']
+            document.getElementById('detailOverlay').classList.add('show');
         };
-        var b = map[ts] || ['badge', '—'];
-        return '<span class="' + b[0] + '">' + b[1] + '</span>';
-    }
-
-    window.openDetail = function (id, hoTen, email, chiDich, soTien, ngay, ts, anDanh, loiNhan, anhXN) {
-        document.getElementById('tq-id').textContent     = '#' + id;
-        document.getElementById('tq-ngay').textContent   = ngay;
-        document.getElementById('tq-nguoi').textContent  = hoTen;
-        document.getElementById('tq-email').textContent  = email || '—';
-        document.getElementById('tq-cd').textContent     = chiDich;
-        document.getElementById('tq-sotien').textContent = parseInt(soTien).toLocaleString('vi-VN') + ' ₫';
-        document.getElementById('tq-tt').innerHTML       = badgeHtml(ts);
-        document.getElementById('tq-andanh').textContent = anDanh ? 'Có' : 'Không';
-        document.getElementById('tq-loinhan').textContent= loiNhan || '—';
-
-        var anhWrap = document.getElementById('tq-anh');
-        anhWrap.innerHTML = anhXN
-            ? '<img src="' + anhXN + '" alt="Ảnh xác nhận" />'
-            : '<span>Không có ảnh xác nhận</span>';
-
-        var ft = document.getElementById('tqModalFt');
-        ft.innerHTML = '';
-        if (ts === 0) {
-            var btnD = document.createElement('button');
-            btnD.type = 'button'; btnD.className = 'btn-approve';
-            btnD.style.cssText = 'padding:6px 14px;font-size:12px;border-radius:6px;cursor:pointer;margin-right:4px';
-            btnD.textContent = 'Duyệt';
-            btnD.onclick = function () { closeTqModal(); doAction(id, 'duyet'); };
-            var btnR = document.createElement('button');
-            btnR.type = 'button'; btnR.className = 'btn-reject';
-            btnR.style.cssText = 'padding:6px 14px;font-size:12px;border-radius:6px;cursor:pointer;margin-right:4px';
-            btnR.textContent = 'Từ chối';
-            btnR.onclick = function () { closeTqModal(); doAction(id, 'tuchoi'); };
-            ft.appendChild(btnD);
-            ft.appendChild(btnR);
-        }
-        var btnClose = document.createElement('button');
-        btnClose.type = 'button'; btnClose.className = 'tq-btn-close';
-        btnClose.textContent = 'Đóng'; btnClose.onclick = closeTqModal;
-        ft.appendChild(btnClose);
-
-        document.getElementById('tqModalOverlay').classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    window.closeTqModal = function () {
-        document.getElementById('tqModalOverlay').classList.remove('show');
-        document.body.style.overflow = '';
-    };
-    window.closeTqOverlay = function (e) {
-        if (e.target === document.getElementById('tqModalOverlay')) closeTqModal();
-    };
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeTqModal();
-    });
-
-    /* ── 5. Xuất CSV ─────────────────────────────────────────── */
-    window.exportCSV = function () {
-        if (!chart) return;
-        var labels = chart.data.labels;
-        var vals   = chart.data.datasets[0].data;
-        var rows   = [['Tháng', 'Quyên góp (tr.đ)']];
-        labels.forEach(function (l, i) { rows.push([l, vals[i]]); });
-        var csv  = rows.map(function (r) { return r.join(','); }).join('\n');
-        var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-        var url  = URL.createObjectURL(blob);
-        var a    = document.createElement('a');
-        a.href   = url;
-        a.download = 'quyen-gop-<%= DateTime.Now.Year %>.csv';
-            document.body.appendChild(a); a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            admToast('Đã xuất CSV', 'File được tải về máy của bạn.', 'ok');
+        window.closeDetail = function () {
+            document.getElementById('detailOverlay').classList.remove('show');
         };
 
-        /* ── Khởi động ───────────────────────────────────────────── */
+        // Duyet / Tu choi tu TongQuan
+        window.ajaxDuyet = function (id, action, lydo) {
+            var body = '__ajax=true&action=' + action + '&id=' + id;
+            if (lydo) body += '&lydo=' + encodeURIComponent(lydo);
+            fetch(PAGE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (d.ok) {
+                        showToast('Thanh cong', d.msg, 'ok');
+                        setTimeout(function () { location.reload(); }, 1200);
+                    } else {
+                        showToast('Loi', d.msg || 'Co loi xay ra', 'err');
+                    }
+                })
+                .catch(function () { showToast('Loi', 'Khong the ket noi server.', 'err'); });
+        };
+
+        // Khoi chay
         fetchChartData();
         fetchCampaigns();
-
     })();
 </script>
 </asp:Content>

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -14,7 +10,7 @@ namespace ThienNguyenViet.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // PhanQuyenHelper.YeuCauAdmin(this);
+            PhanQuyenHelper.YeuCauAdmin(this);
 
             if (Request.QueryString["__ajax"] == "true")
             {
@@ -29,7 +25,7 @@ namespace ThienNguyenViet.Admin
                         case "insert": HandleSave(false); break;
                         case "update": HandleSave(true); break;
                         default:
-                            Response.Write("{\"ok\":false,\"msg\":\"Unknown action\"}");
+                            Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
                             break;
                     }
                 }
@@ -41,11 +37,11 @@ namespace ThienNguyenViet.Admin
             }
         }
 
-        /* ── Get tin tức theo ID ─────────────────────────────────────── */
+        // Lay bai viet theo ID
         private void HandleGet()
         {
             int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
             const string sql = @"
 SELECT tt.MaTinTuc, tt.TieuDe, tt.TomTat, tt.NoiDung, tt.AnhBia,
@@ -57,7 +53,7 @@ INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung
 WHERE tt.MaTinTuc = @id";
 
             DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@id", id));
-            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false,\"msg\":\"Không tìm thấy bài viết.\"}"); return; }
+            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false,\"msg\":\"Khong tim thay bai viet.\"}"); return; }
 
             DataRow r = dt.Rows[0];
             var jss = new JavaScriptSerializer();
@@ -77,7 +73,7 @@ WHERE tt.MaTinTuc = @id";
             Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(data) + "}");
         }
 
-        /* ── Insert / Update ─────────────────────────────────────────── */
+        // Them moi hoac cap nhat
         private void HandleSave(bool isUpdate)
         {
             string tieuDe = Request.QueryString["tieuDe"] ?? "";
@@ -89,19 +85,16 @@ WHERE tt.MaTinTuc = @id";
             int trangThai = int.TryParse(Request.QueryString["trangThai"], out int ts) ? ts : 1;
 
             if (string.IsNullOrWhiteSpace(tieuDe))
-            { Response.Write("{\"ok\":false,\"msg\":\"Tiêu đề không được trống.\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"Tieu de khong duoc trong.\"}"); return; }
             if (maDanhMuc <= 0)
-            { Response.Write("{\"ok\":false,\"msg\":\"Vui lòng chọn danh mục.\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"Vui long chon danh muc.\"}"); return; }
 
-            // Người đăng từ session, mặc định là 1 (Admin) nếu chưa auth
             int maNguoiDang = PhanQuyenHelper.LayMa(Session);
             if (maNguoiDang <= 0) maNguoiDang = 1;
-
             DateTime ngay = DateTime.TryParse(ngayDang, out DateTime nd) ? nd : DateTime.Now;
 
             if (!isUpdate)
             {
-                // INSERT
                 const string sql = @"
 INSERT INTO dbo.TinTuc
     (TieuDe, MaDanhMuc, AnhBia, TomTat, NoiDung, LuotXem, TrangThai, MaNguoiDang, NgayDang)
@@ -117,25 +110,18 @@ SELECT SCOPE_IDENTITY();";
                     KetNoiDB.P("@ts", trangThai),
                     KetNoiDB.P("@nguoi", maNguoiDang),
                     KetNoiDB.P("@ngay", ngay));
-
                 Response.Write("{\"ok\":true,\"id\":" + newId + "}");
             }
             else
             {
-                // UPDATE
-                int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-                if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+                int id = int.TryParse(Request.QueryString["id"], out int ii) ? ii : 0;
+                if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
                 const string sql = @"
 UPDATE dbo.TinTuc SET
-    TieuDe      = @tieu,
-    MaDanhMuc   = @dm,
-    AnhBia      = @anh,
-    TomTat      = @tomtat,
-    NoiDung     = @noidung,
-    TrangThai   = @ts,
-    NgayDang    = @ngay,
-    NgayCapNhat = GETDATE()
+    TieuDe = @tieu, MaDanhMuc = @dm, AnhBia = @anh,
+    TomTat = @tomtat, NoiDung = @noidung,
+    TrangThai = @ts, NgayDang = @ngay, NgayCapNhat = GETDATE()
 WHERE MaTinTuc = @id";
 
                 KetNoiDB.ExecuteNonQuery(sql, CommandType.Text,
@@ -147,7 +133,6 @@ WHERE MaTinTuc = @id";
                     KetNoiDB.P("@ts", trangThai),
                     KetNoiDB.P("@ngay", ngay),
                     KetNoiDB.P("@id", id));
-
                 Response.Write("{\"ok\":true,\"id\":" + id + "}");
             }
         }
