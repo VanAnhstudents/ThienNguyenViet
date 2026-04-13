@@ -11,8 +11,7 @@ namespace ThienNguyenViet.Admin
         }
 
         /// <summary>
-        /// Trả về "active" nếu trang hiện tại khớp với tên file ASPX,
-        /// dùng để highlight menu item đang chọn.
+        /// Tra ve "active" neu trang hien tai khop voi ten file ASPX.
         /// </summary>
         protected string IsActive(string pageName)
         {

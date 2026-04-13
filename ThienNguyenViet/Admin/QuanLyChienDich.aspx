@@ -1,366 +1,238 @@
-﻿<%@ Page Title="Quản lý Chiến dịch" Language="C#"
+﻿<%@ Page Title="Quan ly Chien dich" Language="C#"
     MasterPageFile="~/Admin.Master" AutoEventWireup="true"
     CodeBehind="QuanLyChienDich.aspx.cs"
     Inherits="ThienNguyenViet.Admin.QuanLyChienDich" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-/* ── Filter bar ──────────────────────────────────────── */
-.filter-bar {
-    display: flex; align-items: center;
-    gap: 10px; flex-wrap: wrap;
-}
-.filter-bar .input-search {
-    flex: 1; min-width: 180px; max-width: 280px;
-    height: 36px; padding: 0 12px;
-    border: 1px solid var(--border); border-radius: var(--r);
-    font-size: 13px; background: #fff;
-}
+    /* ── QuanLyChienDich ── */
+    .page-topbar {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+    }
+    .page-topbar h3 { font-size: 14px; font-weight: 600; }
 
-/* ── Status button group ─────────────────────────────── */
-.status-btn-group { display: flex; gap: 5px; flex-wrap: wrap; }
-.status-btn {
-    height: 36px; padding: 0 13px;
-    border: 1px solid var(--border); border-radius: var(--r);
-    background: var(--bg); font-family: var(--font);
-    font-size: 12px; font-weight: 500; color: var(--txt-sub);
-    cursor: pointer; white-space: nowrap;
-    transition: all .15s;
-}
-.status-btn:hover { background: #e2e8f0; color: var(--txt); }
-.status-btn.active {
-    background: var(--accent); color: #fff;
-    border-color: var(--accent); font-weight: 600;
-}
+    /* Table cells */
+    .cd-name { font-size: 13px; font-weight: 600; }
+    .cd-sub { font-size: 11px; color: var(--txt-sub); margin-top: 2px; }
+    .cd-dm {
+        display: inline-block; font-size: 10px; padding: 2px 7px;
+        border-radius: 4px; font-weight: 500;
+    }
+    .cd-amount { font-weight: 600; font-size: 12px; }
+    .cd-date { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
 
-/* ── Table cells ─────────────────────────────────────── */
-.adm-table td .cd-name {
-    font-size: 13px; font-weight: 600; color: var(--txt);
-}
-.adm-table td .cd-sub {
-    font-size: 11px; color: var(--txt-sub); margin-top: 2px;
-}
-.prog-bar-container {
-    height: 6px; background: var(--border);
-    border-radius: 99px; overflow: hidden; margin-top: 4px;
-}
-.prog-bar { height: 100%; border-radius: 99px; }
-.prog-pct { font-size: 11px; font-weight: 600; color: var(--accent); margin-top: 3px; }
-
-/* ── Action buttons inline ───────────────────────────── */
-.btn-action-row { display: flex; gap: 4px; flex-wrap: nowrap; }
-.btn-action {
-    font-size: 11px; padding: 3px 9px;
-    border-radius: var(--r); border: none; cursor: pointer;
-    font-family: var(--font); white-space: nowrap;
-}
-
-/* ── PAGINATION ──────────────────────────────────────── */
-.tbl-footer {
-    display: flex; align-items: center; justify-content: center;
-    gap: 15px; padding: 15px 0;
-    border-top: 1px solid #e2e8f0;
-}
-#pagingBtns { display: flex; align-items: center; gap: 6px; }
-#pagingBtns button {
-    min-width: 38px; height: 38px; padding: 0 12px;
-    border: 1px solid #e2e8f0; background: #fff; color: #334155;
-    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
-}
-#pagingBtns button:hover { background: #f8fafc; border-color: #cbd5e1; }
-#pagingBtns button.active { background: #3182CE; color: #fff; border-color: #3182CE; }
-#pagingBtns button:disabled { opacity: .4; cursor: not-allowed; }
-#pagingInfo { font-size: 13px; color: #64748b; white-space: nowrap; }
+    /* Actions */
+    .action-group { display: flex; gap: 4px; }
 </style>
 </asp:Content>
 
-<asp:Content ID="ContentTopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
-    <h1>Quản lý Chiến dịch</h1>
-    <p>Danh sách toàn bộ chiến dịch trong hệ thống</p>
+<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+    <h1>Quan ly chien dich</h1>
+    <p>Danh sach cac chien dich quyen gop</p>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-<%-- Filter bar --%>
-    <div class="adm-card" style="margin-bottom:18px">
-        <div class="filter-bar">
-            <input type="text" id="inputSearch" class="input-search"
-                   placeholder="Tìm theo tên chiến dịch..." />
+<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-            <%-- Danh mục --%>
-            <select id="selDanhMuc" style="height:36px;padding:0 10px;border:1px solid var(--border);border-radius:var(--r);font-size:13px;background:#fff;min-width:150px">
-                <option value="">Tất cả danh mục</option>
-                <option value="1">Cứu trợ thiên tai</option>
-                <option value="2">Học bổng & Giáo dục</option>
-                <option value="3">Y tế cộng đồng</option>
-                <option value="4">Môi trường & Cây xanh</option>
-            </select>
-
-            <%-- Trạng thái - button group --%>
-            <div class="status-btn-group" id="statusBtnGroup">
-                <button type="button" class="status-btn active" data-val="" onclick="setStatusFilter(this,'')">Tất cả</button>
-                <button type="button" class="status-btn" data-val="0" onclick="setStatusFilter(this,'0')">Nháp</button>
-                <button type="button" class="status-btn" data-val="1" onclick="setStatusFilter(this,'1')">Đang chạy</button>
-                <button type="button" class="status-btn" data-val="2" onclick="setStatusFilter(this,'2')">Tạm dừng</button>
-                <button type="button" class="status-btn" data-val="3" onclick="setStatusFilter(this,'3')">Đã kết thúc</button>
-            </div>
-
-            <button type="button" class="btn-outline" onclick="resetFilter()">Đặt lại</button>
-
-            <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>"
-               class="btn-primary"
-               style="margin-left:auto;text-decoration:none;height:36px;display:inline-flex;align-items:center;padding:0 14px;font-size:13px">
-                + Thêm chiến dịch mới
-            </a>
-        </div>
+    <div class="page-topbar">
+        <h3>Tat ca chien dich</h3>
+        <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>" class="btn btn-primary">Them chien dich</a>
     </div>
 
-    <div class="adm-card">
-        <div class="adm-card-hd">
-            <div>
-                <h3>Danh sách chiến dịch</h3>
-                <div class="sub" id="countLabel">Đang tải...</div>
-            </div>
+    <%-- Filter bar --%>
+    <div class="filter-bar">
+        <div class="filter-group" id="filterStatus">
+            <button type="button" class="filter-btn active" data-val="">Tat ca</button>
+            <button type="button" class="filter-btn" data-val="1">Dang chay</button>
+            <button type="button" class="filter-btn" data-val="0">Nhap</button>
+            <button type="button" class="filter-btn" data-val="2">Ket thuc</button>
         </div>
+        <select class="select" id="filterDanhMuc" style="min-width:140px">
+            <option value="">Tat ca danh muc</option>
+        </select>
+    </div>
 
-        <table class="adm-table" id="tblChienDich">
+    <%-- Table --%>
+    <div class="card" style="padding:0">
+        <table class="tbl" id="tblChienDich">
             <thead>
                 <tr>
-                    <th style="width:28%">Chiến dịch</th>
-                    <th>Danh mục</th>
-                    <th>Mục tiêu</th>
-                    <th>Đã quyên góp</th>
-                    <th style="width:110px">Tiến độ</th>
-                    <th>Ngày kết thúc</th>
-                    <th style="text-align:center;width:70px">Nổi bật</th>
-                    <th>Trạng thái</th>
-                    <th style="width:100px">Thao tác</th>
+                    <th>Chien dich</th>
+                    <th>Danh muc</th>
+                    <th>Muc tieu</th>
+                    <th>Da quyen</th>
+                    <th>Tien do</th>
+                    <th>Han</th>
+                    <th>Trang thai</th>
+                    <th></th>
                 </tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="tblBody">
+                <tr><td colspan="8" class="empty-state">Dang tai...</td></tr>
+            </tbody>
         </table>
+    </div>
 
-        <div id="emptyMsg" style="display:none;text-align:center;padding:60px 20px;color:var(--txt-sub);font-size:13px">
-            Không tìm thấy chiến dịch nào phù hợp với điều kiện lọc.
-        </div>
+    <%-- Paging --%>
+    <div class="paging" id="pagingWrap"></div>
 
-        <div class="tbl-footer" id="pagingWrap" style="display:none">
-            <span id="pagingInfo"></span>
-            <div id="pagingBtns"></div>
+    <%-- Modal xac nhan xoa --%>
+    <div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
+        <div class="modal" style="max-width:400px">
+            <div class="modal-hd">
+                <h3>Xoa chien dich</h3>
+                <button type="button" class="modal-close" onclick="closeDeleteModal()">&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px">Ban co chac chan muon xoa chien dich "<strong id="deleteName"></strong>"?</p>
+                <p style="font-size:12px;color:var(--txt-sub);margin-top:6px">Hanh dong nay khong the hoan tac.</p>
+            </div>
+            <div class="modal-ft">
+                <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Huy</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Xoa</button>
+            </div>
         </div>
     </div>
 
 </asp:Content>
 
-<asp:Content ID="ScriptContent" ContentPlaceHolderID="ScriptContent" runat="server">
+<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
     (function () {
         'use strict';
+        var BASE = '<%= ResolveUrl("~/Admin/QuanLyChienDich.aspx") %>';
+    var currentPage = 1, pageSize = 8, currentStatus = '', currentDM = '';
+    var pendingDeleteId = 0;
 
-        var currentPage = 1;
-        var PAGE_SIZE = 8;
-        var selectedStatus = '';   // '' | '0' | '1' | '2' | '3'
-        var searchTimeout = null;
-
-        /* ── Status filter buttons ────────────────────────────────── */
-        window.setStatusFilter = function (btn, val) {
-            document.querySelectorAll('#statusBtnGroup .status-btn').forEach(function (b) {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
-            selectedStatus = val;
-            currentPage = 1;
-            loadData();
-        };
-
-        /* ── Helpers ─────────────────────────────────────────────── */
-        function fmtMoney(n) {
-            if (n >= 1e9) return (n / 1e9).toFixed(2).replace(/\.?0+$/, '') + ' tỷ';
-            if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.?0+$/, '') + ' tr';
-            return n.toLocaleString('vi-VN');
-        }
-
-        function trangThaiBadge(ts) {
-            var map = {
-                0: '<span class="badge badge-wait">Nháp</span>',
-                1: '<span class="badge badge-ok">Đang chạy</span>',
-                2: '<span class="badge badge-info">Tạm dừng</span>',
-                3: '<span class="badge badge-reject">Đã kết thúc</span>'
-            };
-            return map[ts] || '—';
-        }
-
-        /* ── Pagination ──────────────────────────────────────────── */
-        function renderPagination(totalPages) {
-            var wrap = document.getElementById('pagingWrap');
-            var info = document.getElementById('pagingInfo');
-            var btns = document.getElementById('pagingBtns');
-            if (totalPages <= 1) { wrap.style.display = 'none'; return; }
-
-            wrap.style.display = 'flex';
-            info.innerHTML = 'Trang <strong>' + currentPage + '</strong> / ' + totalPages;
-            btns.innerHTML = '';
-
-            var btn = document.createElement('button');
-            btn.type = 'button'; btn.innerHTML = '&laquo; Trước';
-            btn.disabled = currentPage === 1;
-            btn.onclick = function () { goToPage(currentPage - 1); };
-            btns.appendChild(btn);
-
-            var maxV = 7;
-            var start = Math.max(1, currentPage - Math.floor(maxV / 2));
-            var end = Math.min(totalPages, start + maxV - 1);
-            if (end - start < maxV - 1) start = Math.max(1, end - maxV + 1);
-
-            for (var i = start; i <= end; i++) {
-                (function (page) {
-                    btn = document.createElement('button');
-                    btn.type = 'button'; btn.textContent = page;
-                    if (page === currentPage) btn.classList.add('active');
-                    btn.onclick = function () { goToPage(page); };
-                    btns.appendChild(btn);
-                })(i);
-            }
-
-            btn = document.createElement('button');
-            btn.type = 'button'; btn.innerHTML = 'Sau &raquo;';
-            btn.disabled = currentPage === totalPages;
-            btn.onclick = function () { goToPage(currentPage + 1); };
-            btns.appendChild(btn);
-        }
-
-        window.goToPage = function (page) { currentPage = page; loadData(); };
-
-        /* ── Load data ───────────────────────────────────────────── */
-        function loadData() {
-            var params = new URLSearchParams({
-                __ajax: 'true',
-                action: 'list',
-                TuKhoa: document.getElementById('inputSearch').value.trim(),
-                MaDanhMuc: document.getElementById('selDanhMuc').value,
-                TrangThai: selectedStatus,
-                TrangHienTai: currentPage,
-                SoDoiMoiTrang: PAGE_SIZE,
-                SapXepTheo: 'NgayTao'
-            });
-
-            fetch(location.pathname + '?' + params, {
-                method: 'GET', headers: { 'Cache-Control': 'no-cache' }
-            })
+    // Load danh muc vao select
+    function loadDanhMuc() {
+        fetch('<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>?__ajax=true&action=danhMuc')
                 .then(function (r) { return r.json(); })
-                .then(function (json) {
-                    if (json.ok) renderTable(json.data, json.total);
-                })
-                .catch(function (err) { console.error('LoadData error:', err); });
+                .then(function (d) {
+                    if (!d.ok) return;
+                    var sel = document.getElementById('filterDanhMuc');
+                    d.data.forEach(function (dm) {
+                        var opt = document.createElement('option');
+                        opt.value = dm.ma;
+                        opt.textContent = dm.ten;
+                        sel.appendChild(opt);
+                    });
+                });
         }
 
-        /* ── Render table ────────────────────────────────────────── */
-        function renderTable(data, total) {
-            var tbody = document.getElementById('tableBody');
-            var empty = document.getElementById('emptyMsg');
+        // Load du lieu bang
+        function loadData() {
+            var params = '__ajax=true&action=list&TrangHienTai=' + currentPage + '&SoDoiMoiTrang=' + pageSize;
+            if (currentStatus !== '') params += '&TrangThai=' + currentStatus;
+            if (currentDM !== '') params += '&MaDanhMuc=' + currentDM;
 
-            if (!data || !data.length) {
-                tbody.innerHTML = '';
-                empty.style.display = 'block';
-                document.getElementById('pagingWrap').style.display = 'none';
-                document.getElementById('countLabel').innerHTML = '0 chiến dịch';
+            fetch(BASE + '?' + params)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    if (!d.ok) { showToast('Loi', d.msg || 'Loi tai du lieu', 'err'); return; }
+                    renderTable(d.data || []);
+                    renderPaging(d.total || 0);
+                })
+                .catch(function () { showToast('Loi', 'Khong the ket noi server.', 'err'); });
+        }
+
+        function renderTable(rows) {
+            var body = document.getElementById('tblBody');
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="8" class="empty-state">Khong co chien dich nao.</td></tr>';
                 return;
             }
-
-            empty.style.display = 'none';
-            document.getElementById('pagingWrap').style.display = 'flex';
-
             var html = '';
-            data.forEach(function (c) {
-                var pct = c.MucTieu > 0 ? Math.round(c.SoTienDaQuyen * 100 / c.MucTieu) : 0;
-                var color = c.MauDanhMuc || '#3182CE';
-                var tenEsc = c.TenChienDich.replace(/'/g, "\\'");
+            rows.forEach(function (r) {
+                var pct = r.MucTieu > 0 ? Math.min(100, Math.round(r.SoTienDaQuyen * 100 / r.MucTieu)) : 0;
+                var tsLabel = ['Nhap', 'Dang chay', 'Ket thuc'][r.TrangThai] || '';
+                var tsClass = ['badge-warn', 'badge-ok', 'badge-info'][r.TrangThai] || '';
                 html += '<tr>' +
-                    '<td><div class="cd-name">' + c.TenChienDich + '</div><div class="cd-sub">' + (c.MoTaNgan || '') + '</div></td>' +
-                    '<td><span style="background:rgba(49,130,206,0.1);color:' + color + ';padding:2px 8px;border-radius:4px;font-size:11px">' + c.TenDanhMuc + '</span></td>' +
-                    '<td>' + fmtMoney(c.MucTieu) + '</td>' +
-                    '<td style="color:#38A169;font-weight:600">' + fmtMoney(c.SoTienDaQuyen) + '</td>' +
-                    '<td>' +
-                    '<div class="prog-bar-container"><div class="prog-bar" style="width:' + pct + '%;background:' + color + '"></div></div>' +
-                    '<div class="prog-pct">' + pct + '%</div>' +
-                    '</td>' +
-                    '<td>' + c.NgayKetThuc + '<br><small style="color:#D69E2E">Còn ' + c.SoNgayCon + ' ngày</small></td>' +
-                    '<td style="text-align:center;font-size:18px">' + (c.NoiBat ? '⭐' : '☆') + '</td>' +
-                    '<td>' + trangThaiBadge(c.TrangThai) + '</td>' +
-                    '<td>' +
-                    '<div class="btn-action-row">' +
-                    '<a href="FormChienDich.aspx?id=' + c.MaChienDich + '" class="btn-edit btn-action">Sửa</a>' +
-                    '<button type="button" class="btn-delete btn-action" onclick="xoaChienDich(' + c.MaChienDich + ',\'' + tenEsc + '\')">Xóa</button>' +
-                    '</div>' +
-                    '</td></tr>';
+                    '<td><div class="cd-name">' + esc(r.TenChienDich) + '</div>' +
+                    '<div class="cd-sub">' + esc(r.MoTaNgan || '') + '</div></td>' +
+                    '<td><span class="cd-dm" style="background:' + (r.MauDanhMuc || '#EDF2F7') + '20;color:' + (r.MauDanhMuc || '#4A5568') + '">' + esc(r.TenDanhMuc) + '</span></td>' +
+                    '<td class="cd-amount">' + Number(r.MucTieu).toLocaleString('vi-VN') + '</td>' +
+                    '<td class="cd-amount" style="color:var(--ok)">' + Number(r.SoTienDaQuyen).toLocaleString('vi-VN') + '</td>' +
+                    '<td style="min-width:100px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;color:var(--txt-sub);margin-top:3px">' + pct + '%</div></td>' +
+                    '<td class="cd-date">' + r.NgayKetThuc + (r.SoNgayCon > 0 ? ' (' + r.SoNgayCon + ' ngay)' : '') + '</td>' +
+                    '<td><span class="badge ' + tsClass + '">' + tsLabel + '</span>' +
+                    (r.NoiBat ? '<span class="badge badge-info" style="margin-left:3px">Noi bat</span>' : '') + '</td>' +
+                    '<td><div class="action-group">' +
+                    '<a href="' + BASE.replace('QuanLyChienDich.aspx', 'FormChienDich.aspx') + '?id=' + r.MaChienDich + '" class="btn btn-outline btn-xs">Sua</a>' +
+                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg);color:var(--err-txt)" onclick="openDelete(' + r.MaChienDich + ',\'' + esc(r.TenChienDich).replace(/'/g, "\\'") + '\')">Xoa</button>' +
+                    '</div></td></tr>';
             });
-
-            tbody.innerHTML = html;
-            document.getElementById('countLabel').innerHTML =
-                'Hiển thị <strong>' + ((currentPage - 1) * PAGE_SIZE + 1) + '</strong>–<strong>' +
-                Math.min(currentPage * PAGE_SIZE, total) + '</strong> / ' + total + ' chiến dịch';
-
-            renderPagination(Math.ceil(total / PAGE_SIZE));
+            body.innerHTML = html;
         }
 
-        /* ── Xóa chiến dịch (dùng admConfirm, không dùng alert) ──── */
-        window.xoaChienDich = function (id, ten) {
-            admConfirm({
-                title: 'Xóa chiến dịch',
-                msg: 'Bạn có chắc muốn xóa chiến dịch "' + ten + '"? Hành động này không thể hoàn tác.',
-                okLabel: 'Xóa',
-                okClass: 'btn-reject',
-                onOk: function () {
-                    var params = new URLSearchParams({ __ajax: 'true', action: 'delete', id: id });
-                    fetch(location.pathname + '?' + params, { method: 'GET' })
-                        .then(function (r) { return r.json(); })
-                        .then(function (d) {
-                            if (d.ok) {
-                                admToast('Đã xóa', 'Chiến dịch đã được xóa thành công.', 'ok');
-                                loadData();
-                            } else {
-                                admToast('Không thể xóa', d.msg || 'Chiến dịch có dữ liệu liên quan.', 'err');
-                            }
-                        })
-                        .catch(function () { admToast('Lỗi kết nối', 'Không thể kết nối máy chủ.', 'err'); });
-                }
-            });
-        };
+        function renderPaging(total) {
+            var totalPages = Math.ceil(total / pageSize);
+            var wrap = document.getElementById('pagingWrap');
+            if (totalPages <= 1) { wrap.innerHTML = ''; return; }
 
-        /* ── Events ──────────────────────────────────────────────── */
-        window.applyFilter = function () { currentPage = 1; loadData(); };
+            var html = '<span class="paging-info">' + total + ' ket qua</span>';
+            html += '<button class="page-btn" onclick="goPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>Truoc</button>';
+            for (var p = 1; p <= totalPages; p++) {
+                html += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
+            }
+            html += '<button class="page-btn" onclick="goPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>Tiep</button>';
+            wrap.innerHTML = html;
+        }
 
-        window.resetFilter = function () {
-            document.getElementById('inputSearch').value = '';
-            document.getElementById('selDanhMuc').value = '';
-            selectedStatus = '';
-            document.querySelectorAll('#statusBtnGroup .status-btn').forEach(function (b) {
-                b.classList.remove('active');
-                if (b.dataset.val === '') b.classList.add('active');
-            });
+        window.goPage = function (p) { currentPage = p; loadData(); };
+
+        // Filter: status buttons
+        document.getElementById('filterStatus').addEventListener('click', function (e) {
+            if (e.target.classList.contains('filter-btn')) {
+                this.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
+                e.target.classList.add('active');
+                currentStatus = e.target.getAttribute('data-val');
+                currentPage = 1;
+                loadData();
+            }
+        });
+
+        // Filter: danh muc select
+        document.getElementById('filterDanhMuc').addEventListener('change', function () {
+            currentDM = this.value;
             currentPage = 1;
             loadData();
+        });
+
+        // Xoa chien dich
+        window.openDelete = function (id, name) {
+            pendingDeleteId = id;
+            document.getElementById('deleteName').textContent = name;
+            document.getElementById('deleteOverlay').classList.add('show');
+        };
+        window.closeDeleteModal = function () {
+            document.getElementById('deleteOverlay').classList.remove('show');
+        };
+        document.getElementById('btnConfirmDelete').onclick = function () {
+            if (!pendingDeleteId) return;
+            fetch(BASE + '?__ajax=true&action=delete&id=' + pendingDeleteId)
+                .then(function (r) { return r.json(); })
+                .then(function (d) {
+                    closeDeleteModal();
+                    if (d.ok) {
+                        showToast('Thanh cong', d.msg, 'ok');
+                        loadData();
+                    } else {
+                        showToast('Loi', d.msg || 'Khong the xoa.', 'err');
+                    }
+                })
+                .catch(function () { showToast('Loi', 'Loi ket noi server.', 'err'); });
         };
 
-        function initEvents() {
-            var searchInput = document.getElementById('inputSearch');
-            var selDanhMuc = document.getElementById('selDanhMuc');
-
-            searchInput.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') { e.preventDefault(); applyFilter(); }
-            });
-            searchInput.addEventListener('input', function () {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(applyFilter, 400);
-            });
-            selDanhMuc.addEventListener('change', applyFilter);
+        function esc(s) {
+            var d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
         }
 
-        /* ── Init ────────────────────────────────────────────────── */
-        window.onload = function () {
-            initEvents();
-            loadData();
-        };
-
+        // Init
+        loadDanhMuc();
+        loadData();
     })();
 </script>
 </asp:Content>

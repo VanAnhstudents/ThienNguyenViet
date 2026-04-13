@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Data.SqlClient;
 using System.Text;
-using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -15,7 +13,7 @@ namespace ThienNguyenViet.Admin
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // PhanQuyenHelper.YeuCauAdmin(this);
+            PhanQuyenHelper.YeuCauAdmin(this);
 
             if (Request.QueryString["__ajax"] == "true")
             {
@@ -32,7 +30,7 @@ namespace ThienNguyenViet.Admin
                         case "lock": HandleLockUnlock(0); break;
                         case "unlock": HandleLockUnlock(1); break;
                         default:
-                            Response.Write("{\"ok\":false,\"msg\":\"Unknown action\"}");
+                            Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
                             break;
                     }
                 }
@@ -44,15 +42,15 @@ namespace ThienNguyenViet.Admin
             }
         }
 
-        /* ── Stats ──────────────────────────────────────────────────── */
+        // Thong ke
         private void HandleStats()
         {
             const string sql = @"
 SELECT
-    (SELECT COUNT(*) FROM dbo.NguoiDung)                                                 AS TongTaiKhoan,
-    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE VaiTro=0 AND TrangThai=1)                 AS NguoiDungHoatDong,
-    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE TrangThai=0)                              AS TaiKhoanKhoa,
-    ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1),0)                  AS TongQuyenGop";
+    (SELECT COUNT(*) FROM dbo.NguoiDung) AS TongTaiKhoan,
+    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE VaiTro=0 AND TrangThai=1) AS NguoiDungHoatDong,
+    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE TrangThai=0) AS TaiKhoanKhoa,
+    ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1),0) AS TongQuyenGop";
 
             DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
             if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false}"); return; }
@@ -62,7 +60,7 @@ SELECT
                 r["TongTaiKhoan"], r["NguoiDungHoatDong"], r["TaiKhoanKhoa"], r["TongQuyenGop"]));
         }
 
-        /* ── List (paginated) ────────────────────────────────────────── */
+        // Danh sach nguoi dung (phan trang + loc)
         private void HandleList()
         {
             string tuKhoa = Request.QueryString["tuKhoa"] ?? "";
@@ -72,149 +70,95 @@ SELECT
             int soDong = int.TryParse(Request.QueryString["soDong"], out int s) ? s : 10;
             int offset = (trang - 1) * soDong;
 
-            var sb = new StringBuilder();
-            sb.Append(@"
+            var prms = new List<SqlParameter>();
+            var where = new StringBuilder(" WHERE 1=1");
+
+            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            {
+                where.Append(" AND (nd.HoTen LIKE N'%'+@Kw+'%' OR nd.Email LIKE N'%'+@Kw+'%')");
+                prms.Add(KetNoiDB.P("@Kw", tuKhoa.Trim()));
+            }
+            if (ttStr == "0" || ttStr == "1")
+                where.Append(" AND nd.TrangThai=" + ttStr);
+            if (vtStr == "0" || vtStr == "1")
+                where.Append(" AND nd.VaiTro=" + vtStr);
+
+            // Count
+            string sqlCount = "SELECT COUNT(*) FROM dbo.NguoiDung nd" + where;
+            int total = Convert.ToInt32(KetNoiDB.ExecuteScalar(sqlCount, CommandType.Text, prms.ToArray()));
+
+            // Data
+            string sqlData = @"
 SELECT nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai,
        nd.VaiTro, nd.TrangThai,
        CONVERT(NVARCHAR(10), nd.NgayTao, 103) AS NgayTao,
-       ISNULL(SUM(CASE WHEN qg.TrangThai=1 THEN qg.SoTien ELSE 0 END),0) AS TongGop,
-       COUNT(CASE WHEN qg.TrangThai=1 THEN 1 ELSE NULL END)               AS SoLanGop
-FROM dbo.NguoiDung nd
-LEFT JOIN dbo.QuyenGop qg ON nd.MaNguoiDung = qg.MaNguoiDung
-WHERE 1=1");
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
-                sb.Append(" AND (nd.HoTen LIKE N'%'+@TuKhoa+'%' OR nd.Email LIKE N'%'+@TuKhoa+'%')");
-            if (ttStr == "0" || ttStr == "1")
-                sb.Append(" AND nd.TrangThai = " + ttStr);
-            if (vtStr == "0" || vtStr == "1")
-                sb.Append(" AND nd.VaiTro = " + vtStr);
-            sb.Append(@"
-GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai, nd.VaiTro, nd.TrangThai, nd.NgayTao
-ORDER BY nd.NgayTao DESC
-OFFSET " + offset + " ROWS FETCH NEXT " + soDong + " ROWS ONLY");
+       ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1), 0) AS TongQuyenGop
+FROM dbo.NguoiDung nd" + where +
+                " ORDER BY nd.NgayTao DESC OFFSET " + offset + " ROWS FETCH NEXT " + soDong + " ROWS ONLY";
 
-            // Count
-            var sbCount = new StringBuilder();
-            sbCount.Append("SELECT COUNT(*) FROM dbo.NguoiDung nd WHERE 1=1");
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
-                sbCount.Append(" AND (nd.HoTen LIKE N'%'+@TuKhoa+'%' OR nd.Email LIKE N'%'+@TuKhoa+'%')");
-            if (ttStr == "0" || ttStr == "1")
-                sbCount.Append(" AND nd.TrangThai = " + ttStr);
-            if (vtStr == "0" || vtStr == "1")
-                sbCount.Append(" AND nd.VaiTro = " + vtStr);
-
-            var prm = string.IsNullOrWhiteSpace(tuKhoa)
-                ? new System.Data.SqlClient.SqlParameter[0]
-                : new[] { KetNoiDB.P("@TuKhoa", tuKhoa.Trim()) };
-
-            int total = Convert.ToInt32(KetNoiDB.ExecuteScalar(sbCount.ToString(), CommandType.Text, prm));
-            DataTable dt = KetNoiDB.GetDataTable(sb.ToString(), CommandType.Text, prm);
-
+            DataTable dt = KetNoiDB.GetDataTable(sqlData, CommandType.Text, prms.ToArray());
             var jss = new JavaScriptSerializer();
-            var rows = new System.Collections.Generic.List<object>();
+            var rows = new List<object>();
             foreach (DataRow r in dt.Rows)
             {
                 rows.Add(new
                 {
-                    MaNguoiDung = r["MaNguoiDung"],
+                    MaNguoiDung = Convert.ToInt32(r["MaNguoiDung"]),
                     HoTen = r["HoTen"].ToString(),
-                    Email = r["Email"].ToString(),
+                    Email = r["Email"] == DBNull.Value ? "" : r["Email"].ToString(),
                     SoDienThoai = r["SoDienThoai"] == DBNull.Value ? "" : r["SoDienThoai"].ToString(),
                     VaiTro = Convert.ToInt32(r["VaiTro"]),
                     TrangThai = Convert.ToInt32(r["TrangThai"]),
                     NgayTao = r["NgayTao"].ToString(),
-                    TongGop = Convert.ToDecimal(r["TongGop"]),
-                    SoLanGop = Convert.ToInt32(r["SoLanGop"])
+                    TongQuyenGop = Convert.ToDecimal(r["TongQuyenGop"])
                 });
             }
             Response.Write("{\"ok\":true,\"total\":" + total + ",\"data\":" + jss.Serialize(rows) + "}");
         }
 
-        /* ── Get single user ────────────────────────────────────────── */
+        // Lay chi tiet 1 nguoi dung
         private void HandleGet()
         {
             int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
-            const string sqlUser = @"
-SELECT nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai, nd.VaiTro, nd.TrangThai,
-       CONVERT(NVARCHAR(10), nd.NgayTao, 103) AS NgayTao,
-       ISNULL(SUM(CASE WHEN qg.TrangThai=1 THEN qg.SoTien ELSE 0 END),0) AS TongGop,
-       COUNT(CASE WHEN qg.TrangThai=1 THEN 1 ELSE NULL END)               AS SoLanGop
-FROM dbo.NguoiDung nd
-LEFT JOIN dbo.QuyenGop qg ON nd.MaNguoiDung=qg.MaNguoiDung
-WHERE nd.MaNguoiDung=@id
-GROUP BY nd.MaNguoiDung,nd.HoTen,nd.Email,nd.SoDienThoai,nd.VaiTro,nd.TrangThai,nd.NgayTao";
+            const string sql = @"
+SELECT nd.*, ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1),0) AS TongQuyenGop
+FROM dbo.NguoiDung nd WHERE nd.MaNguoiDung=@id";
 
-            DataTable dtUser = KetNoiDB.GetDataTable(sqlUser, CommandType.Text, KetNoiDB.P("@id", id));
-            if (dtUser.Rows.Count == 0) { Response.Write("{\"ok\":false,\"msg\":\"Not found\"}"); return; }
-            DataRow u = dtUser.Rows[0];
+            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@id", id));
+            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false,\"msg\":\"Khong tim thay\"}"); return; }
 
-            const string sqlDon = @"
-SELECT TOP 5 cd.TenChienDich, qg.SoTien, qg.TrangThai,
-       CONVERT(NVARCHAR(10), qg.NgayTao, 103) AS NgayTao
-FROM dbo.QuyenGop qg
-INNER JOIN dbo.ChienDich cd ON qg.MaChienDich=cd.MaChienDich
-WHERE qg.MaNguoiDung=@id
-ORDER BY qg.NgayTao DESC";
-            DataTable dtDon = KetNoiDB.GetDataTable(sqlDon, CommandType.Text, KetNoiDB.P("@id", id));
-
-            var donations = new System.Collections.Generic.List<object>();
-            foreach (DataRow d in dtDon.Rows)
-            {
-                donations.Add(new
-                {
-                    TenChienDich = d["TenChienDich"].ToString(),
-                    SoTien = Convert.ToDecimal(d["SoTien"]),
-                    TrangThai = Convert.ToInt32(d["TrangThai"]),
-                    NgayTao = d["NgayTao"].ToString()
-                });
-            }
-
+            DataRow r = dt.Rows[0];
             var jss = new JavaScriptSerializer();
-            var user = new
+            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(new
             {
-                MaNguoiDung = Convert.ToInt32(u["MaNguoiDung"]),
-                HoTen = u["HoTen"].ToString(),
-                Email = u["Email"].ToString(),
-                SoDienThoai = u["SoDienThoai"] == DBNull.Value ? "" : u["SoDienThoai"].ToString(),
-                VaiTro = Convert.ToInt32(u["VaiTro"]),
-                TrangThai = Convert.ToInt32(u["TrangThai"]),
-                NgayTao = u["NgayTao"].ToString(),
-                TongGop = Convert.ToDecimal(u["TongGop"]),
-                SoLanGop = Convert.ToInt32(u["SoLanGop"]),
-                Donations = donations
-            };
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(user) + "}");
+                MaNguoiDung = Convert.ToInt32(r["MaNguoiDung"]),
+                HoTen = r["HoTen"].ToString(),
+                Email = r["Email"]?.ToString() ?? "",
+                SoDienThoai = r["SoDienThoai"]?.ToString() ?? "",
+                VaiTro = Convert.ToInt32(r["VaiTro"]),
+                TrangThai = Convert.ToInt32(r["TrangThai"]),
+                TongQuyenGop = Convert.ToDecimal(r["TongQuyenGop"])
+            }) + "}");
         }
 
-        /* ── Lock / Unlock ───────────────────────────────────────────── */
-        private void HandleLockUnlock(int newStatus)
+        // Khoa hoac mo khoa tai khoan
+        private void HandleLockUnlock(int trangThai)
         {
             int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"Invalid id\"}"); return; }
+            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
-            // Không cho khóa admin
-            object vaiTro = KetNoiDB.ExecuteScalar(
-                "SELECT VaiTro FROM dbo.NguoiDung WHERE MaNguoiDung=@id",
-                CommandType.Text, KetNoiDB.P("@id", id));
-            if (vaiTro != null && Convert.ToInt32(vaiTro) == 1)
-            {
-                Response.Write("{\"ok\":false,\"msg\":\"Không thể thao tác với tài khoản Admin.\"}");
-                return;
-            }
-
-            int rows = KetNoiDB.ExecuteNonQuery(
-                "UPDATE dbo.NguoiDung SET TrangThai=@ts, NgayCapNhat=GETDATE() WHERE MaNguoiDung=@id",
+            KetNoiDB.ExecuteNonQuery(
+                "UPDATE dbo.NguoiDung SET TrangThai=@tt WHERE MaNguoiDung=@id",
                 CommandType.Text,
-                KetNoiDB.P("@ts", newStatus),
+                KetNoiDB.P("@tt", trangThai),
                 KetNoiDB.P("@id", id));
 
-            if (rows > 0) Response.Write("{\"ok\":true}");
-            else Response.Write("{\"ok\":false,\"msg\":\"Không tìm thấy người dùng.\"}");
+            string verb = trangThai == 1 ? "mo khoa" : "khoa";
+            Response.Write("{\"ok\":true,\"msg\":\"Da " + verb + " tai khoan #" + id + "\"}");
         }
 
-        /* ── Helper ──────────────────────────────────────────────────── */
         private static string JsonStr(string s)
         {
             if (s == null) return "null";

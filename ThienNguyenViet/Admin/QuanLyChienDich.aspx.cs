@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -27,21 +24,15 @@ namespace ThienNguyenViet.Admin
         {
             Response.ContentType = "application/json";
             Response.ContentEncoding = Encoding.UTF8;
-
             string action = Request["action"] ?? "";
-
             try
             {
                 switch (action)
                 {
-                    case "list":
-                        AjaxList();
-                        break;
-                    case "delete":
-                        AjaxDelete();
-                        break;
+                    case "list": AjaxList(); break;
+                    case "delete": AjaxDelete(); break;
                     default:
-                        Response.Write("{\"ok\":false,\"msg\":\"Action không hợp lệ\"}");
+                        Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
                         break;
                 }
             }
@@ -51,6 +42,7 @@ namespace ThienNguyenViet.Admin
             }
         }
 
+        // Lay danh sach chien dich (phan trang + loc)
         private void AjaxList()
         {
             int? maDanhMuc = null;
@@ -73,11 +65,12 @@ namespace ThienNguyenViet.Admin
                 KetNoiDB.P("@TrangHienTai", page),
                 KetNoiDB.P("@SoDoiMoiTrang", pageSize));
 
-            object totalObj = KetNoiDB.ExecuteScalar(
-                @"SELECT COUNT(*) FROM dbo.ChienDich 
-                  WHERE (@MaDanhMuc IS NULL OR MaDanhMuc = @MaDanhMuc)
-                    AND (@TrangThai IS NULL OR TrangThai = @TrangThai)
-                    AND (@TuKhoa IS NULL OR TenChienDich LIKE '%' + @TuKhoa + '%')",
+            // Dem tong
+            object totalObj = KetNoiDB.ExecuteScalar(@"
+SELECT COUNT(*) FROM dbo.ChienDich
+WHERE (@MaDanhMuc IS NULL OR MaDanhMuc = @MaDanhMuc)
+  AND (@TrangThai IS NULL OR TrangThai = @TrangThai)
+  AND (@TuKhoa IS NULL OR TenChienDich LIKE '%' + @TuKhoa + '%')",
                 CommandType.Text,
                 KetNoiDB.P("@MaDanhMuc", maDanhMuc),
                 KetNoiDB.P("@TrangThai", trangThai),
@@ -112,25 +105,26 @@ namespace ThienNguyenViet.Admin
                 sb.Append("}");
             }
             sb.Append("]}");
-
             Response.Write(sb.ToString());
         }
 
+        // Xoa chien dich
         private void AjaxDelete()
         {
             if (!int.TryParse(Request["id"], out int id))
             {
-                Response.Write("{\"ok\":false,\"msg\":\"Mã không hợp lệ\"}");
+                Response.Write("{\"ok\":false,\"msg\":\"Ma khong hop le\"}");
                 return;
             }
             try
             {
-                KetNoiDB.ExecuteNonQuery("SP_XoaChienDich", CommandType.StoredProcedure, KetNoiDB.P("@MaChienDich", id));
-                Response.Write("{\"ok\":true,\"msg\":\"Đã xóa thành công\"}");
+                KetNoiDB.ExecuteNonQuery("SP_XoaChienDich", CommandType.StoredProcedure,
+                    KetNoiDB.P("@MaChienDich", id));
+                Response.Write("{\"ok\":true,\"msg\":\"Da xoa thanh cong\"}");
             }
             catch
             {
-                Response.Write("{\"ok\":false,\"msg\":\"Lỗi: Chiến dịch này có dữ liệu liên quan không thể xóa.\"}");
+                Response.Write("{\"ok\":false,\"msg\":\"Loi: Chien dich nay co du lieu lien quan khong the xoa.\"}");
             }
         }
     }

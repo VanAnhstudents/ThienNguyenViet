@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -21,12 +17,11 @@ namespace ThienNguyenViet.Admin
                 Response.ContentType = "application/json";
                 Response.ContentEncoding = Encoding.UTF8;
                 try { HandleAjax(); }
-                catch (Exception ex) { Response.Write("{\"ok\":false,\"msg\":" + JsonStr("Lỗi: " + ex.Message) + "}"); }
+                catch (Exception ex) { Response.Write("{\"ok\":false,\"msg\":" + JsonStr("Loi: " + ex.Message) + "}"); }
                 Response.End();
             }
         }
 
-        /* ── Dispatcher ─────────────────────────────────────────── */
         private void HandleAjax()
         {
             switch (Request["action"] ?? "")
@@ -37,12 +32,12 @@ namespace ThienNguyenViet.Admin
                 case "update": AjaxUpdate(); break;
                 case "addTienDo": AjaxAddTienDo(); break;
                 default:
-                    Response.Write("{\"ok\":false,\"msg\":\"Action không hợp lệ\"}");
+                    Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
                     break;
             }
         }
 
-        /* ── Lấy danh mục ───────────────────────────────────────── */
+        // Lay danh muc
         private void AjaxDanhMuc()
         {
             DataTable dt = ChienDichDAO.LayDanhMuc();
@@ -61,15 +56,15 @@ namespace ThienNguyenViet.Admin
             Response.Write(sb.ToString());
         }
 
-        /* ── Lấy chi tiết 1 chiến dịch (edit mode) ─────────────── */
+        // Lay chi tiet 1 chien dich (edit mode)
         private void AjaxGet()
         {
             if (!int.TryParse(Request["id"], out int id) || id <= 0)
-            { Response.Write("{\"ok\":false,\"msg\":\"ID không hợp lệ\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
             DataRow r = ChienDichDAO.LayTheoMa(id);
             if (r == null)
-            { Response.Write("{\"ok\":false,\"msg\":\"Không tìm thấy chiến dịch\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"Khong tim thay chien dich\"}"); return; }
 
             DataTable dtTD = ChienDichDAO.LayTienDo(id);
 
@@ -77,42 +72,39 @@ namespace ThienNguyenViet.Admin
             sb.AppendFormat("\"MaChienDich\":{0},", r["MaChienDich"]);
             sb.AppendFormat("\"TenChienDich\":{0},", JsonStr(r["TenChienDich"].ToString()));
             sb.AppendFormat("\"MoTaNgan\":{0},", JsonStr(r["MoTaNgan"]?.ToString() ?? ""));
-            sb.AppendFormat("\"NoiDungChiTiet\":{0},", JsonStr(r["NoiDungChiTiet"]?.ToString() ?? ""));
-            sb.AppendFormat("\"AnhBia\":{0},", JsonStr(r["AnhBia"]?.ToString() ?? ""));
+            sb.AppendFormat("\"NoiDung\":{0},", JsonStr(r["NoiDung"]?.ToString() ?? ""));
             sb.AppendFormat("\"MucTieu\":{0},", r["MucTieu"]);
-            sb.AppendFormat("\"NgayBatDau\":\"{0}\",", ((DateTime)r["NgayBatDau"]).ToString("yyyy-MM-dd"));
-            sb.AppendFormat("\"NgayKetThuc\":\"{0}\",", ((DateTime)r["NgayKetThuc"]).ToString("yyyy-MM-dd"));
-            sb.AppendFormat("\"TrangThai\":{0},", r["TrangThai"]);
-            sb.AppendFormat("\"NoiBat\":{0},", Convert.ToBoolean(r["NoiBat"]) ? "true" : "false");
             sb.AppendFormat("\"MaDanhMuc\":{0},", r["MaDanhMuc"]);
-            sb.AppendFormat("\"TenNganHang\":{0},", JsonStr(r["TenNganHang"]?.ToString() ?? ""));
-            sb.AppendFormat("\"SoTaiKhoan\":{0},", JsonStr(r["SoTaiKhoan"]?.ToString() ?? ""));
-            sb.AppendFormat("\"TenChuTaiKhoan\":{0},", JsonStr(r["TenChuTaiKhoan"]?.ToString() ?? ""));
-            sb.AppendFormat("\"ToChucChuTri\":{0},", JsonStr(r["ToChucChuTri"]?.ToString() ?? ""));
-            sb.AppendFormat("\"NgayTao\":{0},",
-                r["NgayTao"] == DBNull.Value ? "\"\"" :
-                JsonStr(Convert.ToDateTime(r["NgayTao"]).ToString("dd/MM/yyyy")));
-            sb.AppendFormat("\"NgayCapNhat\":{0},",
-                r["NgayCapNhat"] == DBNull.Value ? "\"\"" :
-                JsonStr(Convert.ToDateTime(r["NgayCapNhat"]).ToString("dd/MM/yyyy")));
+            sb.AppendFormat("\"TrangThai\":{0},", r["TrangThai"]);
 
-            sb.Append("\"TienDo\":[");
+            bool nb = r["NoiBat"] != DBNull.Value && Convert.ToBoolean(r["NoiBat"]);
+            sb.AppendFormat("\"NoiBat\":{0},", nb ? "true" : "false");
+
+            sb.AppendFormat("\"NgayBatDau\":\"{0:yyyy-MM-dd}\",", r["NgayBatDau"]);
+            sb.AppendFormat("\"NgayKetThuc\":\"{0:yyyy-MM-dd}\",", r["NgayKetThuc"]);
+            sb.AppendFormat("\"ToChuc\":{0},", JsonStr(r["ToChuc"]?.ToString() ?? ""));
+            sb.AppendFormat("\"NganHang\":{0},", JsonStr(r["NganHang"]?.ToString() ?? ""));
+            sb.AppendFormat("\"SoTaiKhoan\":{0},", JsonStr(r["SoTaiKhoan"]?.ToString() ?? ""));
+            sb.AppendFormat("\"ChuTaiKhoan\":{0},", JsonStr(r["ChuTaiKhoan"]?.ToString() ?? ""));
+            sb.AppendFormat("\"AnhBia\":{0},", JsonStr(r["AnhBia"]?.ToString() ?? ""));
+
+            // Tien do
+            sb.Append("\"tienDo\":[");
             bool first = true;
             foreach (DataRow td in dtTD.Rows)
             {
                 if (!first) sb.Append(",");
                 first = false;
-                sb.AppendFormat("{{\"TieuDe\":{0},\"NoiDung\":{1},\"NgayDang\":{2}}}",
+                sb.AppendFormat("{{\"TieuDe\":{0},\"NoiDung\":{1},\"NgayDang\":\"{2:dd/MM/yyyy}\"}}",
                     JsonStr(td["TieuDe"].ToString()),
-                    JsonStr(td["NoiDung"].ToString()),
-                    JsonStr(td["NgayDang"] == DBNull.Value ? "" :
-                        Convert.ToDateTime(td["NgayDang"]).ToString("dd/MM/yyyy")));
+                    JsonStr(td["NoiDung"]?.ToString() ?? ""),
+                    td["NgayDang"]);
             }
             sb.Append("]}}");
             Response.Write(sb.ToString());
         }
 
-        /* ── Thêm mới chiến dịch ────────────────────────────────── */
+        // Them chien dich moi
         private void AjaxInsert()
         {
             int maNguoiTao = PhanQuyenHelper.LayMa(Session);
@@ -135,16 +127,16 @@ namespace ThienNguyenViet.Admin
                 toChuc, nganHang, stk, chuTK, anhBia, maDanhMuc, noiBat, trangThai, maNguoiTao);
 
             if (newId > 0)
-                Response.Write("{\"ok\":true,\"id\":" + newId + ",\"msg\":" + JsonStr("Thêm chiến dịch thành công") + "}");
+                Response.Write("{\"ok\":true,\"id\":" + newId + ",\"msg\":" + JsonStr("Them chien dich thanh cong") + "}");
             else
-                Response.Write("{\"ok\":false,\"msg\":\"Lỗi khi thêm chiến dịch\"}");
+                Response.Write("{\"ok\":false,\"msg\":\"Loi khi them chien dich\"}");
         }
 
-        /* ── Cập nhật chiến dịch ────────────────────────────────── */
+        // Cap nhat chien dich
         private void AjaxUpdate()
         {
             if (!int.TryParse(Request["id"], out int id) || id <= 0)
-            { Response.Write("{\"ok\":false,\"msg\":\"ID không hợp lệ\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
             string ten = Request["ten"] ?? "";
             string moTa = Request["moTa"] ?? "";
@@ -165,15 +157,15 @@ namespace ThienNguyenViet.Admin
                 toChuc, nganHang, stk, chuTK, anhBia, maDanhMuc, noiBat, trangThai);
 
             Response.Write(ok
-                ? "{\"ok\":true,\"msg\":" + JsonStr("Cập nhật chiến dịch thành công") + "}"
-                : "{\"ok\":false,\"msg\":\"Lỗi khi cập nhật chiến dịch\"}");
+                ? "{\"ok\":true,\"msg\":" + JsonStr("Cap nhat chien dich thanh cong") + "}"
+                : "{\"ok\":false,\"msg\":\"Loi khi cap nhat chien dich\"}");
         }
 
-        /* ── Thêm cập nhật tiến độ ──────────────────────────────── */
+        // Them cap nhat tien do
         private void AjaxAddTienDo()
         {
             if (!int.TryParse(Request["id"], out int id) || id <= 0)
-            { Response.Write("{\"ok\":false,\"msg\":\"ID không hợp lệ\"}"); return; }
+            { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
 
             string tieuDe = Request["tieu"] ?? "";
             string noiDung = Request["noi"] ?? "";
@@ -183,11 +175,10 @@ namespace ThienNguyenViet.Admin
             bool ok = ChienDichDAO.ThemTienDo(id, tieuDe, noiDung, ngay, maNguoiDang);
 
             Response.Write(ok
-                ? "{\"ok\":true,\"msg\":\"Đã thêm cập nhật tiến độ\"}"
-                : "{\"ok\":false,\"msg\":\"Lỗi khi thêm tiến độ\"}");
+                ? "{\"ok\":true,\"msg\":\"Da them cap nhat tien do\"}"
+                : "{\"ok\":false,\"msg\":\"Loi khi them tien do\"}");
         }
 
-        /* ── Helper ─────────────────────────────────────────────── */
         private static string JsonStr(string s)
             => "\"" + (s ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"")
                                .Replace("\r", "\\r").Replace("\n", "\\n") + "\"";
