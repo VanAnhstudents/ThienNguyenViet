@@ -21,7 +21,7 @@
     .bc-stat:hover { box-shadow: 0 2px 12px rgba(49,130,206,.08); }
 
     /* Stat card chỉ 2 thành phần: label + value */
-    .bc-stat-label { font-size: 10px; font-weight: 600; color: var(--txt-sub); text-transform: uppercase; margin-bottom: 6px; }
+    .bc-stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
     .bc-stat-value { font-size: 22px; font-weight: 700; }
 
     .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
@@ -30,15 +30,12 @@
 
     /* rank-num: BỎ bo tròn, chỉ hiển thị số thuần */
     .rank-num {
-        font-size: 13px; font-weight: 700; color: var(--txt);
+        font-size: 13px; font-weight: 700;
     }
-    .rank-1 { color: #C05621; }
-    .rank-2 { color: #4A5568; }
-    .rank-3 { color: #C53030; }
 
     .donor-name { font-size: 12px; font-weight: 500; }
-    .donor-email { font-size: 10px; color: var(--txt-sub); }
-    .amount-col { font-weight: 600; color: var(--ok); white-space: nowrap; }
+    .donor-email { font-size: 10px; }
+    .amount-col { font-weight: 600; white-space: nowrap; }
 
     .pie-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; justify-content: center; }
     .pie-legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; }
@@ -79,7 +76,7 @@
     <div class="bc-summary" id="summaryRow">
         <div class="bc-stat">
             <div class="bc-stat-label">Tổng tiền quyên góp</div>
-            <div class="bc-stat-value" id="bcTongTien" style="color:var(--accent)">--</div>
+            <div class="bc-stat-value" id="bcTongTien">--</div>
         </div>
         <div class="bc-stat">
             <div class="bc-stat-label">Tổng lượt quyên góp</div>
@@ -87,7 +84,7 @@
         </div>
         <div class="bc-stat">
             <div class="bc-stat-label">Chiến dịch đang chạy</div>
-            <div class="bc-stat-value" id="bcChienDich" style="color:var(--ok)">--</div>
+            <div class="bc-stat-value" id="bcChienDich">--</div>
         </div>
         <div class="bc-stat">
             <div class="bc-stat-label">Người dùng hoạt động</div>
@@ -231,7 +228,7 @@
                         html += '<tr><td><span class="rank-num ' + cls + '">' + rank + '</span></td>' +
                             '<td style="font-size:12px;font-weight:500">' + cd.TenChienDich + '</td>' +
                             '<td class="amount-col">' + fmtMoney(cd.TongTienDaQuyen) + '</td>' +
-                            '<td style="min-width:80px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;color:var(--txt-sub);margin-top:2px">' + pct + '%</div></td></tr>';
+                            '<td style="min-width:80px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;margin-top:2px">' + pct + '%</div></td></tr>';
                     });
                     document.getElementById('topCDBody').innerHTML = html;
                 });

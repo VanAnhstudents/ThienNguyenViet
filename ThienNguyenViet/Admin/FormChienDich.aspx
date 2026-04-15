@@ -18,7 +18,7 @@
     .rte-btn {
         width: 30px; height: 28px; border: 1px solid var(--border);
         border-radius: 3px; background: #fff; cursor: pointer;
-        font-size: 12px; font-weight: 700; color: var(--txt);
+        font-size: 12px; font-weight: 700;
         display: flex; align-items: center; justify-content: center;
     }
     .rte-btn:hover { background: var(--accent-light); }
@@ -276,7 +276,7 @@
                         document.getElementById('sectionTienDo').style.display = 'block';
                         var tdHtml = '';
                         data.tienDo.forEach(function (td) {
-                            tdHtml += '<li><strong>' + td.TieuDe + '</strong> — ' + td.NgayDang + '<br/><span style="color:var(--txt-sub)">' + (td.NoiDung || '') + '</span></li>';
+                            tdHtml += '<li><strong>' + td.TieuDe + '</strong> — ' + td.NgayDang + '<br/><span>' + (td.NoiDung || '') + '</span></li>';
                         });
                         document.getElementById('tdList').innerHTML = tdHtml;
                     }
@@ -292,7 +292,7 @@
             var el = document.getElementById('previewImg');
             if (url && url.trim()) {
                 el.style.display = 'block';
-                el.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r)" onerror="this.parentNode.innerHTML=\'<div style=padding:20px;text-align:center;color:var(--err)>Không tải được ảnh</div>\'" />';
+                el.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r)" onerror="this.parentNode.innerHTML=\'<div style=padding:20px;text-align:center;>Không tải được ảnh</div>\'" />';
             } else {
                 el.style.display = 'none';
                 el.innerHTML = '';

@@ -5,9 +5,6 @@
 
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-    .s-blue .stat-card-value { color: var(--accent); }
-    .s-green .stat-card-value { color: var(--ok); }
-
     .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
 
     /* Campaign list */
@@ -18,10 +15,10 @@
     }
     .cd-item:last-child { border-bottom: none; }
     .cd-item-name { font-size: 13px; font-weight: 500; flex: 1; margin-right: 10px; }
-    .cd-item-pct { font-size: 12px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+    .cd-item-pct { font-size: 12px; font-weight: 600; white-space: nowrap; }
     .cd-item-bar { width: 100%; margin-top: 6px; }
 
-    .amount-cell { color: var(--ok); font-weight: 600; font-size: 12px; white-space: nowrap; }
+    .amount-cell { font-weight: 600; font-size: 12px; white-space: nowrap; }
 
     /* Proof image */
     .proof-wrap {
@@ -29,7 +26,7 @@
         border-radius: var(--r); padding: 10px;
         display: flex; align-items: center;
         justify-content: center; background: var(--bg);
-        min-height: 60px; font-size: 12px; color: var(--txt-sub);
+        min-height: 60px; font-size: 12px;
     }
     .proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); }
 

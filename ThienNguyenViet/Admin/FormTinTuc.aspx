@@ -18,7 +18,7 @@
     .rte-btn {
         width: 30px; height: 28px; border: 1px solid var(--border);
         border-radius: 3px; background: #fff; cursor: pointer;
-        font-size: 12px; font-weight: 700; color: var(--txt);
+        font-size: 12px; font-weight: 700;
         display: flex; align-items: center; justify-content: center;
     }
     .rte-btn:hover { background: var(--accent-light); }
@@ -29,8 +29,8 @@
     }
 
     /* Char counter */
-    .char-counter { font-size: 11px; color: var(--txt-sub); text-align: right; margin-top: 3px; }
-    .char-counter.over { color: var(--err); font-weight: 600; }
+    .char-counter { font-size: 11px; ; text-align: right; margin-top: 3px; }
+    .char-counter.over { font-weight: 600; }
 
     /* Status toggle */
     .status-toggle { display: flex; gap: 4px; }
@@ -38,7 +38,7 @@
         flex: 1; padding: 8px; text-align: center;
         border: 1px solid var(--border); border-radius: var(--r);
         font-size: 12px; font-weight: 500; cursor: pointer;
-        transition: all .15s; background: var(--bg); color: var(--txt-sub);
+        transition: all .15s; background: var(--bg;
     }
     .status-opt.active {
         background: var(--accent); color: #fff; border-color: var(--accent);
@@ -181,7 +181,7 @@
             var el = document.getElementById('previewImg');
             if (url && url.trim()) {
                 el.style.display = 'block';
-                el.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r)" onerror="this.parentNode.innerHTML=\'<div style=padding:20px;text-align:center;color:var(--err)>Không tải được ảnh</div>\'" />';
+                el.innerHTML = '<img src="' + url + '" style="width:100%;border-radius:var(--r)" onerror="this.parentNode.innerHTML=\'<div style=padding:20px;text-align:center;>Không tải được ảnh</div>\'" />';
             } else {
                 el.style.display = 'none';
                 el.innerHTML = '';
