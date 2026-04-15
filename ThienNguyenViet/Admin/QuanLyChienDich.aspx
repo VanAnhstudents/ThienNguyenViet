@@ -11,13 +11,13 @@
     }
     .page-topbar h3 { font-size: 14px; font-weight: 600; }
     .cd-name { font-size: 13px; font-weight: 600; }
-    .cd-sub { font-size: 11px; color: var(--txt-sub); margin-top: 2px; }
+    .cd-sub { font-size: 11px; margin-top: 2px; }
     .cd-dm {
         display: inline-block; font-size: 10px; padding: 2px 7px;
         border-radius: 4px; font-weight: 500;
     }
     .cd-amount { font-weight: 600; font-size: 12px; }
-    .cd-date { font-size: 11px; color: var(--txt-sub); white-space: nowrap; }
+    .cd-date { font-size: 11px; white-space: nowrap; }
     .action-group { display: flex; gap: 4px; }
 </style>
 </asp:Content>
@@ -86,7 +86,7 @@
             </div>
             <div class="modal-body">
                 <p style="font-size:13px">Bạn có chắc chắn muốn xóa chiến dịch "<strong id="delName"></strong>"?</p>
-                <p style="font-size:11px;color:var(--txt-sub);margin-top:6px">Hành động này không thể hoàn tác.</p>
+                <p style="font-size:11px;margin-top:6px">Hành động này không thể hoàn tác.</p>
             </div>
             <div class="modal-ft">
                 <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Hủy</button>
@@ -153,16 +153,16 @@
                 html += '<tr>' +
                     '<td><div class="cd-name">' + esc(r.TenChienDich) + '</div>' +
                     '<div class="cd-sub">' + esc(r.MoTaNgan || '') + '</div></td>' +
-                    '<td><span class="cd-dm" style="background:' + (r.MauDanhMuc || '#EDF2F7') + '20;color:' + (r.MauDanhMuc || '#4A5568') + '">' + esc(r.TenDanhMuc) + '</span></td>' +
+                    '<td><span class="cd-dm" style="background:' + (r.MauDanhMuc || '#EDF2F7') + '20;>' + esc(r.TenDanhMuc) + '</span></td>' +
                     '<td class="cd-amount">' + Number(r.MucTieu).toLocaleString('vi-VN') + '</td>' +
-                    '<td class="cd-amount" style="color:var(--ok)">' + Number(r.SoTienDaQuyen).toLocaleString('vi-VN') + '</td>' +
-                    '<td style="min-width:100px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;color:var(--txt-sub);margin-top:3px">' + pct + '%</div></td>' +
+                    '<td class="cd-amount" >' + Number(r.SoTienDaQuyen).toLocaleString('vi-VN') + '</td>' +
+                    '<td style="min-width:100px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;margin-top:3px">' + pct + '%</div></td>' +
                     '<td class="cd-date">' + r.NgayKetThuc + (r.SoNgayCon > 0 ? ' (' + r.SoNgayCon + ' ngày)' : '') + '</td>' +
                     '<td><span class="badge ' + tsClass + '">' + tsLabel + '</span>' +
                     (r.NoiBat ? '<span class="badge badge-info" style="margin-left:3px">Nổi bật</span>' : '') + '</td>' +
                     '<td><div class="action-group">' +
                     '<a href="' + BASE.replace('QuanLyChienDich.aspx', 'FormChienDich.aspx') + '?id=' + r.MaChienDich + '" class="btn btn-outline btn-xs">Sửa</a>' +
-                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg);color:var(--err-txt)" onclick="openDelete(' + r.MaChienDich + ',\'' + esc(r.TenChienDich).replace(/'/g, "\\'") + '\')">Xóa</button>' +
+                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="openDelete(' + r.MaChienDich + ',\'' + esc(r.TenChienDich).replace(/'/g, "\\'") + '\')">Xóa</button>' +
                     '</div></td></tr>';
             });
             body.innerHTML = html;

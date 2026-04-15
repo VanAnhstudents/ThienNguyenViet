@@ -15,7 +15,7 @@
 
     /* Stat card chỉ 2 thành phần: label + value */
     .tt-stat-card .stat-card-label {
-        font-size: 10px; color: var(--txt-sub); text-transform: uppercase;
+        font-size: 10px; text-transform: uppercase;
         letter-spacing: .04em; font-weight: 600; margin-bottom: 6px;
     }
     .tt-stat-card .stat-card-value {
@@ -31,7 +31,7 @@
         width: 48px; height: 36px; border-radius: 4px;
         object-fit: cover; background: var(--bg); border: 1px solid var(--border);
     }
-    .tt-views { font-size: 12px; color: var(--txt-sub); }
+    .tt-views { font-size: 12px; }
 
     @media (max-width: 768px) { .tt-stats-row { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 425px) { .tt-stats-row { grid-template-columns: 1fr 1fr; gap: 8px; } }
@@ -54,15 +54,15 @@
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Xuất bản</div>
-            <div class="stat-card-value" id="ttXuatBan" style="color:var(--ok)">--</div>
+            <div class="stat-card-value" id="ttXuatBan">--</div>
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Bản nháp</div>
-            <div class="stat-card-value" id="ttNhap" style="color:var(--warn)">--</div>
+            <div class="stat-card-value" id="ttNhap">--</div>
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Tổng lượt xem</div>
-            <div class="stat-card-value" id="ttLuotXem" style="color:var(--accent)">--</div>
+            <div class="stat-card-value" id="ttLuotXem">--</div>
         </div>
     </div>
 
@@ -186,7 +186,7 @@
             rows.forEach(function (r) {
                 var tsLabel = r.TrangThai === 1 ? 'Xuất bản' : 'Bản nháp';
                 var tsCls = r.TrangThai === 1 ? 'badge-ok' : 'badge-warn';
-                var thumb = r.AnhBia ? '<img class="tt-thumb" src="' + r.AnhBia + '" onerror="this.style.display=\'none\'" />' : '<div class="tt-thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--txt-sub)">N/A</div>';
+                var thumb = r.AnhBia ? '<img class="tt-thumb" src="' + r.AnhBia + '" onerror="this.style.display=\'none\'" />' : '<div class="tt-thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;">N/A</div>';
 
                 html += '<tr>' +
                     '<td>' + thumb + '</td>' +
@@ -198,7 +198,7 @@
                     '<td><div style="display:flex;gap:4px">' +
                     '<a href="' + FORM_URL + '?id=' + r.MaTinTuc + '" class="btn btn-xs btn-outline">Sửa</a>' +
                     '<button type="button" class="btn btn-xs btn-outline" onclick="toggleTrangThai(' + r.MaTinTuc + ')">' + (r.TrangThai === 1 ? 'Ẩn' : 'Hiện') + '</button>' +
-                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg);color:var(--err-txt)" onclick="openXoa(' + r.MaTinTuc + ',\'' + esc(r.TieuDe).replace(/'/g, "\\'") + '\')">Xóa</button>' +
+                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg)" onclick="openXoa(' + r.MaTinTuc + ',\'' + esc(r.TieuDe).replace(/'/g, "\\'") + '\')">Xóa</button>' +
                     '</div></td></tr>';
             });
             body.innerHTML = html;

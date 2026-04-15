@@ -15,7 +15,7 @@
 
     /* Stat card chỉ 2 thành phần: label + value */
     .qg-stat-card .stat-card-label {
-        font-size: 10px; color: var(--txt-sub); text-transform: uppercase;
+        font-size: 10px; text-transform: uppercase;
         letter-spacing: .04em; font-weight: 600; margin-bottom: 6px;
     }
     .qg-stat-card .stat-card-value {
@@ -24,21 +24,21 @@
 
     /* Donor cell - BỎ avatar */
     .donor-name { font-size: 12px; font-weight: 500; }
-    .donor-email { font-size: 10px; color: var(--txt-sub); }
-    .amount-cell { color: var(--ok); font-weight: 600; white-space: nowrap; }
+    .donor-email { font-size: 10px; }
+    .amount-cell { font-weight: 600; white-space: nowrap; }
     .msg-cell {
-        max-width: 160px; font-size: 11px; color: var(--txt-sub);
+        max-width: 160px; font-size: 11px;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic;
     }
     .reject-reason {
-        font-size: 10px; color: var(--err-txt); background: var(--err-bg);
+        font-size: 10px; background: var(--err-bg);
         border-radius: 4px; padding: 2px 6px; margin-top: 3px;
         max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .proof-wrap {
         margin-top: 6px; border: 1px solid var(--border); border-radius: var(--r);
         padding: 10px; min-height: 60px; display: flex; align-items: center;
-        justify-content: center; background: var(--bg); font-size: 12px; color: var(--txt-sub);
+        justify-content: center; background: var(--bg); font-size: 12px;
     }
     .proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); }
     .reject-textarea {
@@ -70,19 +70,19 @@
         </div>
         <div class="qg-stat-card">
             <div class="stat-card-label">Chờ duyệt</div>
-            <div class="stat-card-value" id="sCho" style="color:var(--warn)">--</div>
+            <div class="stat-card-value" id="sCho">--</div>
         </div>
         <div class="qg-stat-card">
             <div class="stat-card-label">Đã duyệt</div>
-            <div class="stat-card-value" id="sDuyet" style="color:var(--ok)">--</div>
+            <div class="stat-card-value" id="sDuyet">--</div>
         </div>
         <div class="qg-stat-card">
             <div class="stat-card-label">Từ chối</div>
-            <div class="stat-card-value" id="sTuChoi" style="color:var(--err)">--</div>
+            <div class="stat-card-value" id="sTuChoi">--</div>
         </div>
         <div class="qg-stat-card">
             <div class="stat-card-label">Tổng tiền</div>
-            <div class="stat-card-value" id="sTien" style="color:var(--accent)">--</div>
+            <div class="stat-card-value" id="sTien">--</div>
         </div>
     </div>
 
@@ -271,7 +271,7 @@
                 '<div class="detail-item"><label>Người góp</label><span class="detail-val">' + esc(r.hoTen) + '</span></div>' +
                 '<div class="detail-item"><label>Email</label><span class="detail-val">' + esc(r.email || '(không có)') + '</span></div>' +
                 '<div class="detail-item"><label>Chiến dịch</label><span class="detail-val">' + esc(r.tenCD) + '</span></div>' +
-                '<div class="detail-item"><label>Số tiền</label><span class="detail-val" style="font-weight:700;color:var(--ok)">' + Number(r.soTien).toLocaleString('vi-VN') + ' đ</span></div>' +
+                '<div class="detail-item"><label>Số tiền</label><span class="detail-val" style="font-weight:700;>' + Number(r.soTien).toLocaleString('vi-VN') + ' đ</span></div>' +
                 '<div class="detail-item"><label>Trạng thái</label><span class="detail-val">' + (tsNames[r.trangThai] || '') + '</span></div>' +
                 '<div class="detail-item"><label>Ẩn danh</label><span class="detail-val">' + (r.anDanh ? 'Có' : 'Không') + '</span></div>' +
                 '<div class="detail-item detail-full"><label>Lời nhắn</label><span class="detail-val" style="font-style:italic">' + esc(r.loiNhan || '(không có)') + '</span></div>' +

@@ -15,7 +15,7 @@
 
     /* Stat card chỉ 2 thành phần: label + value */
     .nd-stat .stat-card-label {
-        font-size: 10px; color: var(--txt-sub); text-transform: uppercase;
+        font-size: 10px; text-transform: uppercase;
         font-weight: 600; letter-spacing: .03em; margin-bottom: 6px;
     }
     .nd-stat .stat-card-value {
@@ -23,13 +23,13 @@
     }
 
     .user-fullname { font-size: 13px; font-weight: 500; }
-    .user-email { font-size: 10px; color: var(--txt-sub); }
+    .user-email { font-size: 10px; }
     .user-role {
         display: inline-block; font-size: 10px; padding: 2px 8px;
         border-radius: 4px; font-weight: 500;
     }
-    .role-admin { background: #E9D8FD; color: #6B46C1; }
-    .role-user { background: var(--info-bg); color: var(--info-txt); }
+    .role-admin { background: #E9D8FD;}
+    .role-user { background: var(--info-bg);}
 
     @media (max-width: 768px) { .nd-stats { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 425px) { .nd-stats { grid-template-columns: 1fr 1fr; gap: 8px; } }
@@ -52,15 +52,15 @@
         </div>
         <div class="nd-stat">
             <div class="stat-card-label">Đang hoạt động</div>
-            <div class="stat-card-value" id="ndHoatDong" style="color:var(--ok)">--</div>
+            <div class="stat-card-value" id="ndHoatDong">--</div>
         </div>
         <div class="nd-stat">
             <div class="stat-card-label">Tài khoản bị khóa</div>
-            <div class="stat-card-value" id="ndKhoa" style="color:var(--err)">--</div>
+            <div class="stat-card-value" id="ndKhoa">--</div>
         </div>
         <div class="nd-stat">
             <div class="stat-card-label">Tổng quyên góp</div>
-            <div class="stat-card-value" id="ndQuyenGop" style="color:var(--accent)">--</div>
+            <div class="stat-card-value" id="ndQuyenGop">--</div>
         </div>
     </div>
 
@@ -186,7 +186,7 @@
                     '<button type="button" class="btn btn-xs btn-outline" onclick=\'viewNdDetail(' + JSON.stringify(r) + ')\'>Xem</button>';
 
                 if (r.TrangThai === 1) {
-                    html += '<button type="button" class="btn btn-xs" style="background:var(--err-bg);color:var(--err-txt)" onclick="lockUser(' + r.MaNguoiDung + ')">Khóa</button>';
+                    html += '<button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="lockUser(' + r.MaNguoiDung + ')">Khóa</button>';
                 } else {
                     html += '<button type="button" class="btn btn-xs btn-success" onclick="unlockUser(' + r.MaNguoiDung + ')">Mở khóa</button>';
                 }
