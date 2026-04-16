@@ -21,6 +21,7 @@ namespace ThienNguyenViet.Admin
                 {
                     switch (action)
                     {
+                        case "danhMuc": HandleDanhMuc(); break;
                         case "get": HandleGet(); break;
                         case "insert": HandleSave(false); break;
                         case "update": HandleSave(true); break;
@@ -35,6 +36,21 @@ namespace ThienNguyenViet.Admin
                 }
                 Response.End();
             }
+        }
+
+        // Lay danh muc tin tuc
+        private void HandleDanhMuc()
+        {
+            DataTable dt = KetNoiDB.GetDataTable(
+                "SELECT MaDanhMuc, TenDanhMuc FROM dbo.DanhMucTinTuc ORDER BY TenDanhMuc",
+                CommandType.Text);
+            var jss = new JavaScriptSerializer();
+            var list = new System.Collections.Generic.List<object>();
+            foreach (DataRow r in dt.Rows)
+            {
+                list.Add(new { MaDanhMuc = Convert.ToInt32(r["MaDanhMuc"]), TenDanhMuc = r["TenDanhMuc"].ToString() });
+            }
+            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(list) + "}");
         }
 
         // Lay bai viet theo ID

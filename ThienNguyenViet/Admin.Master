@@ -56,7 +56,7 @@ a {
     text-decoration: none;
 }
 
-button {
+button, input, select, textarea {
     font-family: var(--font);
 }
 

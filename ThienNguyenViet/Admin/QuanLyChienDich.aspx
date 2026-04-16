@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Quản lý Chiến dịch" Language="C#"
+<%@ Page Title="Quản lý Chiến dịch" Language="C#"
     MasterPageFile="~/Admin.Master" AutoEventWireup="true"
     CodeBehind="QuanLyChienDich.aspx.cs"
     Inherits="ThienNguyenViet.Admin.QuanLyChienDich" %>
@@ -29,33 +29,46 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
+    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+    <asp:HiddenField ID="hfPage" runat="server" Value="1" />
+    <asp:HiddenField ID="hfFilterStatus" runat="server" />
+    <asp:HiddenField ID="hfFilterDM" runat="server" />
+    <asp:HiddenField ID="hfAction" runat="server" />
+    <asp:HiddenField ID="hfParam" runat="server" />
+
     <div class="page-topbar">
         <h3>Tất cả chiến dịch</h3>
         <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>" class="btn btn-primary">Thêm chiến dịch</a>
     </div>
 
-    <%-- Thanh tìm kiếm --%>
+    <%-- === PHẦN ĐÃ SỬA: Tìm kiếm dùng asp:TextBox + asp:Button postback === --%>
     <div class="filter-bar">
         <div class="search-bar" style="flex:1">
-            <input type="text" class="input" id="txtSearch" placeholder="Tìm kiếm chiến dịch theo tên..." />
-            <button type="button" class="btn btn-primary" onclick="doSearch()">Tìm kiếm</button>
+            <asp:TextBox ID="txtSearch" runat="server" CssClass="input" placeholder="Tìm kiếm chiến dịch theo tên..." />
+            <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary" Text="Tìm kiếm" OnClick="BtnSearch_Click" />
+            <asp:Button ID="btnReset" runat="server" CssClass="btn btn-outline" Text="Đặt lại" OnClick="BtnReset_Click" />
         </div>
     </div>
 
-    <%-- Bộ lọc --%>
+    <%-- === PHẦN ĐÃ SỬA: Bộ lọc dùng postback thay vì AJAX === --%>
     <div class="filter-bar">
         <div class="filter-group" id="filterStatus">
-            <button type="button" class="filter-btn active" data-val="">Tất cả</button>
-            <button type="button" class="filter-btn" data-val="0">Nháp</button>
-            <button type="button" class="filter-btn" data-val="1">Đang chạy</button>
-            <button type="button" class="filter-btn" data-val="2">Kết thúc</button>
+            <button type="button" class="filter-btn<%= FilterStatus == "" ? " active" : "" %>" onclick="setFilter('status','')">Tất cả</button>
+            <button type="button" class="filter-btn<%= FilterStatus == "0" ? " active" : "" %>" onclick="setFilter('status','0')">Nháp</button>
+            <button type="button" class="filter-btn<%= FilterStatus == "1" ? " active" : "" %>" onclick="setFilter('status','1')">Đang chạy</button>
+            <button type="button" class="filter-btn<%= FilterStatus == "2" ? " active" : "" %>" onclick="setFilter('status','2')">Kết thúc</button>
         </div>
-        <select class="select" id="filterDanhMuc" style="min-width:140px">
+        <select class="select" id="filterDanhMuc" style="min-width:140px" onchange="setFilter('dm', this.value)">
             <option value="">Tất cả danh mục</option>
+            <% if (DtDanhMuc != null) {
+                foreach (System.Data.DataRow dm in DtDanhMuc.Rows) { %>
+                <option value="<%= dm["MaDanhMuc"] %>" <%= FilterDanhMuc == dm["MaDanhMuc"].ToString() ? "selected" : "" %>><%= Server.HtmlEncode(dm["TenDanhMuc"].ToString()) %></option>
+            <% }
+            } %>
         </select>
     </div>
 
-    <%-- Bảng dữ liệu --%>
+    <%-- === PHẦN ĐÃ SỬA: Bảng dữ liệu render server-side === --%>
     <div class="card" style="padding:0">
         <table class="tbl">
             <thead>
@@ -70,12 +83,67 @@
                     <th>Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="tblBody">
-                <tr><td colspan="8" class="empty-state">Đang tải...</td></tr>
+            <tbody>
+            <% if (DtChienDich != null && DtChienDich.Rows.Count > 0) {
+                foreach (System.Data.DataRow r in DtChienDich.Rows) {
+                    int maCD = Convert.ToInt32(r["MaChienDich"]);
+                    string tenCD = r["TenChienDich"].ToString();
+                    string moTa = r["MoTaNgan"] == DBNull.Value ? "" : r["MoTaNgan"].ToString();
+                    long mucTieu = Convert.ToInt64(r["MucTieu"]);
+                    long daQuyen = Convert.ToInt64(r["SoTienDaQuyen"]);
+                    int pct = mucTieu > 0 ? (int)Math.Min(100, Math.Round((double)daQuyen * 100 / mucTieu)) : 0;
+                    string ngayKT = Convert.ToDateTime(r["NgayKetThuc"]).ToString("dd/MM/yyyy");
+                    int soNgayCon = Convert.ToInt32(r["SoNgayCon"]);
+                    int trangThaiCD = Convert.ToInt32(r["TrangThai"]);
+                    bool noiBat = r["NoiBat"] != DBNull.Value && Convert.ToBoolean(r["NoiBat"]);
+                    string tenDM = r["TenDanhMuc"].ToString();
+
+                    string tsLabel = new[]{"Nháp","Đang chạy","Kết thúc"}[trangThaiCD < 3 ? trangThaiCD : 0];
+                    string tsCls = new[]{"badge-warn","badge-ok","badge-info"}[trangThaiCD < 3 ? trangThaiCD : 0];
+            %>
+                <tr>
+                    <td>
+                        <div class="cd-name"><%= Server.HtmlEncode(tenCD) %></div>
+                        <div class="cd-sub" style="color:var(--txt-sub)"><%= Server.HtmlEncode(moTa) %></div>
+                    </td>
+                    <td><span class="cd-dm"><%= Server.HtmlEncode(tenDM) %></span></td>
+                    <td class="cd-amount"><%= mucTieu.ToString("N0") %></td>
+                    <td class="cd-amount"><%= daQuyen.ToString("N0") %></td>
+                    <td style="min-width:100px">
+                        <div class="prog-wrap"><div class="prog-fill" style="width:<%= pct %>%"></div></div>
+                        <div style="font-size:10px;margin-top:3px"><%= pct %>%</div>
+                    </td>
+                    <td class="cd-date"><%= ngayKT %><% if(soNgayCon > 0) { %> (<%= soNgayCon %> ngày)<% } %></td>
+                    <td>
+                        <span class="badge <%= tsCls %>"><%= tsLabel %></span>
+                        <% if(noiBat) { %><span class="badge badge-info" style="margin-left:3px">Nổi bật</span><% } %>
+                    </td>
+                    <td>
+                        <div class="action-group">
+                            <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>?id=<%= maCD %>" class="btn btn-outline btn-xs">Sửa</a>
+                            <button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="openDelete(<%= maCD %>,'<%= Server.HtmlEncode(tenCD).Replace("'","\\'") %>')">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            <% }
+            } else { %>
+                <tr><td colspan="8" class="empty-state">Không có chiến dịch nào.</td></tr>
+            <% } %>
             </tbody>
         </table>
     </div>
-    <div class="paging" id="pagingWrap"></div>
+
+    <%-- === PHẦN ĐÃ SỬA: Phân trang server-side === --%>
+    <% if (TotalPages > 1) { %>
+    <div class="paging">
+        <span class="paging-info"><%= TotalItems %> kết quả</span>
+        <button type="button" class="page-btn" onclick="goPage(<%= CurrentPage - 1 %>)" <%= CurrentPage <= 1 ? "disabled" : "" %>>Trước</button>
+        <% for (int pg = 1; pg <= TotalPages; pg++) { %>
+        <button type="button" class="page-btn<%= pg == CurrentPage ? " active" : "" %>" onclick="goPage(<%= pg %>)"><%= pg %></button>
+        <% } %>
+        <button type="button" class="page-btn" onclick="goPage(<%= CurrentPage + 1 %>)" <%= CurrentPage >= TotalPages ? "disabled" : "" %>>Tiếp</button>
+    </div>
+    <% } %>
 
     <%-- Modal xóa --%>
     <div class="overlay" id="deleteOverlay" onclick="if(event.target===this)closeDeleteModal()">
@@ -90,7 +158,7 @@
             </div>
             <div class="modal-ft">
                 <button type="button" class="btn btn-outline" onclick="closeDeleteModal()">Hủy</button>
-                <button type="button" class="btn btn-danger" id="btnConfirmDelete">Xóa</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Xóa</button>
             </div>
         </div>
     </div>
@@ -101,120 +169,27 @@
 <script>
     (function () {
         'use strict';
-        var BASE = '<%= ResolveUrl("~/Admin/QuanLyChienDich.aspx") %>';
-        var currentPage = 1, pageSize = 8, currentStatus = '', currentDM = '';
         var pendingDeleteId = 0;
 
-        // Load danh mục vào select
-        function loadDanhMuc() {
-            fetch('<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>?__ajax=true&action=danhMuc')
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (!d.ok) return;
-                    var sel = document.getElementById('filterDanhMuc');
-                    d.data.forEach(function (dm) {
-                        var opt = document.createElement('option');
-                        opt.value = dm.ma;
-                        opt.textContent = dm.ten;
-                        sel.appendChild(opt);
-                    });
-                });
-        }
+        // === PHẦN ĐÃ SỬA: Postback thay vì AJAX ===
 
-        // Load dữ liệu bảng
-        function loadData() {
-            var tuKhoa = (document.getElementById('txtSearch').value || '').trim();
-            var params = '__ajax=true&action=list&TrangHienTai=' + currentPage + '&SoDoiMoiTrang=' + pageSize;
-            if (currentStatus !== '') params += '&TrangThai=' + currentStatus;
-            if (currentDM !== '') params += '&MaDanhMuc=' + currentDM;
-            if (tuKhoa) params += '&TuKhoa=' + encodeURIComponent(tuKhoa);
-
-            fetch(BASE + '?' + params)
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (!d.ok) { showToast('Lỗi', d.msg || 'Lỗi tải dữ liệu', 'err'); return; }
-                    renderTable(d.data || []);
-                    renderPaging(d.total || 0);
-                })
-                .catch(function () { showToast('Lỗi', 'Không thể kết nối server.', 'err'); });
-        }
-
-        function renderTable(rows) {
-            var body = document.getElementById('tblBody');
-            if (!rows.length) {
-                body.innerHTML = '<tr><td colspan="8" class="empty-state">Không có chiến dịch nào.</td></tr>';
-                return;
-            }
-            var html = '';
-            rows.forEach(function (r) {
-                var pct = r.MucTieu > 0 ? Math.min(100, Math.round(r.SoTienDaQuyen * 100 / r.MucTieu)) : 0;
-                var tsLabel = ['Nháp', 'Đang chạy', 'Kết thúc'][r.TrangThai] || '';
-                var tsClass = ['badge-warn', 'badge-ok', 'badge-info'][r.TrangThai] || '';
-                html += '<tr>' +
-                    '<td><div class="cd-name">' + esc(r.TenChienDich) + '</div>' +
-                    '<div class="cd-sub">' + esc(r.MoTaNgan || '') + '</div></td>' +
-                    '<td><span class="cd-dm" style="background:' + (r.MauDanhMuc || '#EDF2F7') + '20;>' + esc(r.TenDanhMuc) + '</span></td>' +
-                    '<td class="cd-amount">' + Number(r.MucTieu).toLocaleString('vi-VN') + '</td>' +
-                    '<td class="cd-amount" >' + Number(r.SoTienDaQuyen).toLocaleString('vi-VN') + '</td>' +
-                    '<td style="min-width:100px"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div><div style="font-size:10px;margin-top:3px">' + pct + '%</div></td>' +
-                    '<td class="cd-date">' + r.NgayKetThuc + (r.SoNgayCon > 0 ? ' (' + r.SoNgayCon + ' ngày)' : '') + '</td>' +
-                    '<td><span class="badge ' + tsClass + '">' + tsLabel + '</span>' +
-                    (r.NoiBat ? '<span class="badge badge-info" style="margin-left:3px">Nổi bật</span>' : '') + '</td>' +
-                    '<td><div class="action-group">' +
-                    '<a href="' + BASE.replace('QuanLyChienDich.aspx', 'FormChienDich.aspx') + '?id=' + r.MaChienDich + '" class="btn btn-outline btn-xs">Sửa</a>' +
-                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="openDelete(' + r.MaChienDich + ',\'' + esc(r.TenChienDich).replace(/'/g, "\\'") + '\')">Xóa</button>' +
-                    '</div></td></tr>';
-            });
-            body.innerHTML = html;
-        }
-
-        function renderPaging(total) {
-            var totalPages = Math.ceil(total / pageSize);
-            var wrap = document.getElementById('pagingWrap');
-            if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-
-            var html = '<span class="paging-info">' + total + ' kết quả</span>';
-            html += '<button class="page-btn" onclick="goPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>Trước</button>';
-            for (var p = 1; p <= totalPages; p++) {
-                html += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
-            }
-            html += '<button class="page-btn" onclick="goPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>Tiếp</button>';
-            wrap.innerHTML = html;
-        }
-
-        // FIX: Expose goPage to window scope cho pagination hoạt động
+        // Phân trang
         window.goPage = function (p) {
-            if (p < 1) return;
-            currentPage = p;
-            loadData();
+            if (p < 1 || p > <%= TotalPages %>) return;
+            document.getElementById('<%= hfPage.ClientID %>').value = p;
+            document.getElementById('form1').submit();
         };
 
-        // Filter trạng thái
-        document.getElementById('filterStatus').addEventListener('click', function (e) {
-            if (e.target.classList.contains('filter-btn')) {
-                this.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
-                e.target.classList.add('active');
-                currentStatus = e.target.getAttribute('data-val');
-                currentPage = 1;
-                loadData();
+        // Filter
+        window.setFilter = function (type, val) {
+            if (type === 'status') {
+                document.getElementById('<%= hfFilterStatus.ClientID %>').value = val;
+            } else if (type === 'dm') {
+                document.getElementById('<%= hfFilterDM.ClientID %>').value = val;
             }
-        });
-
-        // Filter danh mục
-        document.getElementById('filterDanhMuc').addEventListener('change', function () {
-            currentDM = this.value;
-            currentPage = 1;
-            loadData();
-        });
-
-        // Tìm kiếm
-        window.doSearch = function () {
-            currentPage = 1;
-            loadData();
+            document.getElementById('<%= hfPage.ClientID %>').value = '1';
+            document.getElementById('form1').submit();
         };
-        document.getElementById('txtSearch').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); window.doSearch(); }
-        });
 
         // Xóa chiến dịch
         window.openDelete = function (id, name) {
@@ -225,20 +200,12 @@
         window.closeDeleteModal = function () {
             document.getElementById('deleteOverlay').classList.remove('show');
         };
-        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+        window.confirmDelete = function () {
             if (!pendingDeleteId) return;
-            fetch(BASE + '?__ajax=true&action=delete&id=' + pendingDeleteId)
-                .then(function (r) { return r.json(); })
-                .then(function (j) {
-                    closeDeleteModal();
-                    if (j.ok) { showToast('Thành công', 'Đã xóa chiến dịch.', 'ok'); loadData(); }
-                    else showToast('Lỗi', j.msg || 'Không thể xóa.', 'err');
-                })
-                .catch(function () { showToast('Lỗi', 'Lỗi kết nối server.', 'err'); });
-        });
-
-        loadDanhMuc();
-        loadData();
+            document.getElementById('<%= hfAction.ClientID %>').value = 'delete';
+            document.getElementById('<%= hfParam.ClientID %>').value = pendingDeleteId;
+            document.getElementById('form1').submit();
+        };
     })();
 </script>
 </asp:Content>

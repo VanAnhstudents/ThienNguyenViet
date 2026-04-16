@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Data;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using ThienNguyenViet.DAO;
@@ -9,123 +8,131 @@ namespace ThienNguyenViet.Admin
 {
     public partial class QuanLyChienDich : System.Web.UI.Page
     {
+        // === PROPERTIES BIND LÊN ASPX ===
+        protected DataTable DtChienDich { get; private set; }
+        protected DataTable DtDanhMuc { get; private set; }
+        protected int TotalItems { get; private set; }
+        protected int CurrentPage { get; private set; } = 1;
+        protected int PageSize { get; private set; } = 8;
+        protected string FilterStatus { get; private set; } = "";
+        protected string FilterDanhMuc { get; private set; } = "";
+        protected string SearchKeyword { get; private set; } = "";
+
+        // HiddenField controls (declared in aspx)
+        protected System.Web.UI.WebControls.HiddenField hfPage;
+        protected System.Web.UI.WebControls.HiddenField hfFilterStatus;
+        protected System.Web.UI.WebControls.HiddenField hfFilterDM;
+        protected System.Web.UI.WebControls.HiddenField hfAction;
+        protected System.Web.UI.WebControls.HiddenField hfParam;
+        protected System.Web.UI.WebControls.TextBox txtSearch;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             PhanQuyenHelper.YeuCauAdmin(this);
 
-            if (Request["__ajax"] == "true")
+            // Xử lý hành động postback (xóa)
+            if (IsPostBack)
             {
-                HandleAjax();
-                Response.End();
-            }
-        }
-
-        private void HandleAjax()
-        {
-            Response.ContentType = "application/json";
-            Response.ContentEncoding = Encoding.UTF8;
-            string action = Request["action"] ?? "";
-            try
-            {
-                switch (action)
+                string action = hfAction.Value;
+                string param = hfParam.Value;
+                if (!string.IsNullOrEmpty(action))
                 {
-                    case "list": AjaxList(); break;
-                    case "delete": AjaxDelete(); break;
-                    default:
-                        Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
-                        break;
+                    XuLyHanhDong(action, param);
+                    hfAction.Value = "";
+                    hfParam.Value = "";
                 }
             }
-            catch (Exception ex)
+        }
+
+        // Load data trong PreRender để đảm bảo button events đã xử lý xong
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+
+            CurrentPage = int.TryParse(hfPage.Value, out int p) && p > 0 ? p : 1;
+            FilterStatus = hfFilterStatus.Value ?? "";
+            FilterDanhMuc = hfFilterDM.Value ?? "";
+            SearchKeyword = (txtSearch.Text ?? "").Trim();
+
+            LoadDanhMuc();
+            LoadData();
+        }
+
+        private void XuLyHanhDong(string action, string param)
+        {
+            if (action == "delete" && int.TryParse(param, out int id))
             {
-                Response.Write("{\"ok\":false,\"msg\":\"" + ex.Message.Replace("\"", "\\\"") + "\"}");
+                try
+                {
+                    KetNoiDB.ExecuteNonQuery("SP_XoaChienDich", CommandType.StoredProcedure,
+                        KetNoiDB.P("@MaChienDich", id));
+                }
+                catch { /* FK constraint - có dữ liệu liên quan */ }
             }
         }
 
-        // Lay danh sach chien dich (phan trang + loc)
-        private void AjaxList()
+        private void LoadDanhMuc()
         {
-            int? maDanhMuc = null;
-            if (int.TryParse(Request["MaDanhMuc"], out int dm)) maDanhMuc = dm;
+            DtDanhMuc = ChienDichDAO.LayDanhMuc();
+        }
 
-            byte? trangThai = null;
-            if (byte.TryParse(Request["TrangThai"], out byte tt)) trangThai = tt;
+        private void LoadData()
+        {
+            try
+            {
+                int? maDanhMuc = null;
+                if (int.TryParse(FilterDanhMuc, out int dm)) maDanhMuc = dm;
 
-            string tuKhoa = Request["TuKhoa"]?.Trim();
-            string sapXep = Request["SapXepTheo"] ?? "NgayTao";
-            int page = int.TryParse(Request["TrangHienTai"], out int p) ? p : 1;
-            int pageSize = int.TryParse(Request["SoDoiMoiTrang"], out int ps) ? ps : 8;
+                byte? trangThai = null;
+                if (byte.TryParse(FilterStatus, out byte tt)) trangThai = tt;
 
-            DataTable dt = KetNoiDB.GetDataTable("SP_LayDanhSachChienDich",
-                CommandType.StoredProcedure,
-                KetNoiDB.P("@MaDanhMuc", maDanhMuc),
-                KetNoiDB.P("@TrangThai", trangThai),
-                KetNoiDB.P("@TuKhoa", tuKhoa),
-                KetNoiDB.P("@SapXepTheo", sapXep),
-                KetNoiDB.P("@TrangHienTai", page),
-                KetNoiDB.P("@SoDoiMoiTrang", pageSize));
+                string tuKhoa = string.IsNullOrWhiteSpace(SearchKeyword) ? null : SearchKeyword;
 
-            // Dem tong
-            object totalObj = KetNoiDB.ExecuteScalar(@"
+                DtChienDich = KetNoiDB.GetDataTable("SP_LayDanhSachChienDich",
+                    CommandType.StoredProcedure,
+                    KetNoiDB.P("@MaDanhMuc", maDanhMuc),
+                    KetNoiDB.P("@TrangThai", trangThai),
+                    KetNoiDB.P("@TuKhoa", tuKhoa),
+                    KetNoiDB.P("@SapXepTheo", "NgayTao"),
+                    KetNoiDB.P("@TrangHienTai", CurrentPage),
+                    KetNoiDB.P("@SoDoiMoiTrang", PageSize));
+
+                object totalObj = KetNoiDB.ExecuteScalar(@"
 SELECT COUNT(*) FROM dbo.ChienDich
 WHERE (@MaDanhMuc IS NULL OR MaDanhMuc = @MaDanhMuc)
   AND (@TrangThai IS NULL OR TrangThai = @TrangThai)
   AND (@TuKhoa IS NULL OR TenChienDich LIKE '%' + @TuKhoa + '%')",
-                CommandType.Text,
-                KetNoiDB.P("@MaDanhMuc", maDanhMuc),
-                KetNoiDB.P("@TrangThai", trangThai),
-                KetNoiDB.P("@TuKhoa", tuKhoa));
+                    CommandType.Text,
+                    KetNoiDB.P("@MaDanhMuc", maDanhMuc),
+                    KetNoiDB.P("@TrangThai", trangThai),
+                    KetNoiDB.P("@TuKhoa", tuKhoa));
 
-            int total = totalObj == DBNull.Value ? 0 : Convert.ToInt32(totalObj);
-
-            var sb = new StringBuilder("{\"ok\":true,\"total\":");
-            sb.Append(total);
-            sb.Append(",\"data\":[");
-            bool first = true;
-
-            foreach (DataRow r in dt.Rows)
-            {
-                if (!first) sb.Append(",");
-                first = false;
-
-                string isNoiBat = (r["NoiBat"] != DBNull.Value && Convert.ToBoolean(r["NoiBat"])) ? "true" : "false";
-
-                sb.Append("{");
-                sb.AppendFormat("\"MaChienDich\":{0},", r["MaChienDich"]);
-                sb.AppendFormat("\"TenChienDich\":\"{0}\",", HttpUtility.JavaScriptStringEncode(r["TenChienDich"].ToString()));
-                sb.AppendFormat("\"MoTaNgan\":\"{0}\",", HttpUtility.JavaScriptStringEncode(r["MoTaNgan"]?.ToString() ?? ""));
-                sb.AppendFormat("\"MucTieu\":{0},", r["MucTieu"]);
-                sb.AppendFormat("\"SoTienDaQuyen\":{0},", r["SoTienDaQuyen"]);
-                sb.AppendFormat("\"NgayKetThuc\":\"{0:dd/MM/yyyy}\",", r["NgayKetThuc"]);
-                sb.AppendFormat("\"SoNgayCon\":{0},", r["SoNgayCon"]);
-                sb.AppendFormat("\"TrangThai\":{0},", r["TrangThai"]);
-                sb.AppendFormat("\"NoiBat\":{0},", isNoiBat);
-                sb.AppendFormat("\"TenDanhMuc\":\"{0}\",", HttpUtility.JavaScriptStringEncode(r["TenDanhMuc"].ToString()));
-                sb.AppendFormat("\"MauDanhMuc\":\"{0}\"", r["MauDanhMuc"]);
-                sb.Append("}");
+                TotalItems = totalObj == DBNull.Value ? 0 : Convert.ToInt32(totalObj);
             }
-            sb.Append("]}");
-            Response.Write(sb.ToString());
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[QuanLyChienDich] LoadData error: " + ex.Message);
+            }
         }
 
-        // Xoa chien dich
-        private void AjaxDelete()
+        protected int TotalPages
         {
-            if (!int.TryParse(Request["id"], out int id))
-            {
-                Response.Write("{\"ok\":false,\"msg\":\"Ma khong hop le\"}");
-                return;
-            }
-            try
-            {
-                KetNoiDB.ExecuteNonQuery("SP_XoaChienDich", CommandType.StoredProcedure,
-                    KetNoiDB.P("@MaChienDich", id));
-                Response.Write("{\"ok\":true,\"msg\":\"Da xoa thanh cong\"}");
-            }
-            catch
-            {
-                Response.Write("{\"ok\":false,\"msg\":\"Loi: Chien dich nay co du lieu lien quan khong the xoa.\"}");
-            }
+            get { return TotalItems > 0 ? (int)Math.Ceiling((double)TotalItems / PageSize) : 1; }
+        }
+
+        // === EVENT: Tìm kiếm (đặt trang về 1) ===
+        protected void BtnSearch_Click(object sender, EventArgs e)
+        {
+            hfPage.Value = "1";
+        }
+
+        // === EVENT: Đặt lại tất cả bộ lọc ===
+        protected void BtnReset_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            hfFilterStatus.Value = "";
+            hfFilterDM.Value = "";
+            hfPage.Value = "1";
         }
     }
 }

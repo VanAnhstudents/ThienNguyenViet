@@ -72,7 +72,7 @@ namespace ThienNguyenViet.Admin
             sb.AppendFormat("\"MaChienDich\":{0},", r["MaChienDich"]);
             sb.AppendFormat("\"TenChienDich\":{0},", JsonStr(r["TenChienDich"].ToString()));
             sb.AppendFormat("\"MoTaNgan\":{0},", JsonStr(r["MoTaNgan"]?.ToString() ?? ""));
-            sb.AppendFormat("\"NoiDung\":{0},", JsonStr(r["NoiDung"]?.ToString() ?? ""));
+            sb.AppendFormat("\"NoiDung\":{0},", JsonStr(r["NoiDungChiTiet"]?.ToString() ?? ""));
             sb.AppendFormat("\"MucTieu\":{0},", r["MucTieu"]);
             sb.AppendFormat("\"MaDanhMuc\":{0},", r["MaDanhMuc"]);
             sb.AppendFormat("\"TrangThai\":{0},", r["TrangThai"]);
@@ -82,10 +82,10 @@ namespace ThienNguyenViet.Admin
 
             sb.AppendFormat("\"NgayBatDau\":\"{0:yyyy-MM-dd}\",", r["NgayBatDau"]);
             sb.AppendFormat("\"NgayKetThuc\":\"{0:yyyy-MM-dd}\",", r["NgayKetThuc"]);
-            sb.AppendFormat("\"ToChuc\":{0},", JsonStr(r["ToChuc"]?.ToString() ?? ""));
-            sb.AppendFormat("\"NganHang\":{0},", JsonStr(r["NganHang"]?.ToString() ?? ""));
+            sb.AppendFormat("\"ToChuc\":{0},", JsonStr(r["ToChucChuTri"]?.ToString() ?? ""));
+            sb.AppendFormat("\"NganHang\":{0},", JsonStr(r["TenNganHang"]?.ToString() ?? ""));
             sb.AppendFormat("\"SoTaiKhoan\":{0},", JsonStr(r["SoTaiKhoan"]?.ToString() ?? ""));
-            sb.AppendFormat("\"ChuTaiKhoan\":{0},", JsonStr(r["ChuTaiKhoan"]?.ToString() ?? ""));
+            sb.AppendFormat("\"ChuTaiKhoan\":{0},", JsonStr(r["TenChuTaiKhoan"]?.ToString() ?? ""));
             sb.AppendFormat("\"AnhBia\":{0},", JsonStr(r["AnhBia"]?.ToString() ?? ""));
 
             // Tien do

@@ -5,7 +5,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-    .qg-stat-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 18px; }
+    .qg-stat-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; margin-bottom: 18px; text-align: center }
     .qg-stat-card {
         background: var(--card); border: 1px solid var(--border);
         border-radius: var(--r-card); padding: 18px 16px;
