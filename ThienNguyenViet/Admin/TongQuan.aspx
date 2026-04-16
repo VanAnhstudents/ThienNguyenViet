@@ -1,13 +1,12 @@
-﻿<%@ Page Title="Tổng Quan — Thiện Nguyện Việt" Language="C#"
+<%@ Page Title="Tổng Quan — Thiện Nguyện Việt" Language="C#"
          MasterPageFile="~/Admin.Master" AutoEventWireup="true"
          CodeBehind="TongQuan.aspx.cs"
          Inherits="ThienNguyenViet.Admin.TongQuan" %>
 
 <asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
+    .stat-card { text-align: center }
     .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
-
-    /* Campaign list */
     .cd-list { list-style: none; }
     .cd-item {
         padding: 12px 0; border-bottom: 1px solid var(--border);
@@ -17,10 +16,7 @@
     .cd-item-name { font-size: 13px; font-weight: 500; flex: 1; margin-right: 10px; }
     .cd-item-pct { font-size: 12px; font-weight: 600; white-space: nowrap; }
     .cd-item-bar { width: 100%; margin-top: 6px; }
-
     .amount-cell { font-weight: 600; font-size: 12px; white-space: nowrap; }
-
-    /* Proof image */
     .proof-wrap {
         margin-top: 6px; border: 1px solid var(--border);
         border-radius: var(--r); padding: 10px;
@@ -29,7 +25,6 @@
         min-height: 60px; font-size: 12px;
     }
     .proof-wrap img { max-width: 100%; max-height: 260px; border-radius: var(--r); }
-
     @media (max-width: 1024px) { .main-row { grid-template-columns: 1fr; } }
     @media (max-width: 425px) { .chart-wrap { height: 200px; } }
 </style>
@@ -42,27 +37,31 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- 4 Thẻ thống kê - CHỈ 2 THÀNH PHẦN: label + value --%>
+    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+    <asp:HiddenField ID="hfAction" runat="server" />
+    <asp:HiddenField ID="hfParam" runat="server" />
+
+    <%-- 4 Thẻ thống kê --%>
     <div class="stat-grid">
         <div class="stat-card s-blue">
             <div class="stat-card-label">Tổng quyên góp</div>
-            <div class="stat-card-value" id="statTongTien"><%= FormatTien(TongTienDaQuyen) %></div>
+            <div class="stat-card-value"><%= FormatTien(TongTienDaQuyen) %></div>
         </div>
         <div class="stat-card">
             <div class="stat-card-label">Chiến dịch đang chạy</div>
-            <div class="stat-card-value" id="statChienDich"><%= ChienDichDangChay %></div>
+            <div class="stat-card-value"><%= ChienDichDangChay %></div>
         </div>
         <div class="stat-card">
             <div class="stat-card-label">Người dùng đăng ký</div>
-            <div class="stat-card-value" id="statNguoiDung"><%= TongNguoiDung.ToString("N0") %></div>
+            <div class="stat-card-value"><%= TongNguoiDung.ToString("N0") %></div>
         </div>
         <div class="stat-card s-green">
             <div class="stat-card-label">Giao dịch chờ duyệt</div>
-            <div class="stat-card-value" id="statChoDuyet"><%= TongChoXuLy %></div>
+            <div class="stat-card-value"><%= TongChoXuLy %></div>
         </div>
     </div>
 
-    <%-- Biểu đồ + Chiến dịch tiêu biểu --%>
+    <%-- Biểu đồ + Chiến dịch tiêu biểu (SERVER-SIDE RENDER) --%>
     <div class="main-row">
         <div class="card">
             <div class="card-header">
@@ -79,8 +78,24 @@
             <div class="card-header">
                 <h3>Chiến dịch tiêu biểu</h3>
             </div>
-            <ul class="cd-list" id="cdList">
-                <li class="empty-state">Đang tải...</li>
+            <!-- === PHẦN ĐÃ SỬA: Render server-side thay vì AJAX === -->
+            <ul class="cd-list">
+            <% if (DtChienDichNoiBat != null && DtChienDichNoiBat.Rows.Count > 0) {
+                foreach (System.Data.DataRow cd in DtChienDichNoiBat.Rows) {
+                    decimal pct = Convert.ToDecimal(cd["PhanTram"]);
+                    if (pct > 100) pct = 100;
+            %>
+                <li class="cd-item">
+                    <div style="flex:1">
+                        <div class="cd-item-name"><%= Server.HtmlEncode(cd["TenChienDich"].ToString()) %></div>
+                        <div class="cd-item-bar"><div class="prog-wrap"><div class="prog-fill" style="width:<%= pct %>%"></div></div></div>
+                    </div>
+                    <div class="cd-item-pct"><%= pct.ToString("0.0") %>%</div>
+                </li>
+            <% }
+            } else { %>
+                <li class="empty-state">Chưa có chiến dịch tiêu biểu.</li>
+            <% } %>
             </ul>
         </div>
     </div>
@@ -122,7 +137,6 @@
             %>
                 <tr>
                     <td>#<%= maQG %></td>
-                    <%-- BỎ avatar, chỉ hiển thị tên thuần --%>
                     <td>
                         <div style="font-size:12px;font-weight:500"><%= Server.HtmlEncode(hoTen) %></div>
                         <div style="font-size:10px;color:var(--txt-sub)"><%= Server.HtmlEncode(email) %></div>
@@ -134,9 +148,10 @@
                     <td>
                         <button type="button" class="btn btn-xs btn-outline"
                             onclick="openDetail(<%= maQG %>,'<%= Server.HtmlEncode(hoTen).Replace("'","\\'") %>','<%= Server.HtmlEncode(email).Replace("'","\\'") %>','<%= Server.HtmlEncode(tenCD).Replace("'","\\'") %>',<%= soTien %>,'<%= ngay %>',<%= ts %>,<%= anDanh.ToString().ToLower() %>,'<%= Server.HtmlEncode(loiNhan).Replace("'","\\'") %>','<%= Server.HtmlEncode(anhXN).Replace("'","\\'") %>')">Xem</button>
+                        <!-- === PHẦN ĐÃ SỬA: Duyệt/Từ chối qua postback thay vì AJAX === -->
                         <% if (ts == 0) { %>
-                        <button type="button" class="btn btn-xs btn-success" onclick="ajaxDuyet(<%= maQG %>,'duyet')">Duyệt</button>
-                        <button type="button" class="btn btn-xs btn-danger" onclick="ajaxDuyet(<%= maQG %>,'tuchoi','Từ chối từ tổng quan')">Từ chối</button>
+                        <button type="button" class="btn btn-xs btn-success" onclick="duyetGiaoDich(<%= maQG %>,'duyet')">Duyệt</button>
+                        <button type="button" class="btn btn-xs btn-danger" onclick="duyetGiaoDich(<%= maQG %>,'tuchoi')">Từ chối</button>
                         <% } %>
                     </td>
                 </tr>
@@ -181,75 +196,35 @@
 <script>
     (function () {
         'use strict';
-        var PAGE_URL = '<%= ResolveUrl("~/Admin/TongQuan.aspx") %>';
-        var chart;
 
-        function initChart(data) {
-            var labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'];
-            var tienTrieu = data.tien.map(function (v) { return Math.round(v / 1000000); });
-            var ctx = document.getElementById('chartQG').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Quyên góp (triệu đồng)',
-                        data: tienTrieu,
-                        backgroundColor: '#3182CE',
-                        borderRadius: 4,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false, animation: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, ticks: { callback: function (v) { return v + ' Tr'; } } }
-                    }
+        // === PHẦN ĐÃ SỬA: Chart data từ server-side, không cần AJAX ===
+        var chartTien = <%= ChartDataJson %>;
+        var labels = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+        var tienTrieu = chartTien.map(function(v){ return Math.round(v / 1000000); });
+        var ctx = document.getElementById('chartQG').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Quyên góp (triệu đồng)',
+                    data: tienTrieu,
+                    backgroundColor: '#3182CE',
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, animation: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, ticks: { callback: function(v){ return v + ' Tr'; } } }
                 }
-            });
-        }
+            }
+        });
 
-        function fetchChartData() {
-            fetch(PAGE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: '__ajax=true&action=chartdata'
-            })
-                .then(function (r) { return r.json(); })
-                .then(function (d) { if (d.ok) initChart(d.data); })
-                .catch(function () { });
-        }
-
-        function fetchCampaigns() {
-            fetch(PAGE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: '__ajax=true&action=campaigns'
-            })
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    var list = document.getElementById('cdList');
-                    if (!d.ok || !d.data || d.data.length === 0) {
-                        list.innerHTML = '<li class="empty-state">Chưa có chiến dịch tiêu biểu.</li>';
-                        return;
-                    }
-                    var html = '';
-                    d.data.forEach(function (cd) {
-                        var pct = cd.PhanTram || 0;
-                        if (pct > 100) pct = 100;
-                        html += '<li class="cd-item"><div style="flex:1">' +
-                            '<div class="cd-item-name">' + cd.TenChienDich + '</div>' +
-                            '<div class="cd-item-bar"><div class="prog-wrap"><div class="prog-fill" style="width:' + pct + '%"></div></div></div>' +
-                            '</div><div class="cd-item-pct">' + pct.toFixed(1) + '%</div></li>';
-                    });
-                    list.innerHTML = html;
-                })
-                .catch(function () { });
-        }
-
-        // Modal chi tiết
+        // Modal chi tiết (giữ nguyên client-side)
         window.openDetail = function (id, nguoi, email, cd, soTien, ngay, tt, anDanh, loiNhan, anhXN) {
             document.getElementById('dlId').textContent = '#' + id;
             document.getElementById('dlNgay').textContent = ngay;
@@ -257,47 +232,27 @@
             document.getElementById('dlEmail').textContent = email || '(không có)';
             document.getElementById('dlCD').textContent = cd;
             document.getElementById('dlSoTien').textContent = Number(soTien).toLocaleString('vi-VN') + ' đ';
-            var ttNames = ['Chờ duyệt', 'Đã duyệt', 'Từ chối'];
-            var ttClasses = ['badge-warn', 'badge-ok', 'badge-err'];
-            document.getElementById('dlTT').innerHTML = '<span class="badge ' + (ttClasses[tt] || '') + '">' + (ttNames[tt] || '') + '</span>';
+            var ttNames = ['Chờ duyệt','Đã duyệt','Từ chối'];
+            var ttClasses = ['badge-warn','badge-ok','badge-err'];
+            document.getElementById('dlTT').innerHTML = '<span class="badge ' + (ttClasses[tt]||'') + '">' + (ttNames[tt]||'') + '</span>';
             document.getElementById('dlAnDanh').textContent = anDanh ? 'Có' : 'Không';
             document.getElementById('dlLoiNhan').textContent = loiNhan || '(không có lời nhắn)';
-
             var anhEl = document.getElementById('dlAnh');
-            if (anhXN) {
-                anhEl.innerHTML = '<img src="' + anhXN + '" alt="Ảnh xác nhận" />';
-            } else {
-                anhEl.innerHTML = 'Chưa có ảnh xác nhận';
-            }
+            if (anhXN) { anhEl.innerHTML = '<img src="' + anhXN + '" alt="Ảnh xác nhận" />'; }
+            else { anhEl.innerHTML = 'Chưa có ảnh xác nhận'; }
             document.getElementById('detailOverlay').classList.add('show');
         };
         window.closeDetail = function () {
             document.getElementById('detailOverlay').classList.remove('show');
         };
 
-        // Duyệt / Từ chối từ Tổng quan
-        window.ajaxDuyet = function (id, action, lydo) {
-            var body = '__ajax=true&action=' + action + '&id=' + id;
-            if (lydo) body += '&lydo=' + encodeURIComponent(lydo);
-            fetch(PAGE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: body
-            })
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (d.ok) {
-                        showToast('Thành công', d.msg, 'ok');
-                        setTimeout(function () { location.reload(); }, 1200);
-                    } else {
-                        showToast('Lỗi', d.msg || 'Có lỗi xảy ra', 'err');
-                    }
-                })
-                .catch(function () { showToast('Lỗi', 'Không thể kết nối server.', 'err'); });
+        // === PHẦN ĐÃ SỬA: Duyệt/Từ chối qua postback thay vì AJAX ===
+        window.duyetGiaoDich = function (id, action) {
+            if (!confirm(action === 'duyet' ? 'Duyệt giao dịch #' + id + '?' : 'Từ chối giao dịch #' + id + '?')) return;
+            document.getElementById('<%= hfAction.ClientID %>').value = action;
+            document.getElementById('<%= hfParam.ClientID %>').value = id;
+            document.getElementById('form1').submit();
         };
-
-        fetchChartData();
-        fetchCampaigns();
     })();
 </script>
 </asp:Content>

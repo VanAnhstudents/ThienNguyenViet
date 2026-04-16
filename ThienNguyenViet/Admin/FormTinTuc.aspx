@@ -29,7 +29,7 @@
     }
 
     /* Char counter */
-    .char-counter { font-size: 11px; ; text-align: right; margin-top: 3px; }
+    .char-counter { font-size: 11px; text-align: right; margin-top: 3px; }
     .char-counter.over { font-weight: 600; }
 
     /* Status toggle */
@@ -38,7 +38,7 @@
         flex: 1; padding: 8px; text-align: center;
         border: 1px solid var(--border); border-radius: var(--r);
         font-size: 12px; font-weight: 500; cursor: pointer;
-        transition: all .15s; background: var(--bg;
+        transition: all .15s; background: var(--bg);
     }
     .status-opt.active {
         background: var(--accent); color: #fff; border-color: var(--accent);
@@ -197,7 +197,7 @@
         anhBiaInput.addEventListener('change', function(){ showPreviewImage(this.value); });
 
         // Load danh mục
-        fetch('<%= ResolveUrl("~/Admin/QuanLyTinTuc.aspx") %>?__ajax=true&action=danhMuc')
+        fetch(BASE + '?__ajax=true&action=danhMuc')
             .then(function(r){ return r.json(); })
             .then(function(d){
                 if (!d.ok || !d.data) return;

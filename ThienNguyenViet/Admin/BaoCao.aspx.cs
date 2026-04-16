@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using ThienNguyenViet.DAO;
@@ -9,43 +10,47 @@ namespace ThienNguyenViet.Admin
 {
     public partial class BaoCao : System.Web.UI.Page
     {
+        // === PROPERTIES BIND LÊN ASPX ===
+        protected int SelectedYear { get; private set; }
+        protected long TongTienQuyen { get; private set; }
+        protected int TongLuotQuyen { get; private set; }
+        protected int ChienDichDangChay { get; private set; }
+        protected int TongChienDich { get; private set; }
+        protected int NguoiDungHoatDong { get; private set; }
+        protected int TongNguoiDung { get; private set; }
+        protected string ChartMonthlyJson { get; private set; } = "[]";
+        protected string ChartPieLabelsJson { get; private set; } = "[]";
+        protected string ChartPieValuesJson { get; private set; } = "[]";
+        protected string ChartPieColorsJson { get; private set; } = "[]";
+        protected DataTable DtTopChienDich { get; private set; }
+        protected DataTable DtTopDonors { get; private set; }
+
+        // HiddenField controls
+        protected System.Web.UI.WebControls.HiddenField hfYear;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             PhanQuyenHelper.YeuCauAdmin(this);
 
-            if (Request.QueryString["__ajax"] == "true")
-            {
-                Response.ContentType = "application/json; charset=utf-8";
-                Response.Cache.SetNoStore();
-                string action = Request.QueryString["action"] ?? "";
-                try
-                {
-                    switch (action)
-                    {
-                        case "summary": HandleSummary(); break;
-                        case "monthly": HandleMonthly(); break;
-                        case "pie": HandlePie(); break;
-                        case "topCD": HandleTopCD(); break;
-                        case "topDonors": HandleTopDonors(); break;
-                        default:
-                            Response.Write("{\"ok\":false,\"msg\":\"Action không hợp lệ\"}");
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Response.Write("{\"ok\":false,\"msg\":" + JsonStr(ex.Message) + "}");
-                }
-                Response.End();
-            }
+            // Set default year on first load
+            if (!IsPostBack && string.IsNullOrEmpty(hfYear.Value))
+                hfYear.Value = DateTime.Now.Year.ToString();
+
+            // Đọc năm từ hidden field
+            SelectedYear = int.TryParse(hfYear.Value, out int y) && y >= 2020 ? y : DateTime.Now.Year;
+
+            LoadSummary();
+            LoadMonthlyChart();
+            LoadPieChart();
+            LoadTopCD();
+            LoadTopDonors();
         }
 
-        // Thong ke tong hop theo nam
-        private void HandleSummary()
+        private void LoadSummary()
         {
-            int year = int.TryParse(Request.QueryString["year"], out int y) ? y : DateTime.Now.Year;
-
-            const string sql = @"
+            try
+            {
+                const string sql = @"
 SELECT
     (SELECT COUNT(*) FROM dbo.ChienDich WHERE TrangThai=1) AS ChienDichDangChay,
     (SELECT COUNT(*) FROM dbo.ChienDich) AS TongChienDich,
@@ -54,90 +59,84 @@ SELECT
     ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1 AND YEAR(NgayDuyet)=@year),0) AS TongTienQuyen,
     (SELECT COUNT(*) FROM dbo.QuyenGop WHERE TrangThai=1 AND YEAR(NgayDuyet)=@year) AS TongLuotQuyen";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@year", year));
-            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false}"); return; }
-            DataRow r = dt.Rows[0];
-
-            Response.Write(string.Format(
-                "{{\"ok\":true,\"data\":{{" +
-                "\"chiendichDangChay\":{0}," +
-                "\"tongChienDich\":{1}," +
-                "\"nguoiDungHoatDong\":{2}," +
-                "\"tongNguoiDung\":{3}," +
-                "\"tongTienQuyen\":{4}," +
-                "\"tongLuotQuyen\":{5}" +
-                "}}}}",
-                r["ChienDichDangChay"], r["TongChienDich"],
-                r["NguoiDungHoatDong"], r["TongNguoiDung"],
-                r["TongTienQuyen"], r["TongLuotQuyen"]));
+                DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@year", SelectedYear));
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow r = dt.Rows[0];
+                    ChienDichDangChay = Convert.ToInt32(r["ChienDichDangChay"]);
+                    TongChienDich = Convert.ToInt32(r["TongChienDich"]);
+                    NguoiDungHoatDong = Convert.ToInt32(r["NguoiDungHoatDong"]);
+                    TongNguoiDung = Convert.ToInt32(r["TongNguoiDung"]);
+                    TongTienQuyen = Convert.ToInt64(r["TongTienQuyen"]);
+                    TongLuotQuyen = Convert.ToInt32(r["TongLuotQuyen"]);
+                }
+            }
+            catch { }
         }
 
-        // Du lieu bieu do theo thang
-        private void HandleMonthly()
+        private void LoadMonthlyChart()
         {
-            int year = int.TryParse(Request.QueryString["year"], out int y) ? y : DateTime.Now.Year;
-
-            const string sql = @"
-SELECT MONTH(NgayDuyet) AS Thang,
-       SUM(SoTien) AS Tien,
-       COUNT(*) AS Luot
+            try
+            {
+                const string sql = @"
+SELECT MONTH(NgayDuyet) AS Thang, SUM(SoTien) AS Tien
 FROM dbo.QuyenGop
 WHERE TrangThai=1 AND YEAR(NgayDuyet)=@year
 GROUP BY MONTH(NgayDuyet)
 ORDER BY Thang";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@year", year));
-
-            // Tao mang 12 thang
-            var months = new List<object>();
-            var dict = new Dictionary<int, DataRow>();
-            foreach (DataRow r in dt.Rows)
-                dict[Convert.ToInt32(r["Thang"])] = r;
-
-            for (int m = 1; m <= 12; m++)
-            {
-                if (dict.ContainsKey(m))
-                    months.Add(new { thang = m, tien = Convert.ToDecimal(dict[m]["Tien"]), luot = Convert.ToInt32(dict[m]["Luot"]) });
-                else
-                    months.Add(new { thang = m, tien = 0m, luot = 0 });
+                DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@year", SelectedYear));
+                long[] tien = new long[12];
+                foreach (DataRow r in dt.Rows)
+                {
+                    int m = Convert.ToInt32(r["Thang"]) - 1;
+                    tien[m] = Convert.ToInt64(r["Tien"]);
+                }
+                ChartMonthlyJson = "[" + string.Join(",", tien) + "]";
             }
-
-            var jss = new JavaScriptSerializer();
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(months) + "}");
+            catch { }
         }
 
-        // Phan bo theo danh muc (pie chart)
-        private void HandlePie()
+        private void LoadPieChart()
         {
-            const string sql = @"
+            try
+            {
+                const string sql = @"
 SELECT dm.TenDanhMuc, dm.MauSac,
        ISNULL(SUM(qg.SoTien),0) AS TongTien
 FROM dbo.DanhMucChienDich dm
 LEFT JOIN dbo.ChienDich cd ON dm.MaDanhMuc = cd.MaDanhMuc
 LEFT JOIN dbo.QuyenGop qg ON cd.MaChienDich = qg.MaChienDich AND qg.TrangThai=1
+    AND YEAR(qg.NgayDuyet) = @year
 GROUP BY dm.TenDanhMuc, dm.MauSac
 HAVING ISNULL(SUM(qg.SoTien),0) > 0
 ORDER BY TongTien DESC";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
-            var jss = new JavaScriptSerializer();
-            var rows = new List<object>();
-            foreach (DataRow r in dt.Rows)
-            {
-                rows.Add(new
+                DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@year", SelectedYear));
+                var labels = new List<string>();
+                var values = new List<string>();
+                var colors = new List<string>();
+
+                foreach (DataRow r in dt.Rows)
                 {
-                    TenDanhMuc = r["TenDanhMuc"].ToString(),
-                    MauSac = r["MauSac"] == DBNull.Value ? "#3182CE" : r["MauSac"].ToString(),
-                    TongTien = Convert.ToDecimal(r["TongTien"])
-                });
+                    labels.Add("\"" + r["TenDanhMuc"].ToString().Replace("\"", "\\\"") + "\"");
+                    values.Add(Convert.ToDecimal(r["TongTien"]).ToString("0"));
+                    string mau = r["MauSac"] == DBNull.Value ? "#3182CE" : r["MauSac"].ToString();
+                    colors.Add("\"" + mau + "\"");
+                }
+
+                ChartPieLabelsJson = "[" + string.Join(",", labels) + "]";
+                ChartPieValuesJson = "[" + string.Join(",", values) + "]";
+                ChartPieColorsJson = "[" + string.Join(",", colors) + "]";
             }
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(rows) + "}");
+            catch { }
         }
 
-        // Top 10 chien dich
-        private void HandleTopCD()
+        private void LoadTopCD()
         {
-            const string sql = @"
+            try
+            {
+                const string sql = @"
 SELECT TOP 10
     cd.TenChienDich, cd.MucTieu,
     ISNULL(SUM(qg.SoTien),0) AS TongTienDaQuyen
@@ -146,27 +145,18 @@ LEFT JOIN dbo.QuyenGop qg ON cd.MaChienDich = qg.MaChienDich AND qg.TrangThai=1
 GROUP BY cd.MaChienDich, cd.TenChienDich, cd.MucTieu
 ORDER BY TongTienDaQuyen DESC";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
-            var jss = new JavaScriptSerializer();
-            var rows = new List<object>();
-            foreach (DataRow r in dt.Rows)
-            {
-                rows.Add(new
-                {
-                    TenChienDich = r["TenChienDich"].ToString(),
-                    MucTieu = Convert.ToDecimal(r["MucTieu"]),
-                    TongTienDaQuyen = Convert.ToDecimal(r["TongTienDaQuyen"])
-                });
+                DtTopChienDich = KetNoiDB.GetDataTable(sql, CommandType.Text);
             }
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(rows) + "}");
+            catch { }
         }
 
-        // Top 10 nha hao tam
-        private void HandleTopDonors()
+        private void LoadTopDonors()
         {
-            const string sql = @"
+            try
+            {
+                const string sql = @"
 SELECT TOP 10
-    nd.MaNguoiDung, nd.HoTen, nd.Email,
+    nd.HoTen, nd.Email,
     COUNT(qg.MaQuyenGop) AS SoLanQuyen,
     SUM(qg.SoTien) AS TongTienDaQuyen
 FROM dbo.QuyenGop qg
@@ -175,26 +165,17 @@ WHERE qg.TrangThai=1 AND qg.AnDanh=0
 GROUP BY nd.MaNguoiDung, nd.HoTen, nd.Email
 ORDER BY TongTienDaQuyen DESC";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
-            var jss = new JavaScriptSerializer();
-            var rows = new List<object>();
-            foreach (DataRow r in dt.Rows)
-            {
-                rows.Add(new
-                {
-                    HoTen = r["HoTen"].ToString(),
-                    Email = r["Email"].ToString(),
-                    SoLanQuyen = Convert.ToInt32(r["SoLanQuyen"]),
-                    TongTienDaQuyen = Convert.ToDecimal(r["TongTienDaQuyen"])
-                });
+                DtTopDonors = KetNoiDB.GetDataTable(sql, CommandType.Text);
             }
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(rows) + "}");
+            catch { }
         }
 
-        private static string JsonStr(string s)
+        // === HELPERS ===
+        protected string FormatTien(long so)
         {
-            if (s == null) return "null";
-            return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+            if (so >= 1_000_000_000) return string.Format("{0:0.#} tỷ", (double)so / 1_000_000_000);
+            if (so >= 1_000_000) return string.Format("{0:0.#} triệu", (double)so / 1_000_000);
+            return so.ToString("N0") + " VNĐ";
         }
     }
 }

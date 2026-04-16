@@ -1,27 +1,22 @@
-﻿<%@ Page Title="Quản lý Tin tức" Language="C#"
+<%@ Page Title="Quản lý Tin tức" Language="C#"
     MasterPageFile="~/Admin.Master" AutoEventWireup="true"
     CodeBehind="QuanLyTinTuc.aspx.cs"
     Inherits="ThienNguyenViet.Admin.QuanLyTinTuc" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
-    .tt-stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; }
+    .tt-stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; text-align: center }
     .tt-stat-card {
         background: var(--card); border: 1px solid var(--border);
         border-radius: var(--r-card); padding: 18px 16px;
         transition: box-shadow .2s;
     }
     .tt-stat-card:hover { box-shadow: 0 2px 12px rgba(49,130,206,.08); }
-
-    /* Stat card chỉ 2 thành phần: label + value */
     .tt-stat-card .stat-card-label {
         font-size: 10px; text-transform: uppercase;
         letter-spacing: .04em; font-weight: 600; margin-bottom: 6px;
     }
-    .tt-stat-card .stat-card-value {
-        font-size: 22px; font-weight: 700;
-    }
-
+    .tt-stat-card .stat-card-value { font-size: 22px; font-weight: 700; }
     .page-topbar {
         display: flex; align-items: center; justify-content: space-between;
         margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
@@ -32,7 +27,6 @@
         object-fit: cover; background: var(--bg); border: 1px solid var(--border);
     }
     .tt-views { font-size: 12px; }
-
     @media (max-width: 768px) { .tt-stats-row { grid-template-columns: repeat(2,1fr); } }
     @media (max-width: 425px) { .tt-stats-row { grid-template-columns: 1fr 1fr; gap: 8px; } }
     @media (max-width: 375px) { .tt-stats-row { grid-template-columns: 1fr; } }
@@ -46,23 +40,30 @@
 
 <asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <%-- Thống kê - chỉ 2 thành phần: label + value --%>
-    <div class="tt-stats-row" id="ttStats">
+    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+    <asp:HiddenField ID="hfPage" runat="server" Value="1" />
+    <asp:HiddenField ID="hfFilterTT" runat="server" />
+    <asp:HiddenField ID="hfFilterDM" runat="server" />
+    <asp:HiddenField ID="hfAction" runat="server" />
+    <asp:HiddenField ID="hfParam" runat="server" />
+
+    <%-- === PHẦN ĐÃ SỬA: Thống kê render server-side === --%>
+    <div class="tt-stats-row">
         <div class="tt-stat-card">
             <div class="stat-card-label">Tổng bài viết</div>
-            <div class="stat-card-value" id="ttTong">--</div>
+            <div class="stat-card-value"><%= TongBaiViet %></div>
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Xuất bản</div>
-            <div class="stat-card-value" id="ttXuatBan">--</div>
+            <div class="stat-card-value"><%= SoXuatBan %></div>
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Bản nháp</div>
-            <div class="stat-card-value" id="ttNhap">--</div>
+            <div class="stat-card-value"><%= SoBanNhap %></div>
         </div>
         <div class="tt-stat-card">
             <div class="stat-card-label">Tổng lượt xem</div>
-            <div class="stat-card-value" id="ttLuotXem">--</div>
+            <div class="stat-card-value"><%= FormatLuotXem(TongLuotXem) %></div>
         </div>
     </div>
 
@@ -71,27 +72,33 @@
         <a href="<%= ResolveUrl("~/Admin/FormTinTuc.aspx") %>" class="btn btn-primary">Thêm bài viết</a>
     </div>
 
-    <%-- Thanh tìm kiếm --%>
+    <%-- === PHẦN ĐÃ SỬA: Tìm kiếm + Đặt lại postback === --%>
     <div class="filter-bar">
         <div class="search-bar" style="flex:1">
-            <input type="text" class="input" id="txtSearch" placeholder="Tìm kiếm bài viết theo tiêu đề..." />
-            <button type="button" class="btn btn-primary" onclick="doSearch()">Tìm kiếm</button>
+            <asp:TextBox ID="txtSearch" runat="server" CssClass="input" placeholder="Tìm kiếm bài viết theo tiêu đề..." />
+            <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary" Text="Tìm kiếm" OnClick="BtnSearch_Click" />
+            <asp:Button ID="btnReset" runat="server" CssClass="btn btn-outline" Text="Đặt lại" OnClick="BtnReset_Click" />
         </div>
     </div>
 
-    <%-- Bộ lọc --%>
+    <%-- === PHẦN ĐÃ SỬA: Bộ lọc postback === --%>
     <div class="filter-bar">
-        <div class="filter-group" id="ttFilterStatus">
-            <button type="button" class="filter-btn active" data-val="">Tất cả</button>
-            <button type="button" class="filter-btn" data-val="1">Xuất bản</button>
-            <button type="button" class="filter-btn" data-val="0">Bản nháp</button>
+        <div class="filter-group">
+            <button type="button" class="filter-btn<%= FilterTT == "" ? " active" : "" %>" onclick="setFilter('tt','')">Tất cả</button>
+            <button type="button" class="filter-btn<%= FilterTT == "1" ? " active" : "" %>" onclick="setFilter('tt','1')">Xuất bản</button>
+            <button type="button" class="filter-btn<%= FilterTT == "0" ? " active" : "" %>" onclick="setFilter('tt','0')">Bản nháp</button>
         </div>
-        <select class="select" id="ttFilterDM" style="min-width:140px">
+        <select class="select" style="min-width:140px" onchange="setFilter('dm', this.value)">
             <option value="">Tất cả danh mục</option>
+            <% if (DtDanhMuc != null) {
+                foreach (System.Data.DataRow dm in DtDanhMuc.Rows) { %>
+                <option value="<%= dm["MaDanhMuc"] %>" <%= FilterDM == dm["MaDanhMuc"].ToString() ? "selected" : "" %>><%= Server.HtmlEncode(dm["TenDanhMuc"].ToString()) %></option>
+            <% }
+            } %>
         </select>
     </div>
 
-    <%-- Bảng dữ liệu --%>
+    <%-- === PHẦN ĐÃ SỬA: Bảng dữ liệu render server-side === --%>
     <div class="card" style="padding:0">
         <table class="tbl">
             <thead>
@@ -100,12 +107,60 @@
                     <th>Ngày đăng</th><th>Lượt xem</th><th>Trạng thái</th><th>Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="ttBody">
-                <tr><td colspan="7" class="empty-state">Đang tải...</td></tr>
+            <tbody>
+            <% if (DtTinTuc != null && DtTinTuc.Rows.Count > 0) {
+                foreach (System.Data.DataRow r in DtTinTuc.Rows) {
+                    int maTT = Convert.ToInt32(r["MaTinTuc"]);
+                    string tieuDe = r["TieuDe"].ToString();
+                    string anhBia = r["AnhBia"] == DBNull.Value ? "" : r["AnhBia"].ToString();
+                    int luotXem = Convert.ToInt32(r["LuotXem"]);
+                    int trangThai = Convert.ToInt32(r["TrangThai"]);
+                    string ngayDang = r["NgayDang"].ToString();
+                    string nguoiDang = r["NguoiDang"].ToString();
+
+                    string tsLabel = trangThai == 1 ? "Xuất bản" : "Bản nháp";
+                    string tsCls = trangThai == 1 ? "badge-ok" : "badge-warn";
+            %>
+                <tr>
+                    <td>
+                        <% if (!string.IsNullOrEmpty(anhBia)) { %>
+                        <img class="tt-thumb" src="<%= anhBia %>" onerror="this.style.display='none'" />
+                        <% } else { %>
+                        <div class="tt-thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;">N/A</div>
+                        <% } %>
+                    </td>
+                    <td><div class="tt-title-cell"><%= Server.HtmlEncode(tieuDe) %></div></td>
+                    <td style="font-size:12px"><%= Server.HtmlEncode(nguoiDang) %></td>
+                    <td style="font-size:11px;white-space:nowrap"><%= ngayDang %></td>
+                    <td class="tt-views"><%= luotXem.ToString("N0") %></td>
+                    <td><span class="badge <%= tsCls %>"><%= tsLabel %></span></td>
+                    <td>
+                        <div style="display:flex;gap:4px">
+                            <a href="<%= ResolveUrl("~/Admin/FormTinTuc.aspx") %>?id=<%= maTT %>" class="btn btn-xs btn-outline">Sửa</a>
+                            <button type="button" class="btn btn-xs btn-outline" onclick="doAction(<%= maTT %>,'toggle')"><%= trangThai == 1 ? "Ẩn" : "Hiện" %></button>
+                            <button type="button" class="btn btn-xs" style="background:var(--err-bg)" onclick="openXoa(<%= maTT %>,'<%= Server.HtmlEncode(tieuDe).Replace("'","\\'") %>')">Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            <% }
+            } else { %>
+                <tr><td colspan="7" class="empty-state">Không có bài viết nào.</td></tr>
+            <% } %>
             </tbody>
         </table>
     </div>
-    <div class="paging" id="ttPaging"></div>
+
+    <%-- === PHẦN ĐÃ SỬA: Phân trang server-side === --%>
+    <% if (TotalPages > 1) { %>
+    <div class="paging">
+        <span class="paging-info"><%= TotalItems %> bài viết</span>
+        <button type="button" class="page-btn" onclick="goPage(<%= CurrentPage - 1 %>)" <%= CurrentPage <= 1 ? "disabled" : "" %>>Trước</button>
+        <% for (int pg = 1; pg <= TotalPages; pg++) { %>
+        <button type="button" class="page-btn<%= pg == CurrentPage ? " active" : "" %>" onclick="goPage(<%= pg %>)"><%= pg %></button>
+        <% } %>
+        <button type="button" class="page-btn" onclick="goPage(<%= CurrentPage + 1 %>)" <%= CurrentPage >= TotalPages ? "disabled" : "" %>>Tiếp</button>
+    </div>
+    <% } %>
 
     <%-- Modal xóa --%>
     <div class="overlay" id="modalXoa" onclick="if(event.target===this)closeModal()">
@@ -129,128 +184,27 @@
 <script>
     (function () {
         'use strict';
-        var BASE = '<%= ResolveUrl("~/Admin/QuanLyTinTuc.aspx") %>';
-        var FORM_URL = '<%= ResolveUrl("~/Admin/FormTinTuc.aspx") %>';
-        var currentPage = 1, filterTT = '', filterDM = '';
         var pendingDeleteId = 0;
 
-        function loadStats() {
-            fetch(BASE + '?__ajax=true&action=stats')
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (!d.ok) return;
-                    document.getElementById('ttTong').textContent = d.tong || 0;
-                    document.getElementById('ttXuatBan').textContent = d.xuatBan || 0;
-                    document.getElementById('ttNhap').textContent = d.nhap || 0;
-                    document.getElementById('ttLuotXem').textContent = formatShort(d.luotXem || 0);
-                });
-        }
+        // === PHẦN ĐÃ SỬA: Postback thay vì AJAX ===
 
-        function loadDanhMuc() {
-            fetch(BASE + '?__ajax=true&action=danhMuc')
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (!d.ok || !d.data) return;
-                    var sel = document.getElementById('ttFilterDM');
-                    d.data.forEach(function (dm) {
-                        var opt = document.createElement('option');
-                        opt.value = dm.MaDanhMuc;
-                        opt.textContent = dm.TenDanhMuc;
-                        sel.appendChild(opt);
-                    });
-                });
-        }
-
-        function loadData() {
-            var tuKhoa = (document.getElementById('txtSearch').value || '').trim();
-            var url = BASE + '?__ajax=true&action=list&trang=' + currentPage + '&soDong=10';
-            if (filterTT !== '') url += '&trangThai=' + filterTT;
-            if (filterDM !== '') url += '&maDanhMuc=' + filterDM;
-            if (tuKhoa) url += '&tuKhoa=' + encodeURIComponent(tuKhoa);
-
-            fetch(url)
-                .then(function (r) { return r.json(); })
-                .then(function (d) {
-                    if (!d.ok) return;
-                    renderTable(d.data || []);
-                    renderPaging(d.total || 0);
-                })
-                .catch(function () { showToast('Lỗi', 'Không tải được dữ liệu.', 'err'); });
-        }
-
-        function renderTable(rows) {
-            var body = document.getElementById('ttBody');
-            if (!rows.length) { body.innerHTML = '<tr><td colspan="7" class="empty-state">Không có bài viết nào.</td></tr>'; return; }
-
-            var html = '';
-            rows.forEach(function (r) {
-                var tsLabel = r.TrangThai === 1 ? 'Xuất bản' : 'Bản nháp';
-                var tsCls = r.TrangThai === 1 ? 'badge-ok' : 'badge-warn';
-                var thumb = r.AnhBia ? '<img class="tt-thumb" src="' + r.AnhBia + '" onerror="this.style.display=\'none\'" />' : '<div class="tt-thumb" style="display:flex;align-items:center;justify-content:center;font-size:9px;">N/A</div>';
-
-                html += '<tr>' +
-                    '<td>' + thumb + '</td>' +
-                    '<td><div class="tt-title-cell">' + esc(r.TieuDe) + '</div></td>' +
-                    '<td style="font-size:12px">' + esc(r.NguoiDang || '') + '</td>' +
-                    '<td style="font-size:11px;white-space:nowrap">' + r.NgayDang + '</td>' +
-                    '<td class="tt-views">' + Number(r.LuotXem || 0).toLocaleString('vi-VN') + '</td>' +
-                    '<td><span class="badge ' + tsCls + '">' + tsLabel + '</span></td>' +
-                    '<td><div style="display:flex;gap:4px">' +
-                    '<a href="' + FORM_URL + '?id=' + r.MaTinTuc + '" class="btn btn-xs btn-outline">Sửa</a>' +
-                    '<button type="button" class="btn btn-xs btn-outline" onclick="toggleTrangThai(' + r.MaTinTuc + ')">' + (r.TrangThai === 1 ? 'Ẩn' : 'Hiện') + '</button>' +
-                    '<button type="button" class="btn btn-xs" style="background:var(--err-bg)" onclick="openXoa(' + r.MaTinTuc + ',\'' + esc(r.TieuDe).replace(/'/g, "\\'") + '\')">Xóa</button>' +
-                    '</div></td></tr>';
-            });
-            body.innerHTML = html;
-        }
-
-        function renderPaging(total) {
-            var totalPages = Math.ceil(total / 10);
-            var wrap = document.getElementById('ttPaging');
-            if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-            var html = '<span class="paging-info">' + total + ' bài viết</span>';
-            html += '<button class="page-btn" onclick="ttPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>Trước</button>';
-            for (var p = 1; p <= totalPages; p++) {
-                html += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="ttPage(' + p + ')">' + p + '</button>';
-            }
-            html += '<button class="page-btn" onclick="ttPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>Tiếp</button>';
-            wrap.innerHTML = html;
-        }
-
-        window.ttPage = function (p) {
-            if (p < 1) return;
-            currentPage = p;
-            loadData();
+        window.goPage = function (p) {
+            if (p < 1 || p > <%= TotalPages %>) return;
+            document.getElementById('<%= hfPage.ClientID %>').value = p;
+            document.getElementById('form1').submit();
         };
 
-        // Tìm kiếm
-        window.doSearch = function () { currentPage = 1; loadData(); };
-        document.getElementById('txtSearch').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); window.doSearch(); }
-        });
+        window.setFilter = function (type, val) {
+            if (type === 'tt') document.getElementById('<%= hfFilterTT.ClientID %>').value = val;
+            else if (type === 'dm') document.getElementById('<%= hfFilterDM.ClientID %>').value = val;
+            document.getElementById('<%= hfPage.ClientID %>').value = '1';
+            document.getElementById('form1').submit();
+        };
 
-        // Filters
-        document.getElementById('ttFilterStatus').addEventListener('click', function (e) {
-            if (e.target.classList.contains('filter-btn')) {
-                this.querySelectorAll('.filter-btn').forEach(function (b) { b.classList.remove('active'); });
-                e.target.classList.add('active');
-                filterTT = e.target.getAttribute('data-val');
-                currentPage = 1; loadData();
-            }
-        });
-        document.getElementById('ttFilterDM').addEventListener('change', function () {
-            filterDM = this.value; currentPage = 1; loadData();
-        });
-
-        // Toggle trạng thái
-        window.toggleTrangThai = function (id) {
-            fetch(BASE + '?__ajax=true&action=toggle&id=' + id)
-                .then(function (r) { return r.json(); })
-                .then(function (j) {
-                    if (j.ok) { showToast('Thành công', 'Đã cập nhật trạng thái.', 'ok'); loadStats(); loadData(); }
-                    else showToast('Lỗi', j.msg || 'Lỗi.', 'err');
-                })
-                .catch(function () { showToast('Lỗi', 'Lỗi kết nối server.', 'err'); });
+        window.doAction = function (id, action) {
+            document.getElementById('<%= hfAction.ClientID %>').value = action;
+            document.getElementById('<%= hfParam.ClientID %>').value = id;
+            document.getElementById('form1').submit();
         };
 
         // Xóa
@@ -261,22 +215,13 @@
         };
         window.confirmXoa = function () {
             if (!pendingDeleteId) return;
-            fetch(BASE + '?__ajax=true&action=delete&id=' + pendingDeleteId)
-                .then(function (r) { return r.json(); })
-                .then(function (j) {
-                    closeModal();
-                    if (j.ok) { showToast('Thành công', 'Đã xóa bài viết.', 'ok'); loadStats(); loadData(); }
-                    else showToast('Lỗi', j.msg || 'Lỗi.', 'err');
-                })
-                .catch(function () { showToast('Lỗi', 'Lỗi kết nối server.', 'err'); });
+            document.getElementById('<%= hfAction.ClientID %>').value = 'delete';
+            document.getElementById('<%= hfParam.ClientID %>').value = pendingDeleteId;
+            document.getElementById('form1').submit();
         };
         window.closeModal = function () {
             document.getElementById('modalXoa').classList.remove('show');
         };
-
-        loadStats();
-        loadDanhMuc();
-        loadData();
     })();
 </script>
 </asp:Content>

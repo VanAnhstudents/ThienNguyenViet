@@ -1,9 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
-using System.Web.Script.Serialization;
 using System.Web.UI;
 using ThienNguyenViet.DAO;
 
@@ -11,158 +9,171 @@ namespace ThienNguyenViet.Admin
 {
     public partial class QuanLyNguoiDung : System.Web.UI.Page
     {
+        // === PROPERTIES BIND LÊN ASPX ===
+        protected int TongTaiKhoan { get; private set; }
+        protected int NguoiDungHoatDong { get; private set; }
+        protected int TaiKhoanKhoa { get; private set; }
+        protected long TongQuyenGop { get; private set; }
+        protected DataTable DtNguoiDung { get; private set; }
+        protected int TotalItems { get; private set; }
+        protected int CurrentPage { get; private set; } = 1;
+        protected int PageSize { get; private set; } = 10;
+        protected string FilterTT { get; private set; } = "";
+        protected string FilterVT { get; private set; } = "";
+        protected string SearchKeyword { get; private set; } = "";
+
+        // HiddenField controls (declared in aspx)
+        protected System.Web.UI.WebControls.HiddenField hfPage;
+        protected System.Web.UI.WebControls.HiddenField hfFilterTT;
+        protected System.Web.UI.WebControls.HiddenField hfFilterVT;
+        protected System.Web.UI.WebControls.HiddenField hfAction;
+        protected System.Web.UI.WebControls.HiddenField hfParam;
+        protected System.Web.UI.WebControls.TextBox txtSearch;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             PhanQuyenHelper.YeuCauAdmin(this);
 
-            if (Request.QueryString["__ajax"] == "true")
+            // Xử lý hành động postback (khóa/mở khóa)
+            if (IsPostBack)
             {
-                Response.ContentType = "application/json; charset=utf-8";
-                Response.Cache.SetNoStore();
-                string action = Request.QueryString["action"] ?? "";
-                try
+                string action = hfAction.Value;
+                string param = hfParam.Value;
+                if (!string.IsNullOrEmpty(action))
                 {
-                    switch (action)
-                    {
-                        case "stats": HandleStats(); break;
-                        case "list": HandleList(); break;
-                        case "get": HandleGet(); break;
-                        case "lock": HandleLockUnlock(0); break;
-                        case "unlock": HandleLockUnlock(1); break;
-                        default:
-                            Response.Write("{\"ok\":false,\"msg\":\"Action khong hop le\"}");
-                            break;
-                    }
+                    XuLyHanhDong(action, param);
+                    hfAction.Value = "";
+                    hfParam.Value = "";
                 }
-                catch (Exception ex)
-                {
-                    Response.Write("{\"ok\":false,\"msg\":" + JsonStr(ex.Message) + "}");
-                }
-                Response.End();
             }
         }
 
-        // Thong ke
-        private void HandleStats()
+        // Load data trong PreRender để đảm bảo button events đã xử lý xong
+        protected override void OnPreRender(EventArgs e)
         {
-            const string sql = @"
+            base.OnPreRender(e);
+
+            CurrentPage = int.TryParse(hfPage.Value, out int p) && p > 0 ? p : 1;
+            FilterTT = hfFilterTT.Value ?? "";
+            FilterVT = hfFilterVT.Value ?? "";
+            SearchKeyword = (txtSearch.Text ?? "").Trim();
+
+            LoadStats();
+            LoadData();
+        }
+
+        private void XuLyHanhDong(string action, string param)
+        {
+            if (!int.TryParse(param, out int id) || id <= 0) return;
+
+            switch (action)
+            {
+                case "lock":
+                    KetNoiDB.ExecuteNonQuery(
+                        "UPDATE dbo.NguoiDung SET TrangThai=0 WHERE MaNguoiDung=@id",
+                        CommandType.Text, KetNoiDB.P("@id", id));
+                    break;
+                case "unlock":
+                    KetNoiDB.ExecuteNonQuery(
+                        "UPDATE dbo.NguoiDung SET TrangThai=1 WHERE MaNguoiDung=@id",
+                        CommandType.Text, KetNoiDB.P("@id", id));
+                    break;
+            }
+        }
+
+        private void LoadStats()
+        {
+            try
+            {
+                const string sql = @"
 SELECT
     (SELECT COUNT(*) FROM dbo.NguoiDung) AS TongTaiKhoan,
     (SELECT COUNT(*) FROM dbo.NguoiDung WHERE VaiTro=0 AND TrangThai=1) AS NguoiDungHoatDong,
     (SELECT COUNT(*) FROM dbo.NguoiDung WHERE TrangThai=0) AS TaiKhoanKhoa,
     ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1),0) AS TongQuyenGop";
 
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
-            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false}"); return; }
-            DataRow r = dt.Rows[0];
-            Response.Write(string.Format(
-                "{{\"ok\":true,\"data\":{{\"tongTaiKhoan\":{0},\"nguoiDungHoatDong\":{1},\"taiKhoanKhoa\":{2},\"tongQuyenGop\":{3}}}}}",
-                r["TongTaiKhoan"], r["NguoiDungHoatDong"], r["TaiKhoanKhoa"], r["TongQuyenGop"]));
+                DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
+                if (dt.Rows.Count > 0)
+                {
+                    DataRow r = dt.Rows[0];
+                    TongTaiKhoan = Convert.ToInt32(r["TongTaiKhoan"]);
+                    NguoiDungHoatDong = Convert.ToInt32(r["NguoiDungHoatDong"]);
+                    TaiKhoanKhoa = Convert.ToInt32(r["TaiKhoanKhoa"]);
+                    TongQuyenGop = Convert.ToInt64(r["TongQuyenGop"]);
+                }
+            }
+            catch { }
         }
 
-        // Danh sach nguoi dung (phan trang + loc)
-        private void HandleList()
+        private void LoadData()
         {
-            string tuKhoa = Request.QueryString["tuKhoa"] ?? "";
-            string ttStr = Request.QueryString["trangThai"] ?? "";
-            string vtStr = Request.QueryString["vaiTro"] ?? "";
-            int trang = int.TryParse(Request.QueryString["trang"], out int t) ? t : 1;
-            int soDong = int.TryParse(Request.QueryString["soDong"], out int s) ? s : 10;
-            int offset = (trang - 1) * soDong;
-
-            var prms = new List<SqlParameter>();
-            var where = new StringBuilder(" WHERE 1=1");
-
-            if (!string.IsNullOrWhiteSpace(tuKhoa))
+            try
             {
-                where.Append(" AND (nd.HoTen LIKE N'%'+@Kw+'%' OR nd.Email LIKE N'%'+@Kw+'%')");
-                prms.Add(KetNoiDB.P("@Kw", tuKhoa.Trim()));
-            }
-            if (ttStr == "0" || ttStr == "1")
-                where.Append(" AND nd.TrangThai=" + ttStr);
-            if (vtStr == "0" || vtStr == "1")
-                where.Append(" AND nd.VaiTro=" + vtStr);
+                int offset = (CurrentPage - 1) * PageSize;
+                var prms = new List<SqlParameter>();
+                var where = new System.Text.StringBuilder(" WHERE 1=1");
 
-            // Count
-            string sqlCount = "SELECT COUNT(*) FROM dbo.NguoiDung nd" + where;
-            int total = Convert.ToInt32(KetNoiDB.ExecuteScalar(sqlCount, CommandType.Text, prms.ToArray()));
+                if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                {
+                    where.Append(" AND (nd.HoTen LIKE N'%'+@Kw+'%' OR nd.Email LIKE N'%'+@Kw+'%')");
+                    prms.Add(KetNoiDB.P("@Kw", SearchKeyword));
+                }
+                if (FilterTT == "0" || FilterTT == "1")
+                    where.Append(" AND nd.TrangThai=" + FilterTT);
+                if (FilterVT == "0" || FilterVT == "1")
+                    where.Append(" AND nd.VaiTro=" + FilterVT);
 
-            // Data
-            string sqlData = @"
+                // Count
+                string sqlCount = "SELECT COUNT(*) FROM dbo.NguoiDung nd" + where;
+                TotalItems = Convert.ToInt32(KetNoiDB.ExecuteScalar(sqlCount, CommandType.Text, prms.ToArray()));
+
+                // Data (tạo params mới vì SqlParameter chỉ dùng 1 lần)
+                var prms2 = new List<SqlParameter>();
+                if (!string.IsNullOrWhiteSpace(SearchKeyword))
+                    prms2.Add(KetNoiDB.P("@Kw", SearchKeyword));
+
+                string sqlData = @"
 SELECT nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai,
        nd.VaiTro, nd.TrangThai,
        CONVERT(NVARCHAR(10), nd.NgayTao, 103) AS NgayTao,
        ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1), 0) AS TongQuyenGop
 FROM dbo.NguoiDung nd" + where +
-                " ORDER BY nd.NgayTao DESC OFFSET " + offset + " ROWS FETCH NEXT " + soDong + " ROWS ONLY";
+                    " ORDER BY nd.NgayTao DESC OFFSET " + offset + " ROWS FETCH NEXT " + PageSize + " ROWS ONLY";
 
-            DataTable dt = KetNoiDB.GetDataTable(sqlData, CommandType.Text, prms.ToArray());
-            var jss = new JavaScriptSerializer();
-            var rows = new List<object>();
-            foreach (DataRow r in dt.Rows)
-            {
-                rows.Add(new
-                {
-                    MaNguoiDung = Convert.ToInt32(r["MaNguoiDung"]),
-                    HoTen = r["HoTen"].ToString(),
-                    Email = r["Email"] == DBNull.Value ? "" : r["Email"].ToString(),
-                    SoDienThoai = r["SoDienThoai"] == DBNull.Value ? "" : r["SoDienThoai"].ToString(),
-                    VaiTro = Convert.ToInt32(r["VaiTro"]),
-                    TrangThai = Convert.ToInt32(r["TrangThai"]),
-                    NgayTao = r["NgayTao"].ToString(),
-                    TongQuyenGop = Convert.ToDecimal(r["TongQuyenGop"])
-                });
+                DtNguoiDung = KetNoiDB.GetDataTable(sqlData, CommandType.Text, prms2.ToArray());
             }
-            Response.Write("{\"ok\":true,\"total\":" + total + ",\"data\":" + jss.Serialize(rows) + "}");
-        }
-
-        // Lay chi tiet 1 nguoi dung
-        private void HandleGet()
-        {
-            int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
-
-            const string sql = @"
-SELECT nd.*, ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1),0) AS TongQuyenGop
-FROM dbo.NguoiDung nd WHERE nd.MaNguoiDung=@id";
-
-            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text, KetNoiDB.P("@id", id));
-            if (dt.Rows.Count == 0) { Response.Write("{\"ok\":false,\"msg\":\"Khong tim thay\"}"); return; }
-
-            DataRow r = dt.Rows[0];
-            var jss = new JavaScriptSerializer();
-            Response.Write("{\"ok\":true,\"data\":" + jss.Serialize(new
+            catch (Exception ex)
             {
-                MaNguoiDung = Convert.ToInt32(r["MaNguoiDung"]),
-                HoTen = r["HoTen"].ToString(),
-                Email = r["Email"]?.ToString() ?? "",
-                SoDienThoai = r["SoDienThoai"]?.ToString() ?? "",
-                VaiTro = Convert.ToInt32(r["VaiTro"]),
-                TrangThai = Convert.ToInt32(r["TrangThai"]),
-                TongQuyenGop = Convert.ToDecimal(r["TongQuyenGop"])
-            }) + "}");
+                System.Diagnostics.Debug.WriteLine("[QuanLyNguoiDung] LoadData error: " + ex.Message);
+            }
         }
 
-        // Khoa hoac mo khoa tai khoan
-        private void HandleLockUnlock(int trangThai)
+        protected int TotalPages
         {
-            int id = int.TryParse(Request.QueryString["id"], out int i) ? i : 0;
-            if (id <= 0) { Response.Write("{\"ok\":false,\"msg\":\"ID khong hop le\"}"); return; }
-
-            KetNoiDB.ExecuteNonQuery(
-                "UPDATE dbo.NguoiDung SET TrangThai=@tt WHERE MaNguoiDung=@id",
-                CommandType.Text,
-                KetNoiDB.P("@tt", trangThai),
-                KetNoiDB.P("@id", id));
-
-            string verb = trangThai == 1 ? "mo khoa" : "khoa";
-            Response.Write("{\"ok\":true,\"msg\":\"Da " + verb + " tai khoan #" + id + "\"}");
+            get { return TotalItems > 0 ? (int)Math.Ceiling((double)TotalItems / PageSize) : 1; }
         }
 
-        private static string JsonStr(string s)
+        protected string FormatTien(long so)
         {
-            if (s == null) return "null";
-            return "\"" + s.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+            if (so >= 1_000_000_000) return string.Format("{0:0.#} Tỷ", (double)so / 1_000_000_000);
+            if (so >= 1_000_000) return string.Format("{0:0.#} Tr", (double)so / 1_000_000);
+            if (so >= 1_000) return string.Format("{0:0.#}K", (double)so / 1_000);
+            return so.ToString("N0");
+        }
+
+        // === EVENT: Tìm kiếm ===
+        protected void BtnSearch_Click(object sender, EventArgs e)
+        {
+            hfPage.Value = "1";
+        }
+
+        // === EVENT: Đặt lại ===
+        protected void BtnReset_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            hfFilterTT.Value = "";
+            hfFilterVT.Value = "";
+            hfPage.Value = "1";
         }
     }
 }
