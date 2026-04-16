@@ -1,9 +1,9 @@
-<%@ Page Title="Tổng Quan — Thiện Nguyện Việt" Language="C#"
-         MasterPageFile="~/Admin.Master" AutoEventWireup="true"
-         CodeBehind="TongQuan.aspx.cs"
-         Inherits="ThienNguyenViet.Admin.TongQuan" %>
+﻿<%@ Page Title="" Language="C#" 
+    MasterPageFile="~/Admin.Master" AutoEventWireup="true" 
+    CodeBehind="TongQuan.aspx.cs" 
+    Inherits="ThienNguyenViet.Admin.TongQuan" %>
 
-<asp:Content ID="Head" ContentPlaceHolderID="HeadContent" runat="server">
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
     .stat-card { text-align: center }
     .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 18px; }
@@ -15,7 +15,7 @@
     .cd-item:last-child { border-bottom: none; }
     .cd-item-name { font-size: 13px; font-weight: 500; flex: 1; margin-right: 10px; }
     .cd-item-pct { font-size: 12px; font-weight: 600; white-space: nowrap; }
-    .cd-item-bar { width: 100%; margin-top: 6px; }
+    .cd-item-bar { width: 100%; }
     .amount-cell { font-weight: 600; font-size: 12px; white-space: nowrap; }
     .proof-wrap {
         margin-top: 6px; border: 1px solid var(--border);
@@ -29,15 +29,13 @@
     @media (max-width: 425px) { .chart-wrap { height: 200px; } }
 </style>
 </asp:Content>
-
-<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+<asp:Content ID="Content2" ContentPlaceHolderID="TopBarTitle" runat="server">
     <h1>Bảng điều khiển</h1>
     <p>Tổng quan hoạt động hệ thống</p>
 </asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+<!-- === HIDDEN FIELDS CHO POSTBACK === -->
     <asp:HiddenField ID="hfAction" runat="server" />
     <asp:HiddenField ID="hfParam" runat="server" />
 
@@ -69,6 +67,7 @@
                     <h3>Quyên góp theo tháng</h3>
                     <div class="sub">Tổng tiền (triệu đồng) — năm <%= DateTime.Now.Year %></div>
                 </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="xuatCSVBieuDo()">Xuất CSV</button>
             </div>
             <div class="chart-wrap">
                 <canvas id="chartQG"></canvas>
@@ -88,7 +87,7 @@
                 <li class="cd-item">
                     <div style="flex:1">
                         <div class="cd-item-name"><%= Server.HtmlEncode(cd["TenChienDich"].ToString()) %></div>
-                        <div class="cd-item-bar"><div class="prog-wrap"><div class="prog-fill" style="width:<%= pct %>%"></div></div></div>
+                        <div class="cd-item-bar"><div class="prog-wrap"><div class="prog-fill" style="width: <%= pct %>%"></div></div></div>
                     </div>
                     <div class="cd-item-pct"><%= pct.ToString("0.0") %>%</div>
                 </li>
@@ -189,10 +188,8 @@
             </div>
         </div>
     </div>
-
 </asp:Content>
-
-<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
+<asp:Content ID="Content4" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
     (function () {
         'use strict';
@@ -223,6 +220,21 @@
                 }
             }
         });
+
+        // Xuất CSV biểu đồ quyên góp theo tháng
+        window.xuatCSVBieuDo = function () {
+            var nam = <%= DateTime.Now.Year %>;
+            var csv = 'Tháng,Số tiền (VNĐ)\n';
+            for (var i = 0; i < 12; i++) {
+                csv += 'Tháng ' + (i + 1) + '/' + nam + ',' + chartTien[i] + '\n';
+            }
+            var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'QuyenGopTheoThang_' + nam + '.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
 
         // Modal chi tiết (giữ nguyên client-side)
         window.openDetail = function (id, nguoi, email, cd, soTien, ngay, tt, anDanh, loiNhan, anhXN) {

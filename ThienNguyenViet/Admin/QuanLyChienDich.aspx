@@ -1,6 +1,6 @@
-<%@ Page Title="Quản lý Chiến dịch" Language="C#"
-    MasterPageFile="~/Admin.Master" AutoEventWireup="true"
-    CodeBehind="QuanLyChienDich.aspx.cs"
+﻿<%@ Page Title="" Language="C#" 
+    MasterPageFile="~/Admin.Master" AutoEventWireup="true" 
+    CodeBehind="QuanLyChienDich.aspx.cs" 
     Inherits="ThienNguyenViet.Admin.QuanLyChienDich" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
@@ -20,16 +20,13 @@
     .cd-date { font-size: 11px; white-space: nowrap; }
     .action-group { display: flex; gap: 4px; }
 </style>
-</asp:Content>
 
-<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="TopBarTitle" runat="server">
     <h1>Quản lý chiến dịch</h1>
     <p>Danh sách các chiến dịch quyên góp</p>
 </asp:Content>
-
-<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:HiddenField ID="hfPage" runat="server" Value="1" />
     <asp:HiddenField ID="hfFilterStatus" runat="server" />
     <asp:HiddenField ID="hfFilterDM" runat="server" />
@@ -38,10 +35,9 @@
 
     <div class="page-topbar">
         <h3>Tất cả chiến dịch</h3>
-        <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>" class="btn btn-primary">Thêm chiến dịch</a>
+        <a href="<%= ResolveUrl("~/Admin/FormChienDich.aspx") %>" class="btn btn-primary">+ Thêm chiến dịch</a>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Tìm kiếm dùng asp:TextBox + asp:Button postback === --%>
     <div class="filter-bar">
         <div class="search-bar" style="flex:1">
             <asp:TextBox ID="txtSearch" runat="server" CssClass="input" placeholder="Tìm kiếm chiến dịch theo tên..." />
@@ -164,8 +160,7 @@
     </div>
 
 </asp:Content>
-
-<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
+<asp:Content ID="Content4" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
     (function () {
         'use strict';
@@ -208,4 +203,5 @@
         };
     })();
 </script>
+
 </asp:Content>

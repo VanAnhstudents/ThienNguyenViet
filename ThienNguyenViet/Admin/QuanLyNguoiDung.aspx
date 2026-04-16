@@ -1,8 +1,4 @@
-<%@ Page Title="Quản lý Người dùng" Language="C#"
-    MasterPageFile="~/Admin.Master" AutoEventWireup="true"
-    CodeBehind="QuanLyNguoiDung.aspx.cs"
-    Inherits="ThienNguyenViet.Admin.QuanLyNguoiDung" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Admin.Master" AutoEventWireup="true" CodeBehind="QuanLyNguoiDung.aspx.cs" Inherits="ThienNguyenViet.Admin.QuanLyNguoiDung" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
     .nd-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; text-align: center }
@@ -29,23 +25,20 @@
     @media (max-width: 425px) { .nd-stats { grid-template-columns: 1fr 1fr; gap: 8px; } }
     @media (max-width: 375px) { .nd-stats { grid-template-columns: 1fr; } }
 </style>
-</asp:Content>
 
-<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="TopBarTitle" runat="server">
     <h1>Quản lý người dùng</h1>
     <p>Danh sách tài khoản người dùng hệ thống</p>
 </asp:Content>
-
-<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<!-- === HIDDEN FIELDS CHO POSTBACK === -->
     <asp:HiddenField ID="hfPage" runat="server" Value="1" />
     <asp:HiddenField ID="hfFilterTT" runat="server" />
     <asp:HiddenField ID="hfFilterVT" runat="server" />
     <asp:HiddenField ID="hfAction" runat="server" />
     <asp:HiddenField ID="hfParam" runat="server" />
 
-    <%-- === PHẦN ĐÃ SỬA: Thống kê render server-side === --%>
     <div class="nd-stats">
         <div class="nd-stat">
             <div class="stat-card-label">Tổng tài khoản</div>
@@ -65,7 +58,6 @@
         </div>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Tìm kiếm + Đặt lại postback === --%>
     <div class="filter-bar">
         <div class="search-bar" style="flex:1">
             <asp:TextBox ID="txtSearch" runat="server" CssClass="input" placeholder="Tìm kiếm theo tên, email, số điện thoại..." />
@@ -74,7 +66,6 @@
         </div>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Bộ lọc postback === --%>
     <div class="filter-bar">
         <div class="filter-group">
             <button type="button" class="filter-btn<%= FilterTT == "" ? " active" : "" %>" onclick="setFilter('tt','')">Tất cả</button>
@@ -88,7 +79,6 @@
         </div>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Bảng dữ liệu render server-side === --%>
     <div class="card" style="padding:0">
         <table class="tbl">
             <thead>
@@ -129,10 +119,12 @@
                     <td>
                         <div style="display:flex;gap:4px">
                             <button type="button" class="btn btn-xs btn-outline" onclick="viewDetail(<%= maND %>,'<%= Server.HtmlEncode(hoTen).Replace("'","\\'") %>','<%= Server.HtmlEncode(email).Replace("'","\\'") %>','<%= Server.HtmlEncode(sdt).Replace("'","\\'") %>',<%= vaiTro %>,<%= trangThai %>,'<%= ngayTao %>',<%= tongQG %>)">Xem</button>
-                            <% if (trangThai == 1) { %>
-                            <button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="doUserAction(<%= maND %>,'lock')">Khóa</button>
-                            <% } else { %>
-                            <button type="button" class="btn btn-xs btn-success" onclick="doUserAction(<%= maND %>,'unlock')">Mở khóa</button>
+                            <% if (vaiTro != 1) { %>
+                                <% if (trangThai == 1) { %>
+                                <button type="button" class="btn btn-xs" style="background:var(--err-bg);" onclick="doUserAction(<%= maND %>,'lock')">Khóa</button>
+                                <% } else { %>
+                                <button type="button" class="btn btn-xs btn-success" onclick="doUserAction(<%= maND %>,'unlock')">Mở khóa</button>
+                                <% } %>
                             <% } %>
                         </div>
                     </td>
@@ -145,7 +137,6 @@
         </table>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Phân trang server-side === --%>
     <% if (TotalPages > 1) { %>
     <div class="paging">
         <span class="paging-info"><%= TotalItems %> tài khoản</span>
@@ -174,13 +165,10 @@
     </div>
 
 </asp:Content>
-
-<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
+<asp:Content ID="Content4" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
     (function () {
         'use strict';
-
-        // === PHẦN ĐÃ SỬA: Postback thay vì AJAX ===
 
         window.goPage = function (p) {
             if (p < 1 || p > <%= TotalPages %>) return;
@@ -224,4 +212,5 @@
         };
     })();
 </script>
+
 </asp:Content>

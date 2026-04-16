@@ -1,8 +1,4 @@
-<%@ Page Title="Báo cáo" Language="C#"
-    MasterPageFile="~/Admin.Master" AutoEventWireup="true"
-    CodeBehind="BaoCao.aspx.cs"
-    Inherits="ThienNguyenViet.Admin.BaoCao" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Admin.Master" AutoEventWireup="true" CodeBehind="BaoCao.aspx.cs" Inherits="ThienNguyenViet.Admin.BaoCao" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
     .bc-toolbar {
@@ -41,19 +37,15 @@
     }
     @media (max-width: 375px) { .bc-summary { grid-template-columns: 1fr; } }
 </style>
-</asp:Content>
 
-<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="TopBarTitle" runat="server">
     <h1>Báo cáo & Thống kê</h1>
     <p>Tổng hợp dữ liệu hoạt động hệ thống</p>
 </asp:Content>
-
-<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <!-- === HIDDEN FIELD CHO POSTBACK NĂM === -->
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:HiddenField ID="hfYear" runat="server" />
 
-    <%-- === PHẦN ĐÃ SỬA: Chọn năm qua postback === --%>
     <div class="bc-toolbar">
         <h3>Báo cáo năm <%= SelectedYear %></h3>
         <div class="bc-toolbar-right">
@@ -65,7 +57,6 @@
         </div>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Thống kê render server-side === --%>
     <div class="bc-summary">
         <div class="bc-stat">
             <div class="bc-stat-label">Tổng tiền quyên góp</div>
@@ -93,6 +84,7 @@
                     <h3>Quyên góp theo tháng</h3>
                     <div class="sub">Triệu đồng — năm <%= SelectedYear %></div>
                 </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="xuatCSVTheoThang()">Xuất CSV</button>
             </div>
             <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
         </div>
@@ -102,12 +94,10 @@
             </div>
             <div class="chart-wrap" style="height:200px"><canvas id="chartPie"></canvas></div>
             <div class="pie-legend" id="pieLegend">
-                <!-- === PHẦN ĐÃ SỬA: Pie legend render từ JS với data server-side === -->
             </div>
         </div>
     </div>
 
-    <%-- === PHẦN ĐÃ SỬA: Bảng xếp hạng render server-side === --%>
     <div class="tables-row">
         <div class="card">
             <div class="card-header"><h3>Top 10 chiến dịch tiêu biểu</h3></div>
@@ -172,13 +162,10 @@
     </div>
 
 </asp:Content>
-
-<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
+<asp:Content ID="Content4" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
 (function(){
     'use strict';
-
-    // === PHẦN ĐÃ SỬA: Chart data từ server-side, không cần AJAX ===
 
     // Biểu đồ cột - quyên góp theo tháng
     var monthlyData = <%= ChartMonthlyJson %>;
@@ -233,6 +220,21 @@
         document.getElementById('pieLegend').innerHTML = leg;
     }
 
+    // Xuất CSV biểu đồ quyên góp theo tháng
+    window.xuatCSVTheoThang = function () {
+        var nam = <%= SelectedYear %>;
+        var csv = 'Tháng,Số tiền (VNĐ)\n';
+        for (var i = 0; i < 12; i++) {
+            csv += 'Tháng ' + (i + 1) + '/' + nam + ',' + monthlyData[i] + '\n';
+        }
+        var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'QuyenGopTheoThang_' + nam + '.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    };
+
     // Chọn năm - postback
     window.changeYear = function(year) {
         document.getElementById('<%= hfYear.ClientID %>').value = year;
@@ -240,4 +242,5 @@
     };
 })();
 </script>
+
 </asp:Content>

@@ -230,11 +230,11 @@
             var wrap = document.getElementById('qgPaging');
             if (totalPages <= 1) { wrap.innerHTML = ''; return; }
             var html = '<span class="paging-info">' + total + ' kết quả</span>';
-            html += '<button class="page-btn" onclick="qgPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>Trước</button>';
+            html += '<button type="button" class="page-btn" onclick="qgPage(' + (currentPage - 1) + ')"' + (currentPage <= 1 ? ' disabled' : '') + '>Trước</button>';
             for (var p = 1; p <= totalPages; p++) {
-                html += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="qgPage(' + p + ')">' + p + '</button>';
+                html += '<button type="button" class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="qgPage(' + p + ')">' + p + '</button>';
             }
-            html += '<button class="page-btn" onclick="qgPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>Tiếp</button>';
+            html += '<button type="button" class="page-btn" onclick="qgPage(' + (currentPage + 1) + ')"' + (currentPage >= totalPages ? ' disabled' : '') + '>Tiếp</button>';
             wrap.innerHTML = html;
         }
 
