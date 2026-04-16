@@ -1,8 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
@@ -188,5 +191,6 @@ INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung"
             hfFilterDM.Value = "";
             hfPage.Value = "1";
         }
+
     }
 }

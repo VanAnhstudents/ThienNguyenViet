@@ -1,7 +1,8 @@
 ﻿<%@ Page Title="Chiến dịch" Language="C#"
     MasterPageFile="~/Admin.Master" AutoEventWireup="true"
     CodeBehind="FormChienDich.aspx.cs"
-    Inherits="ThienNguyenViet.Admin.FormChienDich" %>
+    Inherits="ThienNguyenViet.Admin.FormChienDich"
+    ValidateRequest="false" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
@@ -9,7 +10,6 @@
     .form-layout { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
     .card-section-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
 
-    /* Rich text toolbar */
     .rte-toolbar {
         display: flex; gap: 3px; padding: 6px 8px;
         border: 1px solid var(--border); border-bottom: none;
@@ -28,7 +28,6 @@
         outline: none; overflow-y: auto; background: #fff;
     }
 
-    /* Tiến độ list */
     .td-list { list-style: none; margin-top: 12px; }
     .td-list li {
         padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px;
@@ -158,6 +157,7 @@
                     <label class="form-label">Danh mục <span class="req">*</span></label>
                     <select class="select" id="fDanhMuc" style="width:100%">
                         <option value="">Chọn danh mục</option>
+                        <%= RenderDanhMucOptions() %>
                     </select>
                     <div class="form-hint">Chọn danh mục phù hợp với chiến dịch</div>
                 </div>
@@ -225,24 +225,8 @@
             document.getElementById('pageTitle').textContent = 'Chỉnh sửa chiến dịch';
         }
 
-        // Load danh mục
-        fetch(BASE_URL + '?__ajax=true&action=danhMuc')
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-                if (!d.ok) return;
-                var sel = document.getElementById('fDanhMuc');
-                d.data.forEach(function (dm) {
-                    var opt = document.createElement('option');
-                    opt.value = dm.ma;
-                    opt.textContent = dm.ten;
-                    sel.appendChild(opt);
-                });
+        if (isEditMode) loadEditData();
 
-                // FIX: Load dữ liệu edit SAU KHI danh mục đã load xong
-                if (isEditMode) loadEditData();
-            });
-
-        // FIX: Load toàn bộ dữ liệu chiến dịch khi ở chế độ edit
         function loadEditData() {
             fetch(BASE_URL + '?__ajax=true&action=get&id=' + editId)
                 .then(function (r) { return r.json(); })
@@ -342,7 +326,11 @@
                 trangThai: selectedTrangThai
             });
 
-            fetch(BASE_URL + '?' + payload)
+            fetch(BASE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: payload.toString()
+            })
                 .then(function (r) { return r.json(); })
                 .then(function (json) {
                     if (json.ok) {

@@ -1,8 +1,4 @@
-<%@ Page Title="Quản lý Tin tức" Language="C#"
-    MasterPageFile="~/Admin.Master" AutoEventWireup="true"
-    CodeBehind="QuanLyTinTuc.aspx.cs"
-    Inherits="ThienNguyenViet.Admin.QuanLyTinTuc" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Admin.Master" AutoEventWireup="true" CodeBehind="QuanLyTinTuc.aspx.cs" Inherits="ThienNguyenViet.Admin.QuanLyTinTuc" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 <style>
     .tt-stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 18px; text-align: center }
@@ -31,16 +27,14 @@
     @media (max-width: 425px) { .tt-stats-row { grid-template-columns: 1fr 1fr; gap: 8px; } }
     @media (max-width: 375px) { .tt-stats-row { grid-template-columns: 1fr; } }
 </style>
-</asp:Content>
 
-<asp:Content ID="TopBar" ContentPlaceHolderID="TopBarTitle" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="TopBarTitle" runat="server">
     <h1>Quản lý tin tức</h1>
     <p>Quản lý bài viết, tin tức trên hệ thống</p>
 </asp:Content>
-
-<asp:Content ID="Body" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-    <!-- === HIDDEN FIELDS CHO POSTBACK === -->
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+<!-- === HIDDEN FIELDS CHO POSTBACK === -->
     <asp:HiddenField ID="hfPage" runat="server" Value="1" />
     <asp:HiddenField ID="hfFilterTT" runat="server" />
     <asp:HiddenField ID="hfFilterDM" runat="server" />
@@ -69,7 +63,7 @@
 
     <div class="page-topbar">
         <h3>Danh sách bài viết</h3>
-        <a href="<%= ResolveUrl("~/Admin/FormTinTuc.aspx") %>" class="btn btn-primary">Thêm bài viết</a>
+        <a href="<%= ResolveUrl("~/Admin/FormTinTuc.aspx") %>" class="btn btn-primary">+ Thêm bài viết</a>
     </div>
 
     <%-- === PHẦN ĐÃ SỬA: Tìm kiếm + Đặt lại postback === --%>
@@ -178,15 +172,13 @@
             </div>
         </div>
     </div>
-</asp:Content>
 
-<asp:Content ID="Scripts" ContentPlaceHolderID="ScriptContent" runat="server">
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="ScriptContent" runat="server">
 <script>
     (function () {
         'use strict';
         var pendingDeleteId = 0;
-
-        // === PHẦN ĐÃ SỬA: Postback thay vì AJAX ===
 
         window.goPage = function (p) {
             if (p < 1 || p > <%= TotalPages %>) return;
@@ -224,4 +216,5 @@
         };
     })();
 </script>
+
 </asp:Content>

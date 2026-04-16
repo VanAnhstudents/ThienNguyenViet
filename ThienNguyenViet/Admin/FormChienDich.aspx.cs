@@ -26,7 +26,6 @@ namespace ThienNguyenViet.Admin
         {
             switch (Request["action"] ?? "")
             {
-                case "danhMuc": AjaxDanhMuc(); break;
                 case "get": AjaxGet(); break;
                 case "insert": AjaxInsert(); break;
                 case "update": AjaxUpdate(); break;
@@ -37,23 +36,17 @@ namespace ThienNguyenViet.Admin
             }
         }
 
-        // Lay danh muc
-        private void AjaxDanhMuc()
+        protected string RenderDanhMucOptions()
         {
             DataTable dt = ChienDichDAO.LayDanhMuc();
-            var sb = new StringBuilder("{\"ok\":true,\"data\":[");
-            bool first = true;
+            var sb = new StringBuilder();
             foreach (DataRow r in dt.Rows)
             {
-                if (!first) sb.Append(",");
-                first = false;
-                sb.AppendFormat("{{\"ma\":{0},\"ten\":{1},\"mau\":{2}}}",
+                sb.AppendFormat("<option value=\"{0}\">{1}</option>",
                     r["MaDanhMuc"],
-                    JsonStr(r["TenDanhMuc"].ToString()),
-                    JsonStr(r["MauSac"]?.ToString() ?? "#3182CE"));
+                    System.Web.HttpUtility.HtmlEncode(r["TenDanhMuc"].ToString()));
             }
-            sb.Append("]}");
-            Response.Write(sb.ToString());
+            return sb.ToString();
         }
 
         // Lay chi tiet 1 chien dich (edit mode)

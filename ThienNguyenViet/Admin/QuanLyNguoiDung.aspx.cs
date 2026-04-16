@@ -1,15 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet.Admin
 {
     public partial class QuanLyNguoiDung : System.Web.UI.Page
     {
-        // === PROPERTIES BIND LÊN ASPX ===
         protected int TongTaiKhoan { get; private set; }
         protected int NguoiDungHoatDong { get; private set; }
         protected int TaiKhoanKhoa { get; private set; }
@@ -86,11 +88,11 @@ namespace ThienNguyenViet.Admin
             try
             {
                 const string sql = @"
-SELECT
-    (SELECT COUNT(*) FROM dbo.NguoiDung) AS TongTaiKhoan,
-    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE VaiTro=0 AND TrangThai=1) AS NguoiDungHoatDong,
-    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE TrangThai=0) AS TaiKhoanKhoa,
-    ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1),0) AS TongQuyenGop";
+                    SELECT
+                    (SELECT COUNT(*) FROM dbo.NguoiDung) AS TongTaiKhoan,
+                    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE VaiTro=0 AND TrangThai=1) AS NguoiDungHoatDong,
+                    (SELECT COUNT(*) FROM dbo.NguoiDung WHERE TrangThai=0) AS TaiKhoanKhoa,
+                    ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE TrangThai=1),0) AS TongQuyenGop";
 
                 DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text);
                 if (dt.Rows.Count > 0)
@@ -133,11 +135,11 @@ SELECT
                     prms2.Add(KetNoiDB.P("@Kw", SearchKeyword));
 
                 string sqlData = @"
-SELECT nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai,
-       nd.VaiTro, nd.TrangThai,
-       CONVERT(NVARCHAR(10), nd.NgayTao, 103) AS NgayTao,
-       ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1), 0) AS TongQuyenGop
-FROM dbo.NguoiDung nd" + where +
+                    SELECT nd.MaNguoiDung, nd.HoTen, nd.Email, nd.SoDienThoai,
+                    nd.VaiTro, nd.TrangThai,
+                    CONVERT(NVARCHAR(10), nd.NgayTao, 103) AS NgayTao,
+                    ISNULL((SELECT SUM(SoTien) FROM dbo.QuyenGop WHERE MaNguoiDung=nd.MaNguoiDung AND TrangThai=1), 0) AS TongQuyenGop
+                    FROM dbo.NguoiDung nd" + where +
                     " ORDER BY nd.NgayTao DESC OFFSET " + offset + " ROWS FETCH NEXT " + PageSize + " ROWS ONLY";
 
                 DtNguoiDung = KetNoiDB.GetDataTable(sqlData, CommandType.Text, prms2.ToArray());
@@ -161,13 +163,11 @@ FROM dbo.NguoiDung nd" + where +
             return so.ToString("N0");
         }
 
-        // === EVENT: Tìm kiếm ===
         protected void BtnSearch_Click(object sender, EventArgs e)
         {
             hfPage.Value = "1";
         }
 
-        // === EVENT: Đặt lại ===
         protected void BtnReset_Click(object sender, EventArgs e)
         {
             txtSearch.Text = "";
@@ -175,5 +175,6 @@ FROM dbo.NguoiDung nd" + where +
             hfFilterVT.Value = "";
             hfPage.Value = "1";
         }
+
     }
 }
