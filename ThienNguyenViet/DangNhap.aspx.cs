@@ -11,6 +11,8 @@ namespace ThienNguyenViet
             if (!IsPostBack)
             {
                 pnlMsg.Visible = false;
+
+                // Nếu vừa đăng ký thành công → hiển thị thông báo xanh
                 if (Session["RegisterSuccess"] != null)
                 {
                     HienThongBao(Session["RegisterSuccess"].ToString(), false);
@@ -24,23 +26,41 @@ namespace ThienNguyenViet
             string email = txtEmail.Text.Trim();
             string pass = txtPassword.Text;
 
+            // --- Validate cơ bản ---
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(pass))
             {
                 HienThongBao("Vui lòng nhập email và mật khẩu!", true);
                 return;
             }
 
+            // --- Gọi DAO kiểm tra đăng nhập từ database ---
             DataRow nguoiDung = NguoiDungDAO.DangNhap(email, pass);
 
             if (nguoiDung != null)
             {
+                // Lấy thông tin từ DataRow trả về
                 int ma = Convert.ToInt32(nguoiDung["MaNguoiDung"]);
                 string hoTen = nguoiDung["HoTen"].ToString();
                 string dbEmail = nguoiDung["Email"].ToString();
                 int vaiTro = Convert.ToInt32(nguoiDung["VaiTro"]);
 
+                // Lưu thông tin vào Session
                 PhanQuyenHelper.LuuSession(Session, ma, hoTen, dbEmail, vaiTro);
-                Response.Redirect("~/TrangChu.aspx", false);
+
+                // ====================== SỬA Ở ĐÂY ======================
+                // Phân biệt Admin (VaiTro = 1) và User (VaiTro = 0)
+                if (vaiTro == 1)
+                {
+                    // Admin → chuyển đến trang Tổng quan Admin
+                    Response.Redirect("~/Admin/TongQuan.aspx", false);
+                }
+                else
+                {
+                    // User thường → chuyển đến trang chủ
+                    Response.Redirect("~/TrangChu.aspx", false);
+                }
+                Context.ApplicationInstance.CompleteRequest();
+                // =======================================================
             }
             else
             {
@@ -48,11 +68,24 @@ namespace ThienNguyenViet
             }
         }
 
+        /// <summary>
+        /// Hiển thị thông báo trên giao diện.
+        /// laLoi = true  -> khung đỏ (lỗi)
+        /// laLoi = false -> khung xanh (thành công)
+        /// </summary>
         private void HienThongBao(string noiDung, bool laLoi)
         {
             pnlMsg.Visible = true;
             lblError.Text = noiDung;
-            msgBox.Attributes["class"] = laLoi ? "msg-box show error" : "msg-box show success";
+
+            if (laLoi)
+            {
+                msgBox.Attributes["class"] = "msg-box show error";
+            }
+            else
+            {
+                msgBox.Attributes["class"] = "msg-box show success";
+            }
         }
     }
 }
