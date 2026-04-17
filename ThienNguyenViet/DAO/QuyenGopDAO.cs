@@ -186,5 +186,14 @@ WHERE SoTienDaQuyen >= MucTieu AND TrangThai IN (1, 3)";
             }
             catch { return false; }
         }
+        /// <summary>Lấy lịch sử quyên góp của người dùng (dùng SP đã có trong Schema).</summary>
+        public static DataTable LayLichSuQuyenGopCuaNguoiDung(int maNguoiDung, int trangHienTai = 1, int soDong = 5)
+        {
+            return KetNoiDB.GetDataTable("SP_LayLichSuQuyenGop",
+                CommandType.StoredProcedure,
+                KetNoiDB.P("@MaNguoiDung", maNguoiDung),
+                KetNoiDB.P("@TrangHienTai", trangHienTai),
+                KetNoiDB.P("@SoDoiMoiTrang", soDong));
+        }
     }
 }

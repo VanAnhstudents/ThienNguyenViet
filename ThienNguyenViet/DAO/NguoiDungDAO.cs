@@ -74,5 +74,62 @@ namespace ThienNguyenViet.DAO
                 return sb.ToString();
             }
         }
+        // ─────────────────────────────────────────────────────────────
+        //  HỒ SƠ CÁ NHÂN – HoSo.aspx
+        // ─────────────────────────────────────────────────────────────
+
+        /// <summary>Lấy thông tin hồ sơ người dùng theo mã.</summary>
+        public static DataRow LayThongTinHoSo(int maNguoiDung)
+        {
+            const string sql = "SELECT * FROM dbo.NguoiDung WHERE MaNguoiDung = @ma";
+            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text,
+                KetNoiDB.P("@ma", maNguoiDung));
+            return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+        }
+
+        /// <summary>Cập nhật thông tin cá nhân + avatar.</summary>
+        public static bool CapNhatHoSo(int maNguoiDung, string hoTen, string soDienThoai, string anhDaiDien = null)
+        {
+            try
+            {
+                const string sql = @"
+UPDATE dbo.NguoiDung 
+SET HoTen = @hoTen, 
+    SoDienThoai = @soDienThoai,
+    AnhDaiDien = @anhDaiDien,
+    NgayCapNhat = GETDATE()
+WHERE MaNguoiDung = @ma";
+
+                KetNoiDB.ExecuteNonQuery(sql, CommandType.Text,
+                    KetNoiDB.P("@ma", maNguoiDung),
+                    KetNoiDB.P("@hoTen", hoTen),
+                    KetNoiDB.P("@soDienThoai", string.IsNullOrWhiteSpace(soDienThoai) ? (object)DBNull.Value : soDienThoai),
+                    KetNoiDB.P("@anhDaiDien", string.IsNullOrWhiteSpace(anhDaiDien) ? (object)DBNull.Value : anhDaiDien));
+                return true;
+            }
+            catch { return false; }
+        }
+
+        /// <summary>Đổi mật khẩu (kiểm tra mật khẩu cũ trước).</summary>
+        public static bool DoiMatKhau(int maNguoiDung, string oldPassRaw, string newPassRaw)
+        {
+            string oldHash = MaHoaMD5(oldPassRaw);
+            string newHash = MaHoaMD5(newPassRaw);
+
+            // Kiểm tra mật khẩu cũ
+            const string checkSql = "SELECT COUNT(*) FROM dbo.NguoiDung WHERE MaNguoiDung = @ma AND MatKhau = @oldHash";
+            object count = KetNoiDB.ExecuteScalar(checkSql, CommandType.Text,
+                KetNoiDB.P("@ma", maNguoiDung),
+                KetNoiDB.P("@oldHash", oldHash));
+
+            if (Convert.ToInt32(count) == 0) return false;
+
+            // Cập nhật mật khẩu mới
+            const string sql = "UPDATE dbo.NguoiDung SET MatKhau = @newHash, NgayCapNhat = GETDATE() WHERE MaNguoiDung = @ma";
+            KetNoiDB.ExecuteNonQuery(sql, CommandType.Text,
+                KetNoiDB.P("@ma", maNguoiDung),
+                KetNoiDB.P("@newHash", newHash));
+            return true;
+        }
     }
 }

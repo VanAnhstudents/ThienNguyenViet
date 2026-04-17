@@ -9,6 +9,10 @@ namespace ThienNguyenViet.DAO
     /// <summary>DAO thao tác bảng TinTuc.</summary>
     public class TinTucDAO
     {
+        // ══════════════════════════════════════════════════════════
+        // QUERY
+        // ══════════════════════════════════════════════════════════
+
         /// <summary>Đếm tổng tin tức đã đăng (TrangThai = 1).</summary>
         public static int DemTinDaDang()
         {
@@ -18,14 +22,31 @@ namespace ThienNguyenViet.DAO
             return val == DBNull.Value ? 0 : Convert.ToInt32(val);
         }
 
-        /// <summary>Lấy danh sách tin tức gần nhất.</summary>
-        public static DataTable LayTinGanDay(int soLuong = 5)
+        /// <summary>
+        /// Lấy danh sách tin tức đã đăng, sắp xếp theo ngày mới nhất.
+        /// Trả về: MaTinTuc, TieuDe, TomTat, AnhBia, LuotXem, NgayDang,
+        ///         TrangThai, MaDanhMuc, TenDanhMuc, NguoiDang.
+        /// </summary>
+        public static DataTable LayTinGanDay(int soLuong = 20)
         {
             const string sql = @"
 SELECT TOP (@n)
-    MaTinTuc, TieuDe, AnhBia, LuotXem, NgayDang, TrangThai
-FROM dbo.TinTuc
-ORDER BY NgayDang DESC";
+    tt.MaTinTuc,
+    tt.TieuDe,
+    tt.TomTat,
+    tt.AnhBia,
+    tt.LuotXem,
+    tt.NgayDang,
+    tt.TrangThai,
+    tt.MaDanhMuc,
+    dm.TenDanhMuc,
+    nd.HoTen AS NguoiDang
+FROM dbo.TinTuc tt
+INNER JOIN dbo.DanhMucTinTuc dm ON tt.MaDanhMuc = dm.MaDanhMuc
+INNER JOIN dbo.NguoiDung     nd ON tt.MaNguoiDang = nd.MaNguoiDung
+WHERE tt.TrangThai = 1
+ORDER BY tt.NgayDang DESC";
+
             return KetNoiDB.GetDataTable(sql, CommandType.Text,
                 KetNoiDB.P("@n", soLuong));
         }
