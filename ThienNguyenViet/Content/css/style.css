@@ -106,17 +106,17 @@ h4 {
 
 /* Progress bar */
 .progress-nen {
-    background-color: var(--mau-chinh-nhat);
-    border-radius: var(--r-pill);
+    background-color: #fff;
+    border-radius: 6px;
     height: 10px;
     overflow: hidden;
+    border: 1px solid #000;
 }
 
 .progress-thanh {
-    background-color: var(--mau-chinh);
+    background-color: #2D7A4F;
     height: 100%;
-    border-radius: var(--r-pill);
-    transition: width .4s ease;
+    border-radius: 5px;
 }
 
 /* ===== HERO ===== */

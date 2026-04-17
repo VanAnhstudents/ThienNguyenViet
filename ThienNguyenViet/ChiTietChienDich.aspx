@@ -398,21 +398,14 @@
     margin: 14px 0 10px; position: relative;
 }
 .donation-progress-track {
-    height: 10px; background: rgba(255,255,255,.2);
-    border-radius: 99px; overflow: hidden; position: relative;
+    height: 10px; background: #fff;
+    border-radius: 6px; overflow: hidden; position: relative;
+    border: 1px solid #000;
 }
 .donation-progress-fill {
-    height: 100%; border-radius: 99px;
-    background: linear-gradient(90deg, #7EE090, #4CAF50);
-    position: relative; overflow: hidden;
-    transition: width 1.4s cubic-bezier(.25,.46,.45,.94);
+    height: 100%; border-radius: 5px;
+    background: #2D7A4F;
 }
-.donation-progress-fill::after {
-    content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.4));
-    animation: progressShimmer 2s infinite;
-}
-@keyframes progressShimmer { from{transform:translateX(-40px)} to{transform:translateX(60px)} }
 
 .donation-pct-badge {
     position: absolute; right: 0; top: -22px;

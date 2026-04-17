@@ -356,8 +356,8 @@
     font-size: 15px; font-weight: 700; color: #1A3D28;
     line-height: 1.35; margin-bottom: 12px;
 }
-.sidebar-progress { height: 5px; background: #EAF5EE; border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
-.sidebar-progress-fill { height: 100%; background: linear-gradient(90deg, #2D7A4F, #4CAF50); border-radius: 99px; }
+.sidebar-progress { height: 10px; background: #fff; border-radius: 6px; overflow: hidden; margin-bottom: 8px; border: 1px solid #000; }
+.sidebar-progress-fill { height: 100%; background: #2D7A4F; border-radius: 5px; }
 .sidebar-money-row {
     display: flex; justify-content: space-between;
     font-size: 12px; color: var(--chu-phu); margin-bottom: 14px;

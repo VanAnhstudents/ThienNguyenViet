@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Web.UI;
+using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet
 {
@@ -16,43 +15,69 @@ namespace ThienNguyenViet
 
         protected void btnDangKy_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtHoTen.Text) ||
-                string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                string.IsNullOrWhiteSpace(txtSoDienThoai.Text) ||
-                txtMatKhau.Text != txtXacNhanMK.Text ||
-                txtMatKhau.Text.Length < 6 ||
-                !chkDongY.Checked)
-            {
-                lblError.Text = "Vui lòng kiểm tra lại thông tin!";
-                lblError.Visible = true;
-                return;
-            }
-
+            // --- Lấy dữ liệu từ form ---
+            string hoTen = txtHoTen.Text.Trim();
             string email = txtEmail.Text.Trim().ToLower();
-            string pass = txtMatKhau.Text;
+            string sdt   = txtSoDienThoai.Text.Trim();
+            string pass  = txtMatKhau.Text;
+            string confirmPass = txtXacNhanMK.Text;
 
-            // Lưu tài khoản vừa đăng ký vào Session (dùng Dictionary)
-            if (Session["RegisteredUsers"] == null)
+            // --- Validate phía server (phòng trường hợp JS bị tắt) ---
+            if (string.IsNullOrWhiteSpace(hoTen) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(sdt))
             {
-                Session["RegisteredUsers"] = new Dictionary<string, string>();
-            }
-
-            var registered = (Dictionary<string, string>)Session["RegisteredUsers"];
-
-            if (registered.ContainsKey(email))
-            {
-                lblError.Text = "Email này đã được đăng ký!";
-                lblError.Visible = true;
+                HienLoi("Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
 
-            registered.Add(email, pass);
+            if (pass.Length < 6)
+            {
+                HienLoi("Mật khẩu phải có ít nhất 6 ký tự!");
+                return;
+            }
 
-            // Thông báo thành công và chuyển về đăng nhập
-            Session["RegisterSuccess"] = "Đăng ký tài khoản thành công!<br/>Vui lòng đăng nhập để tiếp tục.";
+            if (pass != confirmPass)
+            {
+                HienLoi("Mật khẩu xác nhận không khớp!");
+                return;
+            }
 
-            Response.Redirect("DangNhap.aspx", false);
-            Context.ApplicationInstance.CompleteRequest();
+            if (!chkDongY.Checked)
+            {
+                HienLoi("Bạn phải đồng ý với Điều khoản dịch vụ và Chính sách bảo mật!");
+                return;
+            }
+
+            // --- Gọi DAO để lưu vào database ---
+            try
+            {
+                int maNguoiDung = NguoiDungDAO.DangKy(hoTen, email, pass, sdt);
+
+                // Đăng ký thành công -> chuyển sang trang đăng nhập
+                Session["RegisterSuccess"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+                Response.Redirect("DangNhap.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            catch (Exception ex)
+            {
+                // Kiểm tra lỗi trùng email (SQL Server thường trả message chứa "UNIQUE" hoặc "duplicate")
+                if (ex.Message.Contains("UNIQUE") || ex.Message.Contains("duplicate") || ex.Message.Contains("trùng"))
+                {
+                    HienLoi("Email này đã được đăng ký! Vui lòng dùng email khác.");
+                }
+                else
+                {
+                    HienLoi("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
+                }
+            }
+        }
+
+        /// <summary>Hiển thị thông báo lỗi trên giao diện.</summary>
+        private void HienLoi(string noiDung)
+        {
+            lblError.Text = noiDung;
+            lblError.Visible = true;
         }
     }
 }

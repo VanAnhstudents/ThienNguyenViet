@@ -5,88 +5,118 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Đăng nhập - Thiện Nguyện Việt</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
+        /* === Reset === */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        /* === Trang === */
         html, body {
-            font-family: 'Be Vietnam Pro', system-ui, sans-serif;
-            background: #0F2D1A;
-            height: 100vh;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
+        /* === Form chính === */
         .login-container {
             width: 100%;
             max-width: 420px;
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 40px 36px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            color: #fff;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 36px 32px;
         }
 
+        /* === Nút quay về trang chủ === */
+        .btn-home {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2D7A4F;
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+
+        .btn-home:hover {
+            text-decoration: underline;
+        }
+
+        /* === Tiêu đề === */
         .form-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 8px;
+            color: #222;
+            margin-bottom: 6px;
         }
 
         .form-subtitle {
             text-align: center;
             font-size: 14px;
-            color: #aaa;
-            margin-bottom: 32px;
+            color: #666;
+            margin-bottom: 24px;
         }
 
-            .form-subtitle a {
-                color: #4CAF7E;
-                text-decoration: none;
-                font-weight: 600;
-            }
+        .form-subtitle a {
+            color: #2D7A4F;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-                .form-subtitle a:hover {
-                    text-decoration: underline;
-                }
+        .form-subtitle a:hover {
+            text-decoration: underline;
+        }
 
-        /* Error box */
-        .err-box {
+        /* === Ô thông báo (lỗi / thành công) === */
+        .msg-box {
             display: none;
             align-items: center;
-            gap: 10px;
-            background: #440000;
-            border: 1px solid #ff4444;
-            border-left: 4px solid #ff4444;
-            border-radius: 8px;
-            padding: 12px 14px;
-            margin-bottom: 20px;
-            font-size: 13.5px;
-            color: #ffaaaa;
+            gap: 8px;
+            border-radius: 4px;
+            padding: 10px 12px;
+            margin-bottom: 18px;
+            font-size: 13px;
         }
 
-            .err-box.show {
-                display: flex;
-            }
+        .msg-box.show {
+            display: flex;
+        }
 
-        /* Field */
+        /* Kiểu lỗi (đỏ) */
+        .msg-box.error {
+            background: #fff2f2;
+            border: 1px solid #ffcccc;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        /* Kiểu thành công (xanh) */
+        .msg-box.success {
+            background: #f0faf4;
+            border: 1px solid #b2dfdb;
+            border-left: 4px solid #2D7A4F;
+            color: #2D7A4F;
+        }
+
+        /* === Mỗi trường nhập liệu === */
         .field {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .field-lbl {
             display: block;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
-            color: #ddd;
-            margin-bottom: 6px;
+            color: #333;
+            margin-bottom: 5px;
         }
 
         .field-wrap {
@@ -95,197 +125,208 @@
 
         .field-ico {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 16px;
-            opacity: 0.6;
+            font-size: 15px;
+            color: #999;
             pointer-events: none;
         }
 
         .field-inp {
             width: 100%;
-            height: 48px;
-            padding: 0 14px 0 46px;
-            border: 1.5px solid #333;
-            border-radius: 8px;
-            background: #252525;
-            color: #fff;
-            font-size: 15px;
+            height: 44px;
+            padding: 0 40px 0 40px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fafafa;
+            color: #333;
+            font-size: 14px;
             outline: none;
-            transition: all 0.2s;
         }
 
-            .field-inp:focus {
-                border-color: #4CAF7E;
-                box-shadow: 0 0 0 3px rgba(76, 175, 126, 0.15);
-            }
+        .field-inp:focus {
+            border-color: #2D7A4F;
+        }
 
-            .field-inp::placeholder {
-                color: #777;
-            }
+        .field-inp::placeholder {
+            color: #aaa;
+        }
 
+        /* Nút mắt xem mật khẩu */
         .toggle-eye {
             position: absolute;
-            right: 14px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: #aaa;
-            font-size: 18px;
+            color: #888;
+            font-size: 17px;
             cursor: pointer;
+            padding: 2px;
         }
 
-        /* Options */
+        /* Thông báo lỗi dưới ô input */
+        .field-error-msg {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* === Hàng tùy chọn: Nhớ tôi / Quên mật khẩu === */
         .opts-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            font-size: 13.5px;
+            margin-bottom: 20px;
+            font-size: 13px;
         }
 
         .check-wrap {
             display: flex;
             align-items: center;
-            gap: 7px;
-            color: #ccc;
+            gap: 6px;
+            color: #555;
             cursor: pointer;
         }
 
         .link-forgot {
-            color: #4CAF7E;
+            color: #2D7A4F;
             text-decoration: none;
             font-weight: 500;
         }
 
-            .link-forgot:hover {
-                text-decoration: underline;
-            }
-
-        /* Button */
-        .btn-login {
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(135deg, #2D7A4F, #4CAF7E);
-            color: #fff;
-            font-size: 16px;
-            font-weight: 700;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(45, 122, 79, 0.3);
-            transition: all 0.2s;
+        .link-forgot:hover {
+            text-decoration: underline;
         }
 
-            .btn-login:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(45, 122, 79, 0.4);
-            }
+        /* === Nút đăng nhập === */
+        .btn-login {
+            width: 100%;
+            height: 46px;
+            background: #2D7A4F;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
 
+        .btn-login:hover {
+            background: #24643f;
+        }
+
+        /* === Dòng cuối form === */
         .form-bottom {
             text-align: center;
             font-size: 14px;
-            color: #888;
-            margin-top: 20px;
+            color: #666;
+            margin-top: 18px;
         }
 
-            .form-bottom a {
-                color: #4CAF7E;
-                font-weight: 600;
-                text-decoration: none;
-            }
+        .form-bottom a {
+            color: #2D7A4F;
+            font-weight: 600;
+            text-decoration: none;
+        }
 
-                .form-bottom a:hover {
-                    text-decoration: underline;
-                }
+        .form-bottom a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <form id="form1" runat="server">
         <div class="login-container">
+
+            <!-- Nút quay về trang chủ -->
+            <a href="TrangChu.aspx" class="btn-home">Trang chủ</a>
+
+            <!-- Tiêu đề -->
             <h1 class="form-title">Đăng nhập</h1>
             <p class="form-subtitle">
-                Chưa có tài khoản? 
-                <a href="DangKy.aspx">Đăng ký ngay →</a>
+                Chưa có tài khoản?
+                <a href="DangKy.aspx">Tạo tài khoản miễn phí</a>
             </p>
 
-            <div class="err-box <%= lblError.Visible ? "show" : "" %>" id="errBox">
-                <span></span>
-                <asp:Label ID="lblError" runat="server" Visible="false"></asp:Label>
-            </div>
-
-            <div class="field">
-                <label class="field-lbl">Email / Tên đăng nhập</label>
-                <div class="field-wrap">
-                    <span class="field-ico"></span>
-                    <asp:TextBox ID="txtEmail" runat="server" CssClass="field-inp" placeholder="Admin hoặc user" />
+            <!-- Thông báo lỗi hoặc thành công từ server -->
+            <asp:Panel ID="pnlMsg" runat="server" Visible="false">
+                <div class="msg-box show" id="msgBox" runat="server">
+                    <asp:Label ID="lblError" runat="server"></asp:Label>
                 </div>
-                <span id="errEmail" style="color: #ff7777; font-size: 13px;"></span>
+            </asp:Panel>
+
+            <!-- Email -->
+            <div class="field">
+                <label class="field-lbl">Email</label>
+                <div class="field-wrap">
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="field-inp"
+                        placeholder="email@example.com" />
+                </div>
+                <div id="errEmail" class="field-error-msg"></div>
             </div>
 
+            <!-- Mật khẩu -->
             <div class="field">
                 <label class="field-lbl">Mật khẩu</label>
                 <div class="field-wrap">
-                    <span class="field-ico"></span>
-                    <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" CssClass="field-inp" placeholder="Nhập mật khẩu..." />
+                    <asp:TextBox ID="txtPassword" runat="server" TextMode="Password"
+                        CssClass="field-inp" placeholder="Nhập mật khẩu" />
                     <button type="button" class="toggle-eye" id="toggleEye"></button>
                 </div>
-                <span id="errPass" style="color: #ff7777; font-size: 13px;"></span>
+                <div id="errPass" class="field-error-msg"></div>
             </div>
 
+            <!-- Nhớ tôi / Quên mật khẩu -->
             <div class="opts-row">
                 <label class="check-wrap">
                     <asp:CheckBox ID="chkRemember" runat="server" />
                     Nhớ tôi
                 </label>
-                <asp:HyperLink ID="lnkQuenMK" runat="server" NavigateUrl="#" CssClass="link-forgot">
+                <asp:HyperLink ID="lnkQuenMK" runat="server" NavigateUrl="#"
+                    CssClass="link-forgot">
                     Quên mật khẩu?
                 </asp:HyperLink>
             </div>
 
+            <!-- Nút đăng nhập -->
             <asp:Button ID="btnDangNhap" runat="server"
                 Text="Đăng nhập"
                 CssClass="btn-login"
                 OnClick="btnDangNhap_Click"
                 OnClientClick="return validateLogin();" />
 
+            <!-- Dòng cuối -->
             <div class="form-bottom">
-                Chưa có tài khoản? 
+                Chưa có tài khoản?
                 <a href="DangKy.aspx">Tạo tài khoản miễn phí</a>
             </div>
         </div>
     </form>
 
     <script>
-        // Toggle password visibility
-        document.getElementById('toggleEye').addEventListener('click', function () {
-            var inp = document.getElementById('<%= txtPassword.ClientID %>');
-            var show = inp.type === 'password';
-            inp.type = show ? 'text' : 'password';
-            this.textContent = show ? '🙈' : '👁️';
-        });
-
-        // Validation
+        // === Validate trước khi gửi form ===
         function validateLogin() {
             var email = document.getElementById('<%= txtEmail.ClientID %>').value.trim();
-            var pass = document.getElementById('<%= txtPassword.ClientID %>').value;
-            var errEmail = document.getElementById('errEmail');
-            var errPass = document.getElementById('errPass');
+            var pass  = document.getElementById('<%= txtPassword.ClientID %>').value;
 
-            errEmail.textContent = "";
-            errPass.textContent = "";
+            var errEmail = document.getElementById('errEmail');
+            var errPass  = document.getElementById('errPass');
+
+            // Xóa lỗi cũ
+            errEmail.textContent = '';
+            errPass.textContent  = '';
 
             var isValid = true;
 
             if (!email) {
-                errEmail.textContent = "Vui lòng không để trống Email / Tên đăng nhập";
+                errEmail.textContent = 'Vui lòng nhập Email';
                 isValid = false;
             }
             if (!pass) {
-                errPass.textContent = "Vui lòng không để trống Mật khẩu";
+                errPass.textContent = 'Vui lòng nhập Mật khẩu';
                 isValid = false;
             }
 

@@ -362,7 +362,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .card-progress-money strong { color: var(--chu-chinh); font-weight: 600; }
 
-.progress-nen { height: 7px; }
+.progress-nen { height: 10px; background: #fff; border-radius: 6px; overflow: hidden; border: 1px solid #000; }
+.progress-nen .progress-thanh { background: #2D7A4F; height: 100%; border-radius: 5px; }
 
 /* Card meta */
 .card-meta {

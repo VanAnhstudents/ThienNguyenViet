@@ -1,10 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="TrangChu.aspx.cs" Inherits="ThienNguyenViet.TrangChu" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 <style>
-/* ══════════════════════════════════════════════════════════════
-   TRANG CHỦ — PAGE STYLES
-══════════════════════════════════════════════════════════════ */
-
 /* ── Shared Layout ──────────────────────────────────────────── */
 .container {
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
@@ -26,9 +22,6 @@
     max-width: 560px; line-height: 1.75;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   1. HERO BANNER
-═══════════════════════════════════════════════════════════════ */
 /* Hero content */
 .hero {
     position: relative;
@@ -81,30 +74,14 @@
     margin-bottom: 32px;
     animation: heroFadeUp .8s .3s ease both;
 }
-.hero-ctas {
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+.hero-banner-img {
+    margin-top: 24px;
     animation: heroFadeUp .8s .45s ease both;
 }
-.hero-cta-main {
-    height: 50px; padding: 0 28px; border-radius: 12px;
-    background: #fff; color: var(--mau-chinh);
-    font-size: 15px; font-weight: 700; font-family: var(--font);
-    border: none; cursor: pointer; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,.2);
-    transition: all .2s;
+.hero-banner-img img {
+    max-width: 100%; height: auto; border-radius: 12px;
+    max-height: 320px; object-fit: cover; width: 100%;
 }
-.hero-cta-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.25); color: var(--mau-chinh); }
-.hero-cta-donate {
-    height: 50px; padding: 0 28px; border-radius: 12px;
-    background: linear-gradient(135deg, #C0651A, #D97B2A);
-    color: #fff; font-size: 15px; font-weight: 700; font-family: var(--font);
-    border: none; cursor: pointer; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 20px rgba(192,101,26,.45);
-    transition: all .2s;
-}
-.hero-cta-donate:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,101,26,.55); color: #fff; }
 
 /* Slide dots */
 .hero-dots {
@@ -137,49 +114,34 @@
     to   { opacity:1; transform:translateY(0); }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   2. COUNTER SECTION
-═══════════════════════════════════════════════════════════════ */
 .counter-section {
     padding: 56px 0;
-    background: linear-gradient(135deg, #1A3D28, #2D7A4F);
-    position: relative; overflow: hidden;
-}
-.counter-section::before {
-    content: ''; position: absolute; inset: 0;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='rgba(255,255,255,.08)'/%3E%3C/svg%3E");
+    background: transparent;
 }
 .counter-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 2px; position: relative; z-index: 1;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 900px; margin: 0 auto;
 }
 .counter-card {
     text-align: center; padding: 32px 20px;
-    position: relative;
-}
-.counter-card + .counter-card::before {
-    content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
-    width: 1px; background: rgba(255,255,255,.12);
+    background: #fff; border-radius: 16px;
+    border: 1px solid #E2F0E8;
 }
 .counter-icon {
     font-size: 28px; margin-bottom: 12px; display: block;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.2));
 }
 .counter-number {
     font-family: 'Playfair Display', serif;
-    font-size: 44px; font-weight: 800; color: #fff;
+    font-size: 44px; font-weight: 800; color: #1A3D28;
     line-height: 1; margin-bottom: 8px;
     letter-spacing: -.02em;
 }
 .counter-suffix { font-size: 22px; }
 .counter-label {
-    font-size: 13px; color: rgba(255,255,255,.65);
+    font-size: 13px; color: var(--chu-phu);
     font-weight: 500; line-height: 1.4;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   3. CHIẾN DỊCH NỔI BẬT
-═══════════════════════════════════════════════════════════════ */
 .campaigns-section { padding: 80px 0; }
 
 .campaigns-header {
@@ -203,15 +165,8 @@
 .campaign-card {
     background: #fff; border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,.07);
     border: 1px solid #EBF4EE;
-    transition: all .3s cubic-bezier(.175,.885,.32,1.1);
     display: flex; flex-direction: column;
-}
-.campaign-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 40px rgba(45,122,79,.16);
-    border-color: var(--mau-chinh-nhat);
 }
 
 .campaign-thumb {
@@ -222,9 +177,7 @@
 }
 .campaign-thumb img {
     width: 100%; height: 100%; object-fit: cover;
-    transition: transform .5s ease;
 }
-.campaign-card:hover .campaign-thumb img { transform: scale(1.05); }
 
 .campaign-cat-badge {
     position: absolute; top: 12px; left: 12px;
@@ -256,14 +209,13 @@
 
 /* Progress */
 .campaign-progress-bar {
-    height: 7px; background: #EAF5EE; border-radius: 99px;
+    height: 10px; background: #fff; border-radius: 6px;
     overflow: hidden; margin-bottom: 10px;
+    border: 1px solid #000;
 }
 .campaign-progress-fill {
-    height: 100%; border-radius: 99px;
-    background: linear-gradient(90deg, #2D7A4F, #4CAF50);
-    transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
-    position: relative; overflow: hidden;
+    height: 100%; border-radius: 5px;
+    background: #2D7A4F;
 }
 .campaign-money-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -288,9 +240,6 @@
     color: #fff;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   4. CATEGORIES
-═══════════════════════════════════════════════════════════════ */
 .categories-section {
     padding: 72px 0;
     background: #F6FBF7;
@@ -304,37 +253,14 @@
     padding: 36px 24px; text-align: center;
     border: 1px solid #E2F0E8;
     cursor: pointer; text-decoration: none; display: block;
-    transition: all .3s cubic-bezier(.175,.885,.32,1.1);
-    position: relative; overflow: hidden;
 }
-.category-card::before {
-    content: ''; position: absolute; inset: 0;
-    opacity: 0; transition: opacity .3s;
-}
-.category-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(0,0,0,.12);
-}
-.category-card:hover::before { opacity: 1; }
-
-/* Category themes */
-.cat-red::before   { background: linear-gradient(135deg, rgba(229,62,62,.06), rgba(229,62,62,.0)); }
-.cat-blue::before  { background: linear-gradient(135deg, rgba(49,130,206,.06), rgba(49,130,206,.0)); }
-.cat-yellow::before{ background: linear-gradient(135deg, rgba(214,158,46,.06), rgba(214,158,46,.0)); }
-.cat-green::before { background: linear-gradient(135deg, rgba(56,161,105,.06), rgba(56,161,105,.0)); }
-
-.cat-red:hover   { border-color: #FEB2B2; }
-.cat-blue:hover  { border-color: #BEE3F8; }
-.cat-yellow:hover{ border-color: #FAF089; }
-.cat-green:hover { border-color: #9AE6B4; }
 
 .category-icon-wrap {
     width: 72px; height: 72px; border-radius: 22px;
     margin: 0 auto 18px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 32px; transition: transform .3s;
+    font-size: 32px;
 }
-.category-card:hover .category-icon-wrap { transform: scale(1.1) rotate(-5deg); }
 
 .cat-red    .category-icon-wrap { background: #FFF5F5; }
 .cat-blue   .category-icon-wrap { background: #EBF8FF; }
@@ -359,9 +285,6 @@
 .cat-yellow .category-count { background: #FEFCBF; color: #7B6914; }
 .cat-green  .category-count { background: #F0FFF4; color: #276749; }
 
-/* ═══════════════════════════════════════════════════════════════
-   5. TIN TỨC
-═══════════════════════════════════════════════════════════════ */
 .news-section { padding: 80px 0; }
 .news-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -521,8 +444,6 @@
 <section class="hero">
 
     <div class="hero-content">
-        <div class="hero-label">Đã hoạt động từ năm 2020</div>
-
         <h1>
             Chung tay vì<br/>
             <em>cộng đồng Việt</em>
@@ -532,9 +453,8 @@
             Mỗi đóng góp của bạn — dù nhỏ bé — đều có thể thay đổi cuộc đời của một người.
         </p>
 
-        <div class="hero-ctas">
-            <a href="/DanhSachChienDich.aspx" class="hero-cta-main">Xem chiến dịch</a>
-            <a href="/DanhSachChienDich.aspx" class="hero-cta-donate">Quyên góp ngay</a>
+        <div class="hero-banner-img">
+            <img src="https://res.cloudinary.com/dwzzfzxjh/image/upload/v1776326569/chien-dich-quang-trung-3-642-8949jpg-17653061921601508835318.jpg" alt="Banner chiến dịch" />
         </div>
     </div>
 </section>
@@ -545,7 +465,6 @@
 <section class="counter-section">
     <div class="container">
         <div class="counter-grid">
-
             <!-- Tổng tiền -->
             <div class="counter-card">
                 <span class="counter-icon"></span>
@@ -578,6 +497,7 @@
                 </div>
                 <div class="counter-label">Người tham gia</div>
         </div>
+        </div>
     </div>
 </section>
 
@@ -590,7 +510,7 @@
         <div class="campaigns-header">
             <div class="reveal">
                 <div class="section-badge">Chiến dịch tiêu biểu</div>
-                <h2 class="section-title">Những chiến dịch<br/>đang cần bạn</h2>
+                <h2 class="section-title">Những chiến dịch đang cần bạn
             </div>
             <a href="/DanhSachChienDich.aspx" class="view-all-link reveal">
                 Xem tất cả chiến dịch →
@@ -661,7 +581,7 @@
     <div class="container">
         <div style="text-align:center" class="reveal">
             <div class="section-badge">Danh mục</div>
-            <h2 class="section-title">Chúng tôi hoạt động<br/>trong lĩnh vực nào?</h2>
+            <h2 class="section-title">Chúng tôi hoạt động trong lĩnh vực nào?</h2>
             <p class="section-sub" style="margin:0 auto">Từ cứu trợ khẩn cấp đến giáo dục dài hạn — mỗi chiến dịch là một bước thay đổi cuộc sống.</p>
         </div>
 
