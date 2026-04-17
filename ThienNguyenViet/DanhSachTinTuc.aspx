@@ -1,4 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DanhSachTinTuc.aspx.cs" Inherits="ThienNguyenViet.DanhSachTinTuc" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true"
+         CodeBehind="DanhSachTinTuc.aspx.cs" Inherits="ThienNguyenViet.DanhSachTinTuc" %>
+<%@ Import Namespace="ThienNguyenViet.DAO" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 <style>
 /* ══════════════════════════════════════════════════════════════
@@ -200,9 +203,10 @@
     text-transform: uppercase; letter-spacing: .06em;
     backdrop-filter: blur(8px);
 }
-.tag-hoatdong  { background: rgba(229,62,62,.85); color: #fff; }
-.tag-cauchuy   { background: rgba(56,161,105,.85); color: #fff; }
-.tag-thongbao  { background: rgba(49,130,206,.85); color: #fff; }
+.tag-hoatdong  { background: rgba(229,62,62,.85);   color: #fff; }
+.tag-cauchuy   { background: rgba(56,161,105,.85);  color: #fff; }
+.tag-thongbao  { background: rgba(49,130,206,.85);  color: #fff; }
+.tag-all       { background: rgba(113,128,150,.85); color: #fff; }
 
 .featured-pin-badge {
     position: absolute; top: 18px; right: 18px;
@@ -211,7 +215,6 @@
     padding: 5px 12px; border-radius: 99px;
     display: flex; align-items: center; gap: 4px;
 }
-
 .featured-body {
     padding: 36px 36px 36px 32px;
     display: flex; flex-direction: column; justify-content: center;
@@ -371,25 +374,34 @@
 /* ── Empty State ────────────────────────────────────────────── */
 .empty-state {
     text-align: center; padding: 80px 20px;
-    display: none;
 }
 .empty-state-icon { font-size: 64px; margin-bottom: 16px; }
 .empty-state h3 { font-size: 20px; color: var(--chu-chinh); margin-bottom: 8px; }
 .empty-state p { font-size: 14px; color: var(--chu-phu); }
 
-/* ── Section spacing ───────────────────────────────────────── */
-.news-main-content {
-    padding-bottom: 80px;
+/* ── Reveal animation ───────────────────────────────────────── */
+.reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .5s ease, transform .5s ease;
 }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .05s; }
+.reveal-delay-2 { transition-delay: .12s; }
+.reveal-delay-3 { transition-delay: .19s; }
+
+/* ── Section spacing ───────────────────────────────────────── */
+.news-main-content { padding-bottom: 80px; }
 </style>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
 <!-- ═══════════════════════════════════════════════════════════
      PAGE HERO
 ═══════════════════════════════════════════════════════════════ -->
 <section class="news-page-hero">
     <div class="container news-hero-content">
-        <div class="news-hero-badge">📰 Tin tức & Câu chuyện</div>
+        <div class="news-hero-badge">📰 Tin tức &amp; Câu chuyện</div>
         <h1 class="news-hero-title">Những câu chuyện<br/><em>truyền cảm hứng</em></h1>
         <p class="news-hero-sub">Cập nhật hoạt động thiện nguyện, câu chuyện của những người được hỗ trợ và thông tin mới nhất từ cộng đồng.</p>
     </div>
@@ -400,7 +412,6 @@
 ═══════════════════════════════════════════════════════════════ -->
 <div class="filter-bar-wrapper">
     <div class="filter-bar">
-        <!-- Search -->
         <div class="search-box">
             <span class="search-box-icon">🔍</span>
             <input type="text" class="search-input" id="searchInput" placeholder="Tìm kiếm bài viết..." />
@@ -408,7 +419,6 @@
 
         <div class="filter-divider"></div>
 
-        <!-- Category Pills -->
         <div class="category-pills" id="categoryPills">
             <button class="cat-pill active" data-cat="all">📋 Tất cả</button>
             <button class="cat-pill" data-cat="hoatdong">🤝 Hoạt động</button>
@@ -418,7 +428,6 @@
 
         <div class="filter-divider"></div>
 
-        <!-- Sort -->
         <select class="sort-select" id="sortSelect">
             <option value="newest">📅 Mới nhất</option>
             <option value="oldest">🕰️ Cũ nhất</option>
@@ -433,189 +442,111 @@
 <div class="news-main-content">
     <div class="news-list-section">
 
-        <!-- Results Summary -->
+        <!-- Results Summary (nội dung cập nhật bởi JS) -->
         <div class="results-summary">
             <div class="results-count" id="resultsCount">
-                Hiển thị <strong>1–7</strong> trong tổng số <strong>7</strong> bài viết
+                Đang tải bài viết...
             </div>
         </div>
 
-        <!-- Featured Article -->
-        <div id="featuredSection">
-            <a href="/ChiTietTinTuc.aspx?id=1" class="news-featured-card" id="featuredCard"
-               data-cat="hoatdong" data-date="20260307" data-views="1200"
-               style="text-decoration:none; color:inherit">
-                <div class="featured-thumb">
-                    🤝
-                    <span class="featured-tag tag-hoatdong">🤝 Hoạt động</span>
-                    <span class="featured-pin-badge">⭐ Nổi bật</span>
-                </div>
-                <div class="featured-body">
-                    <div class="featured-meta">
-                        <span>👤 Nguyễn Minh Tâm</span>
-                        <span>📅 07/03/2026</span>
-                        <span>👁 1.2K lượt xem</span>
-                        <span>⏱ 5 phút đọc</span>
-                    </div>
-                    <h2 class="featured-title">Thiện Nguyện Việt trao 500 phần quà Tết cho bà con khó khăn miền Trung — Hành trình ý nghĩa từ trái tim</h2>
-                    <p class="featured-summary">Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên đã xuất phát từ TP.HCM, vượt hơn 900 km đến Quảng Bình để trao tận tay 500 phần quà cho người dân vùng lũ. Mỗi phần quà trị giá 500.000đ bao gồm gạo, mì, nước mắm và thuốc thiết yếu. Chuyến đi kéo dài 3 ngày đã để lại những kỷ niệm khó quên trong lòng tất cả tình nguyện viên.</p>
-                    <span class="btn-read-more">Đọc bài viết đầy đủ →</span>
-                </div>
-            </a>
-        </div>
+        <!-- ── FEATURED ARTICLE (bài nổi bật — bài mới nhất) ── -->
+        <asp:Panel ID="pnlFeatured" runat="server">
+            <div id="featuredSection">
+                <asp:Repeater ID="rptFeatured" runat="server">
+                    <ItemTemplate>
+                        <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
+                           class="news-featured-card"
+                           id="featuredCard"
+                           data-cat='<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'
+                           data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
+                           data-views='<%# Eval("LuotXem") %>'
+                           style="text-decoration:none; color:inherit">
 
-        <!-- Cards Grid -->
-        <div class="news-cards-grid" id="newsGrid">
+                            <div class="featured-thumb">
+                                <%# string.IsNullOrEmpty(Eval("AnhBia") == DBNull.Value ? "" : Eval("AnhBia").ToString())
+                                    ? TinTucDAO.GetCatEmoji(Convert.ToInt32(Eval("MaDanhMuc")))
+                                    : "<img src=\"" + Eval("AnhBia") + "\" alt=\"\" />" %>
+                                <span class='featured-tag tag-<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'>
+                                    <%# TinTucDAO.GetCatIcon(Convert.ToInt32(Eval("MaDanhMuc"))) %>
+                                    <%# Eval("TenDanhMuc") %>
+                                </span>
+                                <span class="featured-pin-badge">⭐ Nổi bật</span>
+                            </div>
 
-            <!-- Card 2 -->
-            <div class="news-card-item reveal reveal-delay-1"
-                 data-cat="cauchuy" data-date="20260220" data-views="3600">
-                <div class="card-thumb">
-                    ❤️‍🩹
-                    <span class="card-cat-badge tag-cauchuy">❤️ Câu chuyện</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 Lê Thu Hà</span>
-                        <span>📅 20/02/2026</span>
-                        <span>⏱ 4 phút</span>
-                    </div>
-                    <h3 class="card-title">Cậu bé 8 tuổi được cứu sống nhờ ca phẫu thuật tim từ quỹ từ thiện</h3>
-                    <p class="card-summary">Em Nguyễn Văn Khôi (8 tuổi, Cần Thơ) mắc bệnh tim bẩm sinh từ nhỏ. Gia đình không có điều kiện phẫu thuật. Nhờ sự hỗ trợ của chương trình, em đã được phẫu thuật thành công và hiện đang phục hồi tốt.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=2" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 3.6K</span>
-                    </div>
-                </div>
+                            <div class="featured-body">
+                                <div class="featured-meta">
+                                    <span>👤 <%# Eval("NguoiDang") %></span>
+                                    <span>📅 <%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
+                                    <span>👁 <%# Eval("LuotXem") %> lượt xem</span>
+                                </div>
+                                <h2 class="featured-title"><%# Eval("TieuDe") %></h2>
+                                <p class="featured-summary"><%# Eval("TomTat") %></p>
+                                <span class="btn-read-more">Đọc bài viết đầy đủ →</span>
+                            </div>
+                        </a>
+                    </ItemTemplate>
+                </asp:Repeater>
             </div>
+        </asp:Panel>
 
-            <!-- Card 3 -->
-            <div class="news-card-item reveal reveal-delay-2"
-                 data-cat="thongbao" data-date="20260312" data-views="892">
-                <div class="card-thumb">
-                    📢
-                    <span class="card-cat-badge tag-thongbao">📢 Thông báo</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 Admin</span>
-                        <span>📅 12/03/2026</span>
-                        <span>⏱ 2 phút</span>
-                    </div>
-                    <h3 class="card-title">Mở đăng ký tình nguyện viên đợt 2 năm 2026 — Hạn chót 31/03</h3>
-                    <p class="card-summary">Thiện Nguyện Việt mở đăng ký tình nguyện viên cho các chuyến đi thiện nguyện dự kiến tháng 4 và tháng 5/2026. Tổng cộng 150 chỉ tiêu cho 3 tỉnh: Điện Biên, Nghệ An, Bình Thuận.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=3" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 892</span>
-                    </div>
-                </div>
+        <!-- ── CARDS GRID ──────────────────────────────────────── -->
+        <asp:Panel ID="pnlGrid" runat="server">
+            <div class="news-cards-grid" id="newsGrid">
+                <asp:Repeater ID="rptCards" runat="server">
+                    <ItemTemplate>
+                        <div class='news-card-item reveal <%# new[]{"reveal-delay-1","reveal-delay-2","reveal-delay-3"}[Container.ItemIndex % 3] %>'
+                             data-cat='<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'
+                             data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
+                             data-views='<%# Eval("LuotXem") %>'>
+
+                            <div class="card-thumb">
+                                <%# string.IsNullOrEmpty(Eval("AnhBia") == DBNull.Value ? "" : Eval("AnhBia").ToString())
+                                    ? TinTucDAO.GetCatEmoji(Convert.ToInt32(Eval("MaDanhMuc")))
+                                    : "<img src=\"" + Eval("AnhBia") + "\" alt=\"\" />" %>
+                                <span class='card-cat-badge tag-<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'>
+                                    <%# TinTucDAO.GetCatIcon(Convert.ToInt32(Eval("MaDanhMuc"))) %>
+                                    <%# Eval("TenDanhMuc") %>
+                                </span>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="card-meta">
+                                    <span>👤 <%# Eval("NguoiDang") %></span>
+                                    <span>📅 <%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
+                                </div>
+                                <h3 class="card-title"><%# Eval("TieuDe") %></h3>
+                                <p class="card-summary"><%# Eval("TomTat") %></p>
+                                <div class="card-footer">
+                                    <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
+                                       class="card-read-link">Đọc tiếp →</a>
+                                    <span class="card-views">👁 <%# Eval("LuotXem") %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
             </div>
+        </asp:Panel>
 
-            <!-- Card 4 -->
-            <div class="news-card-item reveal reveal-delay-3"
-                 data-cat="cauchuy" data-date="20260215" data-views="2840">
-                <div class="card-thumb">
-                    🌱
-                    <span class="card-cat-badge tag-cauchuy">❤️ Câu chuyện</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 Phạm Bảo Trân</span>
-                        <span>📅 15/02/2026</span>
-                        <span>⏱ 6 phút</span>
-                    </div>
-                    <h3 class="card-title">Cô bé người Mông và ước mơ trở thành bác sĩ từ học bổng "Thắp sáng ước mơ"</h3>
-                    <p class="card-summary">Sinh ra trong gia đình nghèo ở Hà Giang, Giàng Thị Mỷ từng tưởng phải bỏ học giữa chừng. Học bổng 12 triệu đồng mỗi năm từ quỹ đã giúp cô tiếp tục con đường học vấn.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=4" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 2.8K</span>
-                    </div>
-                </div>
+        <!-- ── EMPTY STATE ─────────────────────────────────────── -->
+        <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>Chưa có bài viết nào</h3>
+                <p>Vui lòng quay lại sau.</p>
             </div>
+        </asp:Panel>
 
-            <!-- Card 5 -->
-            <div class="news-card-item reveal reveal-delay-1"
-                 data-cat="hoatdong" data-date="20260225" data-views="1560">
-                <div class="card-thumb">
-                    🌊
-                    <span class="card-cat-badge tag-hoatdong">🤝 Hoạt động</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 Trần Văn Nam</span>
-                        <span>📅 25/02/2026</span>
-                        <span>⏱ 3 phút</span>
-                    </div>
-                    <h3 class="card-title">Ra mắt chiến dịch trồng 10.000 cây xanh nhân ngày Môi trường Thế giới 2026</h3>
-                    <p class="card-summary">Hưởng ứng Ngày Môi trường Thế giới 05/06, Thiện Nguyện Việt phối hợp cùng 12 trường học tại TP.HCM phát động chiến dịch trồng cây và phủ xanh các khu vực trống.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=5" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 1.6K</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="news-card-item reveal reveal-delay-2"
-                 data-cat="hoatdong" data-date="20260301" data-views="745">
-                <div class="card-thumb">
-                    🏥
-                    <span class="card-cat-badge tag-hoatdong">🤝 Hoạt động</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 BS. Hoàng Linh</span>
-                        <span>📅 01/03/2026</span>
-                        <span>⏱ 3 phút</span>
-                    </div>
-                    <h3 class="card-title">Đoàn y bác sĩ tình nguyện khám bệnh miễn phí cho 300 hộ dân tại Đắk Lắk</h3>
-                    <p class="card-summary">Ngày 28/02, 25 bác sĩ và điều dưỡng đã có mặt tại huyện Ea H'leo để tổ chức ngày hội khám bệnh miễn phí, phát thuốc và tư vấn sức khỏe cho bà con dân tộc thiểu số.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=6" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 745</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 7 -->
-            <div class="news-card-item reveal reveal-delay-3"
-                 data-cat="thongbao" data-date="20260318" data-views="430">
-                <div class="card-thumb">
-                    📊
-                    <span class="card-cat-badge tag-thongbao">📢 Thông báo</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-meta">
-                        <span>👤 Admin</span>
-                        <span>📅 18/03/2026</span>
-                        <span>⏱ 2 phút</span>
-                    </div>
-                    <h3 class="card-title">Báo cáo minh bạch tài chính quý 1/2026 — Tổng kết hoạt động & sử dụng quỹ</h3>
-                    <p class="card-summary">Thiện Nguyện Việt công bố báo cáo tài chính quý 1/2026 với tổng thu 4,2 tỷ đồng, tổng chi 3,8 tỷ đồng cho các hoạt động hỗ trợ cộng đồng trên cả nước.</p>
-                    <div class="card-footer">
-                        <a href="/ChiTietTinTuc.aspx?id=7" class="card-read-link">Đọc tiếp →</a>
-                        <span class="card-views">👁 430</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Empty state -->
-        <div class="empty-state" id="emptyState">
+        <!-- Empty state client-side (lọc JS không tìm thấy) -->
+        <div class="empty-state" id="emptyState" style="display:none">
             <div class="empty-state-icon">🔍</div>
             <h3>Không tìm thấy bài viết</h3>
             <p>Thử thay đổi từ khóa hoặc chọn danh mục khác.</p>
         </div>
 
         <!-- Pagination -->
-        <div class="pagination-wrapper" id="paginationWrapper">
+        <div class="pagination-wrapper" id="paginationWrapper" style="display:none">
             <button class="page-btn" id="prevBtn" disabled>‹ Trước</button>
-            <button class="page-btn active" data-page="1">1</button>
-            <button class="page-btn" data-page="2">2</button>
-            <button class="page-btn" data-page="3">3</button>
-            <span class="page-dots">···</span>
-            <button class="page-btn" data-page="8">8</button>
             <button class="page-btn" id="nextBtn">Tiếp ›</button>
         </div>
 
@@ -624,156 +555,158 @@
 
 <!-- ─────────────────────────────────────────────────────────── -->
 <script>
-(function () {
+    (function () {
 
-    var currentCat   = 'all';
-    var searchVal    = '';
-    var sortVal      = 'newest';
-    var currentPage  = 1;
-    var PER_PAGE     = 6; // 6 cards (featured counts as 1 slot)
+        var currentCat = 'all';
+        var searchVal = '';
+        var sortVal = 'newest';
+        var currentPage = 1;
+        var PER_PAGE = 6;
 
-    var grid         = document.getElementById('newsGrid');
-    var allCards     = Array.from(grid.querySelectorAll('.news-card-item'));
-    var featuredCard = document.getElementById('featuredCard');
-    var featuredSect = document.getElementById('featuredSection');
-    var emptyState   = document.getElementById('emptyState');
-    var resultsCount = document.getElementById('resultsCount');
+        var grid = document.getElementById('newsGrid');
+        var featuredCard = document.getElementById('featuredCard');
+        var featuredSect = document.getElementById('featuredSection');
+        var emptyState = document.getElementById('emptyState');
+        var resultsCount = document.getElementById('resultsCount');
 
-    /* Intersection observer for reveals */
-    var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-            if (e.isIntersecting) e.target.classList.add('visible');
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+        // Nếu không có dữ liệu từ server thì dừng
+        if (!grid || !featuredCard) return;
 
-    /* ── Filter / search logic ──────────────────────────── */
-    function getVisible() {
-        return allCards.filter(function (card) {
-            var cat    = card.dataset.cat;
-            var title  = card.querySelector('.card-title').textContent.toLowerCase();
-            var summ   = card.querySelector('.card-summary').textContent.toLowerCase();
-            var matchCat  = (currentCat === 'all' || cat === currentCat);
-            var matchSrch = (searchVal === '' || title.includes(searchVal) || summ.includes(searchVal));
-            return matchCat && matchSrch;
-        });
-    }
+        var allCards = Array.from(grid.querySelectorAll('.news-card-item'));
 
-    function sortCards(cards) {
-        return cards.slice().sort(function (a, b) {
-            if (sortVal === 'newest')     return parseInt(b.dataset.date) - parseInt(a.dataset.date);
-            if (sortVal === 'oldest')     return parseInt(a.dataset.date) - parseInt(b.dataset.date);
-            if (sortVal === 'mostviewed') return parseInt(b.dataset.views) - parseInt(a.dataset.views);
-            return 0;
-        });
-    }
+        /* Intersection observer for reveals */
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) e.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 
-    function renderPage() {
-        var visible = sortCards(getVisible());
-        var total   = visible.length;
-        var totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
-        currentPage = Math.min(currentPage, totalPages);
-
-        var start = (currentPage - 1) * PER_PAGE;
-        var end   = start + PER_PAGE;
-        var pageItems = visible.slice(start, end);
-
-        /* Hide/show all */
-        allCards.forEach(function (c) { c.style.display = 'none'; });
-
-        /* Featured card filter */
-        var featCat   = featuredCard.dataset.cat;
-        var featTitle = featuredCard.querySelector('.featured-title').textContent.toLowerCase();
-        var showFeat  = (currentCat === 'all' || featCat === currentCat) &&
-                        (searchVal === '' || featTitle.includes(searchVal));
-        featuredSect.style.display = showFeat ? '' : 'none';
-
-        if (pageItems.length === 0 && !showFeat) {
-            emptyState.style.display = 'block';
-            grid.style.display = 'none';
-        } else {
-            emptyState.style.display = 'none';
-            grid.style.display = '';
-            pageItems.forEach(function (c) { c.style.display = 'flex'; });
+        /* ── Filter / search logic ──────────────────────────── */
+        function getVisible() {
+            return allCards.filter(function (card) {
+                var cat = card.dataset.cat;
+                var title = card.querySelector('.card-title').textContent.toLowerCase();
+                var summ = card.querySelector('.card-summary').textContent.toLowerCase();
+                var matchCat = (currentCat === 'all' || cat === currentCat);
+                var matchSrch = (searchVal === '' || title.includes(searchVal) || summ.includes(searchVal));
+                return matchCat && matchSrch;
+            });
         }
 
-        /* Results text */
-        var displayFrom = showFeat ? 0 : start;
-        var displayTo   = pageItems.length;
-        var totalDisp   = total + (showFeat ? 1 : 0);
-        resultsCount.innerHTML = 'Hiển thị <strong>' + displayTo + '</strong> trong tổng số <strong>' + totalDisp + '</strong> bài viết';
+        function sortCards(cards) {
+            return cards.slice().sort(function (a, b) {
+                if (sortVal === 'newest') return parseInt(b.dataset.date) - parseInt(a.dataset.date);
+                if (sortVal === 'oldest') return parseInt(a.dataset.date) - parseInt(b.dataset.date);
+                if (sortVal === 'mostviewed') return parseInt(b.dataset.views) - parseInt(a.dataset.views);
+                return 0;
+            });
+        }
 
-        /* Pagination */
-        renderPagination(totalPages);
-    }
+        function renderPage() {
+            var visible = sortCards(getVisible());
+            var total = visible.length;
+            var totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+            currentPage = Math.min(currentPage, totalPages);
 
-    function renderPagination(totalPages) {
-        var wrapper = document.getElementById('paginationWrapper');
-        wrapper.style.display = totalPages <= 1 ? 'none' : 'flex';
+            var start = (currentPage - 1) * PER_PAGE;
+            var pageItems = visible.slice(start, start + PER_PAGE);
 
-        var prevBtn = document.getElementById('prevBtn');
-        var nextBtn = document.getElementById('nextBtn');
-        prevBtn.disabled = currentPage === 1;
-        nextBtn.disabled = currentPage === totalPages;
+            allCards.forEach(function (c) { c.style.display = 'none'; });
 
-        /* Page number buttons */
-        wrapper.querySelectorAll('[data-page]').forEach(function (b) { b.remove(); });
-        wrapper.querySelectorAll('.page-dots').forEach(function (d) { d.remove(); });
+            /* Featured card filter */
+            var featCat = featuredCard.dataset.cat;
+            var featTitle = featuredCard.querySelector('.featured-title').textContent.toLowerCase();
+            var showFeat = (currentCat === 'all' || featCat === currentCat) &&
+                (searchVal === '' || featTitle.includes(searchVal));
+            featuredSect.style.display = showFeat ? '' : 'none';
 
-        var fragment = document.createDocumentFragment();
-        for (var i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
-                var btn = document.createElement('button');
-                btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
-                btn.dataset.page = i;
-                btn.textContent = i;
-                btn.addEventListener('click', function () {
-                    currentPage = parseInt(this.dataset.page);
-                    renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-                fragment.appendChild(btn);
-            } else if (i === 2 || i === totalPages - 1) {
-                var dots = document.createElement('span');
-                dots.className = 'page-dots';
-                dots.textContent = '···';
-                fragment.appendChild(dots);
+            if (pageItems.length === 0 && !showFeat) {
+                emptyState.style.display = 'block';
+                grid.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                grid.style.display = '';
+                pageItems.forEach(function (c) { c.style.display = 'flex'; });
             }
+
+            var totalDisp = total + (showFeat ? 1 : 0);
+            resultsCount.innerHTML = 'Hiển thị <strong>' + pageItems.length +
+                '</strong> trong tổng số <strong>' + totalDisp + '</strong> bài viết';
+
+            renderPagination(totalPages);
         }
-        nextBtn.before(fragment);
-    }
 
-    /* ── Event bindings ─────────────────────────────────── */
-    document.getElementById('searchInput').addEventListener('input', function () {
-        searchVal = this.value.toLowerCase().trim();
-        currentPage = 1;
+        function renderPagination(totalPages) {
+            var wrapper = document.getElementById('paginationWrapper');
+            wrapper.style.display = totalPages <= 1 ? 'none' : 'flex';
+
+            var prevBtn = document.getElementById('prevBtn');
+            var nextBtn = document.getElementById('nextBtn');
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            wrapper.querySelectorAll('[data-page]').forEach(function (b) { b.remove(); });
+            wrapper.querySelectorAll('.page-dots').forEach(function (d) { d.remove(); });
+
+            var fragment = document.createDocumentFragment();
+            for (var i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+                    var btn = document.createElement('button');
+                    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    btn.dataset.page = i;
+                    btn.textContent = i;
+                    btn.addEventListener('click', function () {
+                        currentPage = parseInt(this.dataset.page);
+                        renderPage();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                    fragment.appendChild(btn);
+                } else if (i === 2 || i === totalPages - 1) {
+                    var dots = document.createElement('span');
+                    dots.className = 'page-dots';
+                    dots.textContent = '···';
+                    fragment.appendChild(dots);
+                }
+            }
+            nextBtn.before(fragment);
+        }
+
+        /* ── Event bindings ─────────────────────────────────── */
+        document.getElementById('searchInput').addEventListener('input', function () {
+            searchVal = this.value.toLowerCase().trim();
+            currentPage = 1;
+            renderPage();
+        });
+
+        document.getElementById('categoryPills').addEventListener('click', function (e) {
+            var pill = e.target.closest('.cat-pill');
+            if (!pill) return;
+            document.querySelectorAll('.cat-pill').forEach(function (p) { p.classList.remove('active'); });
+            pill.classList.add('active');
+            currentCat = pill.dataset.cat;
+            currentPage = 1;
+            renderPage();
+        });
+
+        document.getElementById('sortSelect').addEventListener('change', function () {
+            sortVal = this.value;
+            currentPage = 1;
+            renderPage();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', function () {
+            if (currentPage > 1) { currentPage--; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        });
+        document.getElementById('nextBtn').addEventListener('click', function () {
+            currentPage++;
+            renderPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         renderPage();
-    });
 
-    document.getElementById('categoryPills').addEventListener('click', function (e) {
-        var pill = e.target.closest('.cat-pill');
-        if (!pill) return;
-        document.querySelectorAll('.cat-pill').forEach(function (p) { p.classList.remove('active'); });
-        pill.classList.add('active');
-        currentCat = pill.dataset.cat;
-        currentPage = 1;
-        renderPage();
-    });
-
-    document.getElementById('sortSelect').addEventListener('change', function () {
-        sortVal = this.value;
-        currentPage = 1;
-        renderPage();
-    });
-
-    document.getElementById('prevBtn').addEventListener('click', function () {
-        if (currentPage > 1) { currentPage--; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-    });
-    document.getElementById('nextBtn').addEventListener('click', function () {
-        currentPage++; renderPage(); window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    renderPage();
-
-})();
+    })();
 </script>
+
 </asp:Content>
