@@ -15,11 +15,7 @@ namespace ThienNguyenViet.DAO
     public static class KetNoiDB
     {
         // Lấy connection string từ Web.config
-<<<<<<< HEAD
         private static string _connStr = ConfigurationManager.ConnectionStrings["db_vanhdev_ThienNguyenViet"].ConnectionString;
-=======
-        private static string _connStr = ConfigurationManager.ConnectionStrings["db_quy_ThienNguyenViet"].ConnectionString;
->>>>>>> 6b6d7f88b9cf5ac45c74afeca68e5671ec96e66c
 
         /// <summary>Tạo và mở một SqlConnection mới.</summary>
         public static SqlConnection MoKetNoi()
