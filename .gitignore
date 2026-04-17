@@ -416,6 +416,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+ThienNguyenViet/.claude/*
 
 # ==============================================
 # Thiện Nguyện Việt — tuỳ chỉnh thêm cho dự án
