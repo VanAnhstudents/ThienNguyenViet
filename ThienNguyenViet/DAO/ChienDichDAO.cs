@@ -69,6 +69,43 @@ ORDER BY NgayDang DESC";
                 KetNoiDB.P("@ma", maChienDich));
         }
 
+        /// <summary>
+        /// Lấy toàn bộ chiến dịch công khai (TrangThai 1=Đang chạy, 3=Đã kết thúc)
+        /// kèm số lượt quyên góp đã duyệt và số ngày còn lại — dùng cho DanhSachChienDich.aspx.
+        /// </summary>
+        public static DataTable LayDanhSachCongKhai()
+        {
+            const string sql = @"
+SELECT
+    cd.MaChienDich,
+    cd.TenChienDich,
+    cd.MoTaNgan,
+    cd.AnhBia,
+    cd.MaDanhMuc,
+    dm.TenDanhMuc,
+    dm.MauSac,
+    cd.MucTieu,
+    cd.SoTienDaQuyen,
+    cd.NgayBatDau,
+    cd.NgayKetThuc,
+    cd.TrangThai,
+    cd.NgayTao,
+    DATEDIFF(DAY, GETDATE(), cd.NgayKetThuc)   AS NgayConLai,
+    DATEDIFF(DAY, cd.NgayTao,   GETDATE())      AS NgayDaTao,
+    (SELECT COUNT(*)
+     FROM   dbo.QuyenGop qg
+     WHERE  qg.MaChienDich = cd.MaChienDich
+       AND  qg.TrangThai   = 1)                 AS SoLuotGop,
+    CASE WHEN cd.MucTieu = 0 THEN 0
+         ELSE CAST(cd.SoTienDaQuyen * 100.0 / cd.MucTieu AS DECIMAL(5,1))
+    END                                         AS PhanTram
+FROM  dbo.ChienDich         cd
+INNER JOIN dbo.DanhMucChienDich dm ON cd.MaDanhMuc = dm.MaDanhMuc
+WHERE cd.TrangThai IN (1, 3)
+ORDER BY cd.NgayTao DESC";
+            return KetNoiDB.GetDataTable(sql, CommandType.Text);
+        }
+
         /// <summary>Lấy top N chiến dịch nổi bật kèm % tiến độ (dùng cho TongQuan).</summary>
         public static DataTable LayChienDichNoiBat(int soLuong = 5)
         {

@@ -489,13 +489,17 @@
      ARTICLE COVER / HERO IMAGE
 ═══════════════════════════════════════════════════════════════ -->
 <div class="article-cover">
-    🤝
     <div class="article-cover-overlay"></div>
     <div class="article-cover-content">
         <div class="article-cover-inner">
-            <div class="article-cover-cat tag-hoatdong">🤝 Hoạt động</div>
-            <h1 class="article-cover-title">Thiện Nguyện Việt trao 500 phần quà Tết cho bà con khó khăn miền Trung — Hành trình ý nghĩa từ trái tim</h1>
-        </div>
+            <div class="article-cover-cat tag-hoatdong"> Hoạt động</div>
+           <h1><asp:Label ID="lblTieuDe" runat="server" /></h1>
+
+<asp:Image ID="imgAnhBia" runat="server" Width="100%" />
+
+<p><asp:Label ID="lblNgayDang" runat="server" /></p>
+
+<asp:Literal ID="litNoiDung" runat="server" />
     </div>
 </div>
 
@@ -557,7 +561,7 @@
 
             <div class="article-img">
                 <div style="height:320px; background: linear-gradient(135deg, #143D20, #2D7A4F); display:flex; align-items:center; justify-content:center; font-size:80px">🚐</div>
-                <div class="img-caption">📸 Đoàn xe thiện nguyện chuẩn bị xuất phát từ điểm tập kết TP.HCM lúc 22h ngày 04/03/2026</div>
+                <div class="img-caption"> Đoàn xe thiện nguyện chuẩn bị xuất phát từ điểm tập kết TP.HCM lúc 22h ngày 04/03/2026</div>
             </div>
 
             <h2 id="section-2">Trao quà và gặp gỡ bà con</h2>
@@ -674,9 +678,9 @@
 
             <!-- Related Campaign -->
             <div class="sidebar-campaign">
-                <div class="sidebar-campaign-thumb">🌊</div>
+                <div class="sidebar-campaign-thumb"></div>
                 <div class="sidebar-campaign-body">
-                    <div class="sidebar-campaign-cat">🚨 Chiến dịch liên quan</div>
+                    <div class="sidebar-campaign-cat"> Chiến dịch liên quan</div>
                     <div class="sidebar-campaign-name">Hỗ trợ đồng bào lũ lụt miền Trung 2026</div>
                     <div class="sidebar-progress">
                         <div class="sidebar-progress-fill" style="width: 64%"></div>
@@ -685,7 +689,7 @@
                         <span>Đã quyên góp: <strong>320 triệu đ</strong></span>
                         <span style="font-weight:700; color: var(--mau-chinh)">64%</span>
                     </div>
-                    <a href="/ChiTietChienDich.aspx?id=1" class="btn-sidebar-donate">❤ Quyên góp ngay</a>
+                    <a href="/ChiTietChienDich.aspx?id=1" class="btn-sidebar-donate"> Quyên góp ngay</a>
                 </div>
             </div>
 
@@ -709,8 +713,8 @@
         <!-- Related 1 -->
         <a href="/ChiTietTinTuc.aspx?id=2" class="related-card reveal reveal-delay-1">
             <div class="related-thumb">
-                ❤️‍🩹
-                <span class="related-cat tag-cauchuy">❤️ Câu chuyện</span>
+                
+                <span class="related-cat tag-cauchuy"> Câu chuyện</span>
             </div>
             <div class="related-body">
                 <div class="related-date">📅 20/02/2026 &nbsp;·&nbsp; 👁 3.6K</div>
@@ -722,8 +726,8 @@
         <!-- Related 2 -->
         <a href="/ChiTietTinTuc.aspx?id=4" class="related-card reveal reveal-delay-2">
             <div class="related-thumb">
-                🌱
-                <span class="related-cat tag-cauchuy">❤️ Câu chuyện</span>
+               
+                <span class="related-cat tag-cauchuy">❤ Câu chuyện</span>
             </div>
             <div class="related-body">
                 <div class="related-date">📅 15/02/2026 &nbsp;·&nbsp; 👁 2.8K</div>
@@ -736,7 +740,7 @@
         <a href="/ChiTietTinTuc.aspx?id=5" class="related-card reveal reveal-delay-3">
             <div class="related-thumb">
                 🌿
-                <span class="related-cat tag-hoatdong">🤝 Hoạt động</span>
+                <span class="related-cat tag-hoatdong"> Hoạt động</span>
             </div>
             <div class="related-body">
                 <div class="related-date">📅 25/02/2026 &nbsp;·&nbsp; 👁 1.6K</div>

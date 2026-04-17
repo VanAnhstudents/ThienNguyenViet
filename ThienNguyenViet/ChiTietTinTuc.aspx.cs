@@ -11,7 +11,29 @@ namespace ThienNguyenViet
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                if (Request.QueryString["id"] != null)
+                {
+                    int maTin = Convert.ToInt32(Request.QueryString["id"]);
+                    LoadChiTiet(maTin);
+                }
+            }
+        }
 
+        private void LoadChiTiet(int maTin)
+        {
+            var row = DAO.TinTucDAO.LayChiTiet(maTin);
+
+            if (row != null)
+            {
+                lblTieuDe.Text = row["TieuDe"].ToString();
+                imgAnhBia.ImageUrl = row["AnhBia"].ToString();
+                lblNgayDang.Text = Convert.ToDateTime(row["NgayDang"]).ToString("dd/MM/yyyy");
+
+                // Quan trọng: nội dung HTML
+                litNoiDung.Text = row["NoiDung"].ToString();
+            }
         }
     }
 }

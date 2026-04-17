@@ -50,47 +50,20 @@ ORDER BY tt.NgayDang DESC";
             return KetNoiDB.GetDataTable(sql, CommandType.Text,
                 KetNoiDB.P("@n", soLuong));
         }
-
-        // ══════════════════════════════════════════════════════════
-        // HELPER — dùng trong Eval() của Repeater
-        // Ánh xạ MaDanhMuc theo bảng DanhMucTinTuc:
-        //   1 = Hoạt động  | 2 = Câu chuyện | 3 = Thông báo
-        // ══════════════════════════════════════════════════════════
-
-        /// <summary>Trả về slug CSS dùng cho data-cat và class tag-*.</summary>
-        public static string GetCatSlug(int maDanhMuc)
+        public static DataRow LayChiTiet(int maTin)
         {
-            switch (maDanhMuc)
-            {
-                case 1: return "hoatdong";
-                case 2: return "cauchuy";
-                case 3: return "thongbao";
-                default: return "all";
-            }
-        }
+            string sql = @"
+        SELECT *
+        FROM dbo.TinTuc
+        WHERE MaTinTuc = @id AND TrangThai = 1";
 
-        /// <summary>Trả về emoji icon hiển thị trên badge danh mục.</summary>
-        public static string GetCatIcon(int maDanhMuc)
-        {
-            switch (maDanhMuc)
-            {
-                case 1: return "🤝";
-                case 2: return "❤️";
-                case 3: return "📢";
-                default: return "📋";
-            }
-        }
+            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text,
+                KetNoiDB.P("@id", maTin));
 
-        /// <summary>Trả về emoji dự phòng khi bài viết không có ảnh bìa.</summary>
-        public static string GetCatEmoji(int maDanhMuc)
-        {
-            switch (maDanhMuc)
-            {
-                case 1: return "🤝";
-                case 2: return "❤️‍🩹";
-                case 3: return "📢";
-                default: return "📰";
-            }
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0];
+
+            return null;
         }
     }
 }
