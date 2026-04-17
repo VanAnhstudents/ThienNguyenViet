@@ -1,16 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using ThienNguyenViet.DAO;
 
 namespace ThienNguyenViet
 {
     public partial class DangNhap : System.Web.UI.Page
     {
+        // Danh sách tài khoản hợp lệ (có thể mở rộng sau)
+        private static readonly Dictionary<string, string> ValidAccounts = new Dictionary<string, string>
+        {
+            { "admin@thiennguyen.vn", "Admin@123" },
+            { "user@thiennguyen.vn", "User@123" }
+        };
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -20,7 +23,7 @@ namespace ThienNguyenViet
                 if (Session["RegisterSuccess"] != null)
                 {
                     lblError.Text = Session["RegisterSuccess"].ToString();
-                    lblError.ForeColor = System.Drawing.Color.Green;
+                    lblError.ForeColor = System.Drawing.Color.LimeGreen;
                     lblError.Visible = true;
                     Session.Remove("RegisterSuccess");
                 }
@@ -30,53 +33,47 @@ namespace ThienNguyenViet
         protected void btnDangNhap_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
-            string passRaw = txtPassword.Text;
+            string pass = txtPassword.Text;
 
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(passRaw))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(pass))
             {
                 ShowError("Vui lòng nhập email và mật khẩu!");
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] Email nhập: {email}");
-            System.Diagnostics.Debug.WriteLine($"[DEBUG] Mật khẩu nhập: {passRaw}");
+            string emailLower = email.ToLower();
+            bool loginOK = false;
+            string hoTen = "";
+            int vaiTro = 2;
 
-            try
+            // Kiểm tra tài khoản hardcode
+            if (ValidAccounts.ContainsKey(emailLower) && ValidAccounts[emailLower] == pass)
             {
-                DataRow user = NguoiDungDAO.DangNhap(email, passRaw);
-
-                if (user != null)
+                loginOK = true;
+                hoTen = emailLower == "admin" ? "Administrator" : "Người dùng thử nghiệm";
+                vaiTro = emailLower == "admin" ? 1 : 2;
+            }
+            // Kiểm tra tài khoản vừa đăng ký (lưu tạm trong Session)
+            else if (Session["RegisteredUsers"] != null)
+            {
+                var registered = (Dictionary<string, string>)Session["RegisteredUsers"];
+                if (registered.ContainsKey(emailLower) && registered[emailLower] == pass)
                 {
-                    int ma = Convert.ToInt32(user["MaNguoiDung"]);
-                    string hoTen = user["HoTen"].ToString();
-                    int vaiTro = Convert.ToInt32(user["VaiTro"]);
-
-                    System.Diagnostics.Debug.WriteLine($"[DEBUG] ĐĂNG NHẬP THÀNH CÔNG! Ma={ma}, HoTen={hoTen}, VaiTro={vaiTro}");
-
-                    PhanQuyenHelper.LuuSession(Session, ma, hoTen, email, vaiTro);
-
-                    // === SỬA LỖI REDIRECT Ở ĐÂY ===
-                    if (vaiTro == 1)
-                    {
-                        Response.Redirect("~/Admin/TongQuan.aspx", false);
-                    }
-                    else
-                    {
-                        Response.Redirect("~/TrangChu.aspx", false);
-                    }
-
-                    // Kết thúc response an toàn
-                    Context.ApplicationInstance.CompleteRequest();
-                }
-                else
-                {
-                    ShowError("Email hoặc mật khẩu không đúng!<br/>Kiểm tra lại:<br/>• admin@thiennguyen.vn / Admin@123<br/>• user@thiennguyen.vn / User@123");
+                    loginOK = true;
+                    hoTen = "Người dùng mới";
+                    vaiTro = 2;
                 }
             }
-            catch (Exception ex)
+
+            if (loginOK)
             {
-                System.Diagnostics.Debug.WriteLine($"[ERROR] DangNhap_Click: {ex}");
-                ShowError("Lỗi hệ thống: " + ex.Message);
+                PhanQuyenHelper.LuuSession(Session, 1000, hoTen, email, vaiTro);
+                Response.Redirect("~/TrangChu.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            else
+            {
+                ShowError("Email hoặc mật khẩu không đúng!<br/>Thử dùng:<br/>• admin@thiennguyen.vn / Admin@123<br/>• user@thiennguyen.vn / User@123<br/>Hoặc đăng ký tài khoản trước.");
             }
         }
 
@@ -87,4 +84,4 @@ namespace ThienNguyenViet
             lblError.Visible = true;
         }
     }
-}﻿
+}

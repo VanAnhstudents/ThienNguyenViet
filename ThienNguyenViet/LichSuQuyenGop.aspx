@@ -532,215 +532,215 @@ table.history-table {
 
 <!-- ─────────────────────────────────────────────────────────── -->
 <script>
-/* ── Mock data ──────────────────────────────────────────────── */
-var DATA = [
-    { id:1,  campaign:'Hỗ trợ đồng bào lũ lụt miền Trung 2026', cat:'Cứu trợ thiên tai', icon:'🌊', amount:500000,  dateFrom:'2026-03-05', dateDuyet:'2026-03-06', status:'approved', loiNhan:'Mong bà con sớm ổn định cuộc sống!', anDanh:false, proof:true  },
-    { id:2,  campaign:'Phẫu thuật tim miễn phí cho trẻ em nghèo',  cat:'Y tế cộng đồng',  icon:'❤️',  amount:300000,  dateFrom:'2026-02-18', dateDuyet:'2026-02-19', status:'approved', loiNhan:'Cầu chúc các bé mau khỏe!',           anDanh:false, proof:true  },
-    { id:3,  campaign:'Học bổng Thắp sáng ước mơ 2026',            cat:'Học bổng',         icon:'📚', amount:200000,  dateFrom:'2026-02-10', dateDuyet:'2026-02-11', status:'approved', loiNhan:'',                                       anDanh:true,  proof:false },
-    { id:4,  campaign:'Trồng 10.000 cây xanh Ngày Môi trường',     cat:'Môi trường',       icon:'🌱', amount:150000,  dateFrom:'2026-01-22', dateDuyet:'2026-01-23', status:'approved', loiNhan:'Vì một Việt Nam xanh hơn.',              anDanh:false, proof:true  },
-    { id:5,  campaign:'Khám bệnh miễn phí vùng cao Điện Biên',     cat:'Y tế cộng đồng',  icon:'🏥', amount:500000,  dateFrom:'2026-01-15', dateDuyet:'2026-01-16', status:'approved', loiNhan:'',                                       anDanh:false, proof:true  },
-    { id:6,  campaign:'Hỗ trợ đồng bào lũ lụt miền Trung 2026',   cat:'Cứu trợ thiên tai',icon:'🌊', amount:1000000, dateFrom:'2025-12-20', dateDuyet:'2025-12-21', status:'approved', loiNhan:'Chúc bà con vượt qua khó khăn.',          anDanh:false, proof:true  },
-    { id:7,  campaign:'Nhà tình thương cho hộ nghèo Bến Tre',       cat:'Nhà ở',            icon:'🏠', amount:500000,  dateFrom:'2025-11-10', dateDuyet:'2025-11-12', status:'approved', loiNhan:'',                                       anDanh:true,  proof:false },
-    { id:8,  campaign:'Học bổng Thắp sáng ước mơ 2025',            cat:'Học bổng',         icon:'📚', amount:300000,  dateFrom:'2025-09-05', dateDuyet:'2025-09-06', status:'approved', loiNhan:'Chúc các em học giỏi!',                  anDanh:false, proof:true  },
-    { id:9,  campaign:'Phẫu thuật mắt miễn phí cho người già',     cat:'Y tế cộng đồng',  icon:'👁️', amount:200000,  dateFrom:'2025-08-20', dateDuyet:'2025-08-21', status:'approved', loiNhan:'',                                       anDanh:false, proof:false },
-    { id:10, campaign:'Cứu trợ hạn mặn đồng bằng sông Cửu Long',  cat:'Cứu trợ thiên tai',icon:'💧', amount:300000,  dateFrom:'2024-12-01', dateDuyet:null,         status:'rejected', loiNhan:'',  lyDo:'Ảnh xác nhận không rõ ràng.',   anDanh:false, proof:true  },
-    { id:11, campaign:'Hỗ trợ đồng bào lũ lụt miền Trung 2026',   cat:'Cứu trợ thiên tai',icon:'🌊', amount:300000,  dateFrom:'2026-03-20', dateDuyet:null,         status:'pending',  loiNhan:'Mong được duyệt sớm ạ.',                 anDanh:false, proof:true  },
-    { id:12, campaign:'Phẫu thuật tim miễn phí cho trẻ em nghèo',  cat:'Y tế cộng đồng',  icon:'❤️',  amount:150000,  dateFrom:'2026-03-25', dateDuyet:null,         status:'pending',  loiNhan:'',                                       anDanh:true,  proof:false },
-];
+    /* ── Mock data ──────────────────────────────────────────────── */
+    var DATA = [
+        { id: 1, campaign: 'Hỗ trợ đồng bào lũ lụt miền Trung 2026', cat: 'Cứu trợ thiên tai', icon: '🌊', amount: 500000, dateFrom: '2026-03-05', dateDuyet: '2026-03-06', status: 'approved', loiNhan: 'Mong bà con sớm ổn định cuộc sống!', anDanh: false, proof: true },
+        { id: 2, campaign: 'Phẫu thuật tim miễn phí cho trẻ em nghèo', cat: 'Y tế cộng đồng', icon: '❤️', amount: 300000, dateFrom: '2026-02-18', dateDuyet: '2026-02-19', status: 'approved', loiNhan: 'Cầu chúc các bé mau khỏe!', anDanh: false, proof: true },
+        { id: 3, campaign: 'Học bổng Thắp sáng ước mơ 2026', cat: 'Học bổng', icon: '📚', amount: 200000, dateFrom: '2026-02-10', dateDuyet: '2026-02-11', status: 'approved', loiNhan: '', anDanh: true, proof: false },
+        { id: 4, campaign: 'Trồng 10.000 cây xanh Ngày Môi trường', cat: 'Môi trường', icon: '🌱', amount: 150000, dateFrom: '2026-01-22', dateDuyet: '2026-01-23', status: 'approved', loiNhan: 'Vì một Việt Nam xanh hơn.', anDanh: false, proof: true },
+        { id: 5, campaign: 'Khám bệnh miễn phí vùng cao Điện Biên', cat: 'Y tế cộng đồng', icon: '🏥', amount: 500000, dateFrom: '2026-01-15', dateDuyet: '2026-01-16', status: 'approved', loiNhan: '', anDanh: false, proof: true },
+        { id: 6, campaign: 'Hỗ trợ đồng bào lũ lụt miền Trung 2026', cat: 'Cứu trợ thiên tai', icon: '🌊', amount: 1000000, dateFrom: '2025-12-20', dateDuyet: '2025-12-21', status: 'approved', loiNhan: 'Chúc bà con vượt qua khó khăn.', anDanh: false, proof: true },
+        { id: 7, campaign: 'Nhà tình thương cho hộ nghèo Bến Tre', cat: 'Nhà ở', icon: '🏠', amount: 500000, dateFrom: '2025-11-10', dateDuyet: '2025-11-12', status: 'approved', loiNhan: '', anDanh: true, proof: false },
+        { id: 8, campaign: 'Học bổng Thắp sáng ước mơ 2025', cat: 'Học bổng', icon: '📚', amount: 300000, dateFrom: '2025-09-05', dateDuyet: '2025-09-06', status: 'approved', loiNhan: 'Chúc các em học giỏi!', anDanh: false, proof: true },
+        { id: 9, campaign: 'Phẫu thuật mắt miễn phí cho người già', cat: 'Y tế cộng đồng', icon: '👁️', amount: 200000, dateFrom: '2025-08-20', dateDuyet: '2025-08-21', status: 'approved', loiNhan: '', anDanh: false, proof: false },
+        { id: 10, campaign: 'Cứu trợ hạn mặn đồng bằng sông Cửu Long', cat: 'Cứu trợ thiên tai', icon: '💧', amount: 300000, dateFrom: '2024-12-01', dateDuyet: null, status: 'rejected', loiNhan: '', lyDo: 'Ảnh xác nhận không rõ ràng.', anDanh: false, proof: true },
+        { id: 11, campaign: 'Hỗ trợ đồng bào lũ lụt miền Trung 2026', cat: 'Cứu trợ thiên tai', icon: '🌊', amount: 300000, dateFrom: '2026-03-20', dateDuyet: null, status: 'pending', loiNhan: 'Mong được duyệt sớm ạ.', anDanh: false, proof: true },
+        { id: 12, campaign: 'Phẫu thuật tim miễn phí cho trẻ em nghèo', cat: 'Y tế cộng đồng', icon: '❤️', amount: 150000, dateFrom: '2026-03-25', dateDuyet: null, status: 'pending', loiNhan: '', anDanh: true, proof: false },
+    ];
 
-var filtered = DATA.slice();
-var currentPage = 1;
-var PER_PAGE = 8;
-var currentFilter = 'all';
-var searchVal = '';
+    var filtered = DATA.slice();
+    var currentPage = 1;
+    var PER_PAGE = 8;
+    var currentFilter = 'all';
+    var searchVal = '';
 
-/* ── Render ─────────────────────────────────────────────────── */
-function fmt(n) {
-    return n.toLocaleString('vi-VN') + 'đ';
-}
-function fmtDate(d) {
-    if (!d) return '—';
-    var parts = d.split('-');
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
-}
-function statusHTML(s, lyDo) {
-    if (s === 'approved') return '<span class="status-badge badge-approved">✅ Đã xác nhận</span>';
-    if (s === 'pending')  return '<span class="status-badge badge-pending">⏳ Chờ xác nhận</span>';
-    return '<span class="status-badge badge-rejected" title="' + (lyDo||'') + '">❌ Từ chối</span>';
-}
+    /* ── Render ─────────────────────────────────────────────────── */
+    function fmt(n) {
+        return n.toLocaleString('vi-VN') + 'đ';
+    }
+    function fmtDate(d) {
+        if (!d) return '—';
+        var parts = d.split('-');
+        return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    function statusHTML(s, lyDo) {
+        if (s === 'approved') return '<span class="status-badge badge-approved">✅ Đã xác nhận</span>';
+        if (s === 'pending') return '<span class="status-badge badge-pending">⏳ Chờ xác nhận</span>';
+        return '<span class="status-badge badge-rejected" title="' + (lyDo || '') + '">❌ Từ chối</span>';
+    }
 
-function renderTable() {
-    var tbody = document.getElementById('tableBody');
-    var start = (currentPage - 1) * PER_PAGE;
-    var page  = filtered.slice(start, start + PER_PAGE);
-    var html  = '';
+    function renderTable() {
+        var tbody = document.getElementById('tableBody');
+        var start = (currentPage - 1) * PER_PAGE;
+        var page = filtered.slice(start, start + PER_PAGE);
+        var html = '';
 
-    if (page.length === 0) {
-        html = '<tr class="empty-row"><td colspan="7"><div class="empty-row-icon">🔍</div><div>Không tìm thấy giao dịch nào phù hợp.</div></td></tr>';
-    } else {
-        page.forEach(function (d, i) {
-            var anDanhText = d.anDanh ? ' <span style="font-size:10px;color:var(--chu-phu)">(ẩn danh)</span>' : '';
-            html += '<tr>'
-                + '<td class="td-stt">' + (start + i + 1) + '</td>'
-                + '<td><div class="campaign-cell">'
-                +   '<div class="campaign-thumb-sm">' + d.icon + '</div>'
-                +   '<div><div class="campaign-name-text">' + d.campaign + anDanhText + '</div>'
-                +   '<div class="campaign-cat-tiny">' + d.cat + '</div></div>'
-                + '</div></td>'
-                + '<td style="text-align:right" class="td-amount">' + fmt(d.amount) + '</td>'
-                + '<td class="td-date"><div class="date-main">' + fmtDate(d.dateFrom) + '</div></td>'
-                + '<td class="td-date"><div class="date-main">' + fmtDate(d.dateDuyet) + '</div></td>'
-                + '<td class="td-actions">' + statusHTML(d.status, d.lyDo) + '</td>'
-                + '<td class="td-actions"><button class="btn-view-detail" onclick="openModal(' + d.id + ')">🔍 Xem</button></td>'
-                + '</tr>';
+        if (page.length === 0) {
+            html = '<tr class="empty-row"><td colspan="7"><div class="empty-row-icon">🔍</div><div>Không tìm thấy giao dịch nào phù hợp.</div></td></tr>';
+        } else {
+            page.forEach(function (d, i) {
+                var anDanhText = d.anDanh ? ' <span style="font-size:10px;color:var(--chu-phu)">(ẩn danh)</span>' : '';
+                html += '<tr>'
+                    + '<td class="td-stt">' + (start + i + 1) + '</td>'
+                    + '<td><div class="campaign-cell">'
+                    + '<div class="campaign-thumb-sm">' + d.icon + '</div>'
+                    + '<div><div class="campaign-name-text">' + d.campaign + anDanhText + '</div>'
+                    + '<div class="campaign-cat-tiny">' + d.cat + '</div></div>'
+                    + '</div></td>'
+                    + '<td style="text-align:right" class="td-amount">' + fmt(d.amount) + '</td>'
+                    + '<td class="td-date"><div class="date-main">' + fmtDate(d.dateFrom) + '</div></td>'
+                    + '<td class="td-date"><div class="date-main">' + fmtDate(d.dateDuyet) + '</div></td>'
+                    + '<td class="td-actions">' + statusHTML(d.status, d.lyDo) + '</td>'
+                    + '<td class="td-actions"><button class="btn-view-detail" onclick="openModal(' + d.id + ')">🔍 Xem</button></td>'
+                    + '</tr>';
+            });
+        }
+        tbody.innerHTML = html;
+
+        // Summary
+        var sumApproved = 0, sumPending = 0, sumRejected = 0;
+        filtered.forEach(function (d) {
+            if (d.status === 'approved') sumApproved += d.amount;
+            if (d.status === 'pending') sumPending += d.amount;
+            if (d.status === 'rejected') sumRejected += d.amount;
         });
-    }
-    tbody.innerHTML = html;
+        document.getElementById('sumTotal').textContent = filtered.length;
+        document.getElementById('sumApproved').textContent = fmt(sumApproved);
+        document.getElementById('sumPending').textContent = fmt(sumPending);
+        document.getElementById('sumRejected').textContent = fmt(sumRejected);
 
-    // Summary
-    var sumApproved = 0, sumPending = 0, sumRejected = 0;
-    filtered.forEach(function (d) {
-        if (d.status === 'approved') sumApproved += d.amount;
-        if (d.status === 'pending')  sumPending  += d.amount;
-        if (d.status === 'rejected') sumRejected += d.amount;
-    });
-    document.getElementById('sumTotal').textContent    = filtered.length;
-    document.getElementById('sumApproved').textContent = fmt(sumApproved);
-    document.getElementById('sumPending').textContent  = fmt(sumPending);
-    document.getElementById('sumRejected').textContent = fmt(sumRejected);
+        // Results info
+        document.getElementById('resultsInfo').innerHTML = 'Hiển thị <strong>' + filtered.length + '</strong> giao dịch';
 
-    // Results info
-    document.getElementById('resultsInfo').innerHTML = 'Hiển thị <strong>' + filtered.length + '</strong> giao dịch';
-
-    renderPagination();
-}
-
-function renderPagination() {
-    var totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-    document.getElementById('pageInfo').textContent = 'Trang ' + currentPage + ' / ' + totalPages;
-    var btns = document.getElementById('pageBtns');
-    btns.innerHTML = '';
-
-    // Prev
-    var prev = document.createElement('button');
-    prev.className = 'pg-btn'; prev.textContent = '‹';
-    prev.disabled = currentPage === 1;
-    prev.onclick = function () { currentPage--; renderTable(); };
-    btns.appendChild(prev);
-
-    for (var i = 1; i <= totalPages; i++) {
-        (function(p) {
-            var btn = document.createElement('button');
-            btn.className = 'pg-btn' + (p === currentPage ? ' active' : '');
-            btn.textContent = p;
-            btn.onclick = function () { currentPage = p; renderTable(); };
-            btns.appendChild(btn);
-        })(i);
+        renderPagination();
     }
 
-    // Next
-    var next = document.createElement('button');
-    next.className = 'pg-btn'; next.textContent = '›';
-    next.disabled = currentPage === totalPages;
-    next.onclick = function () { currentPage++; renderTable(); };
-    btns.appendChild(next);
-}
+    function renderPagination() {
+        var totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+        document.getElementById('pageInfo').textContent = 'Trang ' + currentPage + ' / ' + totalPages;
+        var btns = document.getElementById('pageBtns');
+        btns.innerHTML = '';
 
-/* ── Filters ────────────────────────────────────────────────── */
-function applyFilters() {
-    var dateFrom = document.getElementById('dateFrom').value;
-    var dateTo   = document.getElementById('dateTo').value;
-    searchVal    = document.getElementById('searchInput').value.toLowerCase().trim();
+        // Prev
+        var prev = document.createElement('button');
+        prev.className = 'pg-btn'; prev.textContent = '‹';
+        prev.disabled = currentPage === 1;
+        prev.onclick = function () { currentPage--; renderTable(); };
+        btns.appendChild(prev);
 
-    filtered = DATA.filter(function (d) {
-        var matchStatus = currentFilter === 'all' || d.status === currentFilter;
-        var matchSearch = searchVal === '' || d.campaign.toLowerCase().includes(searchVal);
-        var matchFrom   = !dateFrom || d.dateFrom >= dateFrom;
-        var matchTo     = !dateTo   || d.dateFrom <= dateTo;
-        return matchStatus && matchSearch && matchFrom && matchTo;
-    });
+        for (var i = 1; i <= totalPages; i++) {
+            (function (p) {
+                var btn = document.createElement('button');
+                btn.className = 'pg-btn' + (p === currentPage ? ' active' : '');
+                btn.textContent = p;
+                btn.onclick = function () { currentPage = p; renderTable(); };
+                btns.appendChild(btn);
+            })(i);
+        }
 
-    currentPage = 1;
-    updateCounts();
-    renderTable();
-}
+        // Next
+        var next = document.createElement('button');
+        next.className = 'pg-btn'; next.textContent = '›';
+        next.disabled = currentPage === totalPages;
+        next.onclick = function () { currentPage++; renderTable(); };
+        btns.appendChild(next);
+    }
 
-function updateCounts() {
-    var counts = { all: DATA.length, pending: 0, approved: 0, rejected: 0 };
-    DATA.forEach(function (d) { counts[d.status]++; });
-    document.getElementById('countAll').textContent      = '(' + counts.all + ')';
-    document.getElementById('countPending').textContent  = '(' + counts.pending + ')';
-    document.getElementById('countApproved').textContent = '(' + counts.approved + ')';
-    document.getElementById('countRejected').textContent = '(' + counts.rejected + ')';
-}
+    /* ── Filters ────────────────────────────────────────────────── */
+    function applyFilters() {
+        var dateFrom = document.getElementById('dateFrom').value;
+        var dateTo = document.getElementById('dateTo').value;
+        searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
 
-function resetFilters() {
-    currentFilter = 'all';
-    document.querySelectorAll('.status-pill').forEach(function (p) { p.classList.remove('active'); });
-    document.querySelector('.pill-all').classList.add('active');
-    document.getElementById('searchInput').value = '';
-    document.getElementById('dateFrom').value = '2024-01-01';
-    document.getElementById('dateTo').value   = '2026-03-27';
-    applyFilters();
-}
+        filtered = DATA.filter(function (d) {
+            var matchStatus = currentFilter === 'all' || d.status === currentFilter;
+            var matchSearch = searchVal === '' || d.campaign.toLowerCase().includes(searchVal);
+            var matchFrom = !dateFrom || d.dateFrom >= dateFrom;
+            var matchTo = !dateTo || d.dateFrom <= dateTo;
+            return matchStatus && matchSearch && matchFrom && matchTo;
+        });
 
-/* Status pill clicks */
-document.querySelectorAll('.status-pill').forEach(function (pill) {
-    pill.addEventListener('click', function () {
+        currentPage = 1;
+        updateCounts();
+        renderTable();
+    }
+
+    function updateCounts() {
+        var counts = { all: DATA.length, pending: 0, approved: 0, rejected: 0 };
+        DATA.forEach(function (d) { counts[d.status]++; });
+        document.getElementById('countAll').textContent = '(' + counts.all + ')';
+        document.getElementById('countPending').textContent = '(' + counts.pending + ')';
+        document.getElementById('countApproved').textContent = '(' + counts.approved + ')';
+        document.getElementById('countRejected').textContent = '(' + counts.rejected + ')';
+    }
+
+    function resetFilters() {
+        currentFilter = 'all';
         document.querySelectorAll('.status-pill').forEach(function (p) { p.classList.remove('active'); });
-        this.classList.add('active');
-        currentFilter = this.dataset.status;
+        document.querySelector('.pill-all').classList.add('active');
+        document.getElementById('searchInput').value = '';
+        document.getElementById('dateFrom').value = '2024-01-01';
+        document.getElementById('dateTo').value = '2026-03-27';
         applyFilters();
+    }
+
+    /* Status pill clicks */
+    document.querySelectorAll('.status-pill').forEach(function (pill) {
+        pill.addEventListener('click', function () {
+            document.querySelectorAll('.status-pill').forEach(function (p) { p.classList.remove('active'); });
+            this.classList.add('active');
+            currentFilter = this.dataset.status;
+            applyFilters();
+        });
     });
-});
 
-document.getElementById('searchInput').addEventListener('input', applyFilters);
-document.getElementById('dateFrom').addEventListener('change', applyFilters);
-document.getElementById('dateTo').addEventListener('change', applyFilters);
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('dateFrom').addEventListener('change', applyFilters);
+    document.getElementById('dateTo').addEventListener('change', applyFilters);
 
-/* ── Modal ──────────────────────────────────────────────────── */
-function openModal(id) {
-    var d = DATA.find(function (x) { return x.id === id; });
-    if (!d) return;
+    /* ── Modal ──────────────────────────────────────────────────── */
+    function openModal(id) {
+        var d = DATA.find(function (x) { return x.id === id; });
+        if (!d) return;
 
-    var statusStr = d.status === 'approved' ? '✅ Đã xác nhận'
-                  : d.status === 'pending'  ? '⏳ Chờ xác nhận'
-                  : '❌ Từ chối';
+        var statusStr = d.status === 'approved' ? '✅ Đã xác nhận'
+            : d.status === 'pending' ? '⏳ Chờ xác nhận'
+                : '❌ Từ chối';
 
-    var proofHTML = d.proof
-        ? '<div class="modal-proof-img">🖼️ &nbsp; <span style="font-size:14px;color:var(--chu-phu)">Ảnh xác nhận chuyển khoản</span></div>'
-        : '<div class="modal-proof-img" style="background:#F8F9FA"><span style="font-size:14px;color:#A0AEC0">Không có ảnh xác nhận</span></div>';
+        var proofHTML = d.proof
+            ? '<div class="modal-proof-img">🖼️ &nbsp; <span style="font-size:14px;color:var(--chu-phu)">Ảnh xác nhận chuyển khoản</span></div>'
+            : '<div class="modal-proof-img" style="background:#F8F9FA"><span style="font-size:14px;color:#A0AEC0">Không có ảnh xác nhận</span></div>';
 
-    var lyDoHTML = d.lyDo
-        ? '<div class="modal-row"><div class="modal-row-label">Lý do từ chối</div><div class="modal-row-val" style="color:#E53E3E">' + d.lyDo + '</div></div>'
-        : '';
+        var lyDoHTML = d.lyDo
+            ? '<div class="modal-row"><div class="modal-row-label">Lý do từ chối</div><div class="modal-row-val" style="color:#E53E3E">' + d.lyDo + '</div></div>'
+            : '';
 
-    document.getElementById('modalTitle').textContent = 'Chi tiết #QG-' + String(id).padStart(4, '0');
-    document.getElementById('modalBody').innerHTML =
-        '<div class="modal-row"><div class="modal-row-label">Mã giao dịch</div><div class="modal-row-val" style="font-family:monospace;color:var(--mau-chinh)">#QG-' + String(id).padStart(4, '0') + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Chiến dịch</div><div class="modal-row-val" style="max-width:280px;text-align:right">' + d.campaign + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Số tiền quyên góp</div><div class="modal-row-val" style="color:var(--mau-chinh);font-size:18px">' + fmt(d.amount) + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Ngày gửi</div><div class="modal-row-val">' + fmtDate(d.dateFrom) + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Ngày duyệt</div><div class="modal-row-val">' + fmtDate(d.dateDuyet) + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Trạng thái</div><div class="modal-row-val">' + statusHTML(d.status) + '</div></div>'
-      + '<div class="modal-row"><div class="modal-row-label">Ẩn danh</div><div class="modal-row-val">' + (d.anDanh ? '✅ Có' : '❌ Không') + '</div></div>'
-      + (d.loiNhan ? '<div class="modal-row"><div class="modal-row-label">Lời nhắn</div><div class="modal-row-val" style="font-style:italic;max-width:260px;text-align:right">"' + d.loiNhan + '"</div></div>' : '')
-      + lyDoHTML
-      + proofHTML;
+        document.getElementById('modalTitle').textContent = 'Chi tiết #QG-' + String(id).padStart(4, '0');
+        document.getElementById('modalBody').innerHTML =
+            '<div class="modal-row"><div class="modal-row-label">Mã giao dịch</div><div class="modal-row-val" style="font-family:monospace;color:var(--mau-chinh)">#QG-' + String(id).padStart(4, '0') + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Chiến dịch</div><div class="modal-row-val" style="max-width:280px;text-align:right">' + d.campaign + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Số tiền quyên góp</div><div class="modal-row-val" style="color:var(--mau-chinh);font-size:18px">' + fmt(d.amount) + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Ngày gửi</div><div class="modal-row-val">' + fmtDate(d.dateFrom) + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Ngày duyệt</div><div class="modal-row-val">' + fmtDate(d.dateDuyet) + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Trạng thái</div><div class="modal-row-val">' + statusHTML(d.status) + '</div></div>'
+            + '<div class="modal-row"><div class="modal-row-label">Ẩn danh</div><div class="modal-row-val">' + (d.anDanh ? '✅ Có' : '❌ Không') + '</div></div>'
+            + (d.loiNhan ? '<div class="modal-row"><div class="modal-row-label">Lời nhắn</div><div class="modal-row-val" style="font-style:italic;max-width:260px;text-align:right">"' + d.loiNhan + '"</div></div>' : '')
+            + lyDoHTML
+            + proofHTML;
 
-    document.getElementById('detailModal').classList.add('open');
-}
+        document.getElementById('detailModal').classList.add('open');
+    }
 
-function closeModal() {
-    document.getElementById('detailModal').classList.remove('open');
-}
+    function closeModal() {
+        document.getElementById('detailModal').classList.remove('open');
+    }
 
-document.getElementById('detailModal').addEventListener('click', function (e) {
-    if (e.target === this) closeModal();
-});
+    document.getElementById('detailModal').addEventListener('click', function (e) {
+        if (e.target === this) closeModal();
+    });
 
-/* Init */
-updateCounts();
-applyFilters();
+    /* Init */
+    updateCounts();
+    applyFilters();
 </script>
 </asp:Content>
