@@ -51,8 +51,8 @@
     <div class="qg-page">
         <div class="breadcrumb-bar">
             <div class="breadcrumb-inner">
-                <a href="Default.aspx">Trang chủ</a> <span>/</span> 
-                <a href="#">Chiến dịch</a> <span>/</span> 
+                <a href="TrangChu.aspx">Trang chủ</a> <span>/</span>
+                <a href="DanhSachChienDich.aspx">Chiến dịch</a> <span>/</span>
                 <strong>Quyên góp</strong>
             </div>
         </div>

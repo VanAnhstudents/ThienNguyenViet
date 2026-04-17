@@ -11,30 +11,23 @@ namespace ThienNguyenViet.DAO
         public static DataTable LayDanhSachCongKhai()
         {
             const string sql = @"
-SELECT 
-    cd.MaChienDich                                      AS id,
+SELECT
+    cd.MaChienDich,
     cd.MaDanhMuc,
-    dm.TenDanhMuc,
-    dm.MauSac                                           AS MauDanhMuc,
-    cd.TenChienDich                                     AS title,
-    cd.MoTaNgan                                         AS [desc],
-    cd.SoTienDaQuyen                                    AS raised,
-    cd.MucTieu                                          AS goal,
-    cd.NgayKetThuc,
+    cd.TenChienDich,
+    cd.MoTaNgan,
+    cd.AnhBia,
+    cd.SoTienDaQuyen,
+    cd.MucTieu,
     cd.TrangThai,
     cd.NoiBat,
-    ISNULL(qg.SoLuotQuyenGop, 0)                        AS donors,
-    DATEDIFF(DAY, GETDATE(), cd.NgayKetThuc)           AS daysLeft,
-    CASE 
-        WHEN cd.MucTieu = 0 THEN 0
-        WHEN cd.SoTienDaQuyen >= cd.MucTieu THEN 100.0
-        ELSE CAST(cd.SoTienDaQuyen * 100.0 / cd.MucTieu AS DECIMAL(5,1))
-    END                                                 AS pct
+    ISNULL(qg.SoLuotQuyenGop, 0)                       AS SoLuotGop,
+    DATEDIFF(DAY, GETDATE(), cd.NgayKetThuc)           AS NgayConLai,
+    DATEDIFF(DAY, cd.NgayTao, GETDATE())               AS NgayDaTao
 FROM dbo.ChienDich cd
-INNER JOIN dbo.DanhMucChienDich dm ON cd.MaDanhMuc = dm.MaDanhMuc
 LEFT JOIN (
-    SELECT MaChienDich, COUNT(*) AS SoLuotQuyenGop 
-    FROM dbo.QuyenGop WHERE TrangThai = 1 
+    SELECT MaChienDich, COUNT(*) AS SoLuotQuyenGop
+    FROM dbo.QuyenGop WHERE TrangThai = 1
     GROUP BY MaChienDich
 ) qg ON cd.MaChienDich = qg.MaChienDich
 WHERE cd.TrangThai = 1
@@ -161,7 +154,18 @@ WHERE MaChienDich = @id";
         // Các phương thức cũ khác (giữ nguyên)
         // ===================================================================
         public static DataTable LayTatCa() { /* ... code cũ ... */ return null; }
-        public static DataRow LayTheoMa(int ma) { /* ... */ return null; }
+        public static DataRow LayTheoMa(int ma)
+        {
+            const string sql = @"
+SELECT TOP 1 *
+FROM dbo.ChienDich
+WHERE MaChienDich = @ma";
+
+            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text,
+                KetNoiDB.P("@ma", ma));
+
+            return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+        }
         public static DataTable LayDanhMuc() { /* ... */ return null; }
         public static DataTable LayTienDo(int maChienDich) { /* ... */ return null; }
         public static bool Xoa(int ma) { /* ... */ return false; }
