@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace ThienNguyenViet
 {
@@ -11,12 +8,14 @@ namespace ThienNguyenViet
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) lblError.Visible = false;
+            if (!IsPostBack)
+            {
+                lblError.Visible = false;
+            }
         }
 
         protected void btnDangKy_Click(object sender, EventArgs e)
         {
-            // Validation server-side (bổ sung cho JS)
             if (string.IsNullOrWhiteSpace(txtHoTen.Text) ||
                 string.IsNullOrWhiteSpace(txtEmail.Text) ||
                 string.IsNullOrWhiteSpace(txtSoDienThoai.Text) ||
@@ -29,9 +28,31 @@ namespace ThienNguyenViet
                 return;
             }
 
-            // Thành công → chuyển về trang đăng nhập
-            Session["RegisterSuccess"] = "Đăng ký thành công! Vui lòng đăng nhập.";
-            Response.Redirect("DangNhap.aspx");
+            string email = txtEmail.Text.Trim().ToLower();
+            string pass = txtMatKhau.Text;
+
+            // Lưu tài khoản vừa đăng ký vào Session (dùng Dictionary)
+            if (Session["RegisteredUsers"] == null)
+            {
+                Session["RegisteredUsers"] = new Dictionary<string, string>();
+            }
+
+            var registered = (Dictionary<string, string>)Session["RegisteredUsers"];
+
+            if (registered.ContainsKey(email))
+            {
+                lblError.Text = "Email này đã được đăng ký!";
+                lblError.Visible = true;
+                return;
+            }
+
+            registered.Add(email, pass);
+
+            // Thông báo thành công và chuyển về đăng nhập
+            Session["RegisterSuccess"] = "Đăng ký tài khoản thành công!<br/>Vui lòng đăng nhập để tiếp tục.";
+
+            Response.Redirect("DangNhap.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }
