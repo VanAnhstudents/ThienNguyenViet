@@ -15,6 +15,24 @@ namespace ThienNguyenViet
     {
 
         /// <summary>
+        /// imgAnhBia control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgAnhBia;
+
+        /// <summary>
+        /// lblDanhMuc control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDanhMuc;
+
+        /// <summary>
         /// lblTieuDe control.
         /// </summary>
         /// <remarks>
@@ -24,13 +42,31 @@ namespace ThienNguyenViet
         protected global::System.Web.UI.WebControls.Label lblTieuDe;
 
         /// <summary>
-        /// imgAnhBia control.
+        /// lblDanhMuc2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAnhBia;
+        protected global::System.Web.UI.WebControls.Label lblDanhMuc2;
+
+        /// <summary>
+        /// lblTieuDe2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTieuDe2;
+
+        /// <summary>
+        /// lblNguoiDang control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNguoiDang;
 
         /// <summary>
         /// lblNgayDang control.
@@ -42,6 +78,15 @@ namespace ThienNguyenViet
         protected global::System.Web.UI.WebControls.Label lblNgayDang;
 
         /// <summary>
+        /// lblLuotXem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLuotXem;
+
+        /// <summary>
         /// litNoiDung control.
         /// </summary>
         /// <remarks>
@@ -49,5 +94,68 @@ namespace ThienNguyenViet
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litNoiDung;
+
+        /// <summary>
+        /// lblAvatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAvatar;
+
+        /// <summary>
+        /// lblNguoiDang2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNguoiDang2;
+
+        /// <summary>
+        /// lblLuotXem2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblLuotXem2;
+
+        /// <summary>
+        /// lblBinhLuan control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblBinhLuan;
+
+        /// <summary>
+        /// lblShare control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblShare;
+
+        /// <summary>
+        /// lblNgayDang2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNgayDang2;
+
+        /// <summary>
+        /// rptRelated control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptRelated;
     }
 }

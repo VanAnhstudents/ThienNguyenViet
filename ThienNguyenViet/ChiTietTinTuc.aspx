@@ -489,17 +489,22 @@
      ARTICLE COVER / HERO IMAGE
 ═══════════════════════════════════════════════════════════════ -->
 <div class="article-cover">
+    <asp:Image ID="imgAnhBia" runat="server" CssClass="cover-img" />
+
     <div class="article-cover-overlay"></div>
+
     <div class="article-cover-content">
         <div class="article-cover-inner">
-            <div class="article-cover-cat tag-hoatdong"> Hoạt động</div>
-           <h1><asp:Label ID="lblTieuDe" runat="server" /></h1>
 
-<asp:Image ID="imgAnhBia" runat="server" Width="100%" />
+            <div class="article-cover-cat">
+                <asp:Label ID="lblDanhMuc" runat="server" />
+            </div>
 
-<p><asp:Label ID="lblNgayDang" runat="server" /></p>
+            <h1 class="article-cover-title">
+                <asp:Label ID="lblTieuDe" runat="server" />
+            </h1>
 
-<asp:Literal ID="litNoiDung" runat="server" />
+        </div>
     </div>
 </div>
 
@@ -512,9 +517,11 @@
         <span class="breadcrumb-sep">›</span>
         <a href="/DanhSachTinTuc.aspx">Tin tức</a>
         <span class="breadcrumb-sep">›</span>
-        <a href="/DanhSachTinTuc.aspx?cat=hoatdong">Hoạt động</a>
+        <a href="/DanhSachTinTuc.aspx?cat=hoatdong">Hoạt động</a><a href="#">
+    <asp:Label ID="lblDanhMuc2" runat="server" />
+</a>
         <span class="breadcrumb-sep">›</span>
-        <span>Thiện Nguyện Việt trao 500 phần quà...</span>
+        <span><asp:Label ID="lblTieuDe2" runat="server" /></span>
     </div>
 </nav>
 
@@ -531,79 +538,34 @@
 
         <!-- Meta row -->
         <div class="article-meta">
-            <div class="article-meta-item">
-                <div class="meta-avatar">T</div>
-                <div>
-                    Đăng bởi <strong>Nguyễn Minh Tâm</strong>
-                </div>
-            </div>
-            <div class="meta-dot"></div>
-            <div class="article-meta-item">📅 <strong>07/03/2026</strong></div>
-            <div class="meta-dot"></div>
-            <div class="article-meta-item">👁 <strong>1.241</strong> lượt xem</div>
-            <div class="meta-dot"></div>
-            <div class="article-meta-item">💬 <strong>14</strong> bình luận</div>
-            <div class="reading-time-badge">⏱ 5 phút đọc</div>
-        </div>
+    <div class="article-meta-item">
+        Đăng bởi <strong><asp:Label ID="lblNguoiDang" runat="server" /></strong>
+    </div>
+
+    <div class="meta-dot"></div>
+
+    <div class="article-meta-item">
+        <strong><asp:Label ID="lblNgayDang" runat="server" /></strong>
+    </div>
+
+    <div class="meta-dot"></div>
+
+    <div class="article-meta-item">
+        <strong><asp:Label ID="lblLuotXem" runat="server" /></strong> lượt xem
+    </div>
+</div>
+           
 
         <!-- ─── RICH TEXT BODY ─────────────────────────────── -->
-        <div class="article-body" id="articleBody">
+<div class="article-content">
 
-            <p class="lead">
-                Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên của Thiện Nguyện Việt đã có chuyến công tác đặc biệt đến các xã vùng sâu tỉnh Quảng Bình — nơi vừa trải qua đợt lũ lịch sử tháng 2/2026 — để trao tận tay 500 phần quà trị giá hơn <em>250 triệu đồng</em>.
-            </p>
+    <h3 style="margin-bottom:15px;">NỘI DUNG BÀI VIẾT</h3>
 
-            <h2 id="section-1">Hành trình 900km đến với bà con vùng lũ</h2>
+    <div class="article-body" id="articleBody">
+        <asp:Literal ID="litNoiDung" runat="server" />
+    </div>
 
-            <p>Chuyến đi kéo dài 3 ngày 2 đêm bắt đầu từ TP.HCM lúc 22h ngày 04/03. Đoàn xe gồm 4 chiếc, chở theo toàn bộ hàng hóa đã được đóng gói sẵn: gạo, mì tôm, dầu ăn, nước mắm, và một số vật dụng y tế cơ bản. Tổng trọng lượng hàng hóa vận chuyển lần này vượt <strong>3,5 tấn</strong>.</p>
-
-            <p>Trưởng đoàn, chị Lê Thu Hương, chia sẻ: <em>"Chúng tôi đã lên kế hoạch từ 3 tuần trước. Đây là lần đi xa nhất từ trước đến nay, nhưng anh chị em đều háo hức và xác định sẵn sàng chịu đựng mọi vất vả."</em></p>
-
-            <div class="article-img">
-                <div style="height:320px; background: linear-gradient(135deg, #143D20, #2D7A4F); display:flex; align-items:center; justify-content:center; font-size:80px">🚐</div>
-                <div class="img-caption"> Đoàn xe thiện nguyện chuẩn bị xuất phát từ điểm tập kết TP.HCM lúc 22h ngày 04/03/2026</div>
-            </div>
-
-            <h2 id="section-2">Trao quà và gặp gỡ bà con</h2>
-
-            <p>Điểm đến đầu tiên là xã Tân Hóa, huyện Minh Hóa — một trong những xã bị thiệt hại nặng nề nhất đợt lũ. Hàng trăm bà con đã có mặt từ sớm, nhiều người đến từ các thôn bản xa hàng chục cây số.</p>
-
-            <blockquote>
-                <p>Gia đình tôi mất trắng sau lũ, không còn hạt gạo nào. Nhận được quà hôm nay, tôi xúc động lắm, không biết nói gì hơn là cảm ơn.</p>
-                <cite>— Bà Nguyễn Thị Lan, 68 tuổi, xã Tân Hóa, Minh Hóa, Quảng Bình</cite>
-            </blockquote>
-
-            <p>Buổi trao quà diễn ra trong không khí đầm ấm, xúc động. Nhiều tình nguyện viên trẻ — lần đầu tham gia chuyến đi dài như thế này — bày tỏ rằng đây là trải nghiệm khó quên nhất trong cuộc đời.</p>
-
-            <div class="highlight-box">
-                <div class="hb-title">📦 Thống kê chuyến đi</div>
-                <ul>
-                    <li>500 phần quà được trao cho 500 hộ gia đình khó khăn tại 4 xã</li>
-                    <li>Tổng giá trị hàng hóa: hơn <strong>250 triệu đồng</strong></li>
-                    <li>30 tình nguyện viên tham gia trực tiếp</li>
-                    <li>3 ngày 2 đêm hành trình</li>
-                    <li>900km quãng đường cả chiều đi và về</li>
-                </ul>
-            </div>
-
-            <h2 id="section-3">Câu chuyện ấm lòng dọc hành trình</h2>
-
-            <p>Ấn tượng nhất trong chuyến đi là em Hồ Thị Hoa (12 tuổi) — một mình đi bộ 8km từ bản Khe Sang để nhận quà thay cho bố mẹ đang làm đồng. Khi được hỏi, em chỉ mỉm cười và nói: <em>"Con biết hôm nay có các cô chú mang quà đến, con muốn đến sớm để cảm ơn."</em></p>
-
-            <p>Hình ảnh đó đã khiến nhiều tình nguyện viên rơi nước mắt. Đoàn đã tặng thêm cho em một phần quà học sinh đặc biệt gồm sách vở, bút và ba lô mới.</p>
-
-            <div class="article-img">
-                <div style="height:280px; background: linear-gradient(135deg, #EAF5EE, #B7DEC6); display:flex; align-items:center; justify-content:center; font-size:80px">📚</div>
-                <div class="img-caption">📸 Em Hồ Thị Hoa nhận phần quà học sinh đặc biệt từ đoàn tình nguyện</div>
-            </div>
-
-            <h2 id="section-4">Lời cảm ơn và hành trình tiếp theo</h2>
-
-            <p>Kết thúc chuyến đi, trưởng đoàn Lê Thu Hương gửi lời cảm ơn chân thành đến tất cả các nhà hảo tâm, đối tác và tình nguyện viên đã đóng góp công sức, tiền bạc để chuyến đi có thể thành công. Đây là chuyến thứ 7 trong năm 2026 của Thiện Nguyện Việt, và sẽ còn nhiều chuyến đi ý nghĩa khác phía trước.</p>
-
-            <p>Nếu bạn muốn đồng hành cùng chúng tôi trong các chuyến tiếp theo, hãy đăng ký tình nguyện viên hoặc đóng góp vào các chiến dịch đang hoạt động trên nền tảng. Mỗi hành động nhỏ của bạn đều có thể tạo ra sự thay đổi lớn.</p>
-
-        </div>
+</div>
 
         <!-- Tags -->
         <div class="article-tags">
@@ -630,15 +592,33 @@
 
         <!-- Author -->
         <div class="author-box">
-            <div class="author-avatar-lg">T</div>
-            <div class="author-info">
-                <h4>Nguyễn Minh Tâm</h4>
-                <div class="author-role">✍️ Biên tập viên nội dung</div>
-                <p class="author-bio">Minh Tâm là thành viên lâu năm của Thiện Nguyện Việt, phụ trách mảng truyền thông và ghi chép hành trình các chuyến đi. Anh đã tham gia hơn 20 chuyến thiện nguyện trên khắp Việt Nam.</p>
-            </div>
+
+    <!-- Avatar -->
+    <div class="author-avatar-lg">
+        <asp:Label ID="lblAvatar" runat="server" />
+    </div>
+
+    <!-- Thông tin -->
+    <div class="author-info">
+
+        <!-- Tên -->
+        <h4>
+            <asp:Label ID="lblNguoiDang2" runat="server" />
+        </h4>
+
+        <!-- Vai trò -->
+        <div class="author-role">
+            Biên tập viên nội dung
         </div>
 
-    </article>
+        <!-- Mô tả -->
+        <p class="author-bio">
+            Thành viên của Thiện Nguyện Việt.
+        </p>
+
+    </div>
+
+</div>
 
     <!-- ─── SIDEBAR ─────────────────────────────────────────── -->
     <aside class="article-sidebar">
@@ -649,53 +629,33 @@
                 <h4>📊 Thống kê bài viết</h4>
                 <div class="stat-row">
                     <span class="stat-label">👁️ Lượt xem</span>
-                    <span class="stat-value">1.241</span>
+                    <span class="stat-value">
+                    <asp:Label ID="lblLuotXem2" runat="server" />
+                </span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">💬 Bình luận</span>
-                    <span class="stat-value">14</span>
+                    <span class="stat-value">
+                    <asp:Label ID="lblBinhLuan" runat="server" />
+                </span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">📤 Chia sẻ</span>
-                    <span class="stat-value">86</span>
+                    <span class="stat-value">
+    <asp:Label ID="lblShare" runat="server" />
+</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">📅 Ngày đăng</span>
-                    <span class="stat-value" style="font-size:13px">07/03/2026</span>
+                    <span class="stat-value">
+                    <asp:Label ID="lblNgayDang2" runat="server" /></span>
                 </div>
             </div>
 
             <!-- Table of Contents -->
             <div class="sidebar-toc">
-                <h4>📋 Nội dung bài viết</h4>
-                <ul class="toc-list">
-                    <li><a href="#section-1"><span class="toc-num">1</span> Hành trình 900km đến với bà con vùng lũ</a></li>
-                    <li><a href="#section-2"><span class="toc-num">2</span> Trao quà và gặp gỡ bà con</a></li>
-                    <li><a href="#section-3"><span class="toc-num">3</span> Câu chuyện ấm lòng dọc hành trình</a></li>
-                    <li><a href="#section-4"><span class="toc-num">4</span> Lời cảm ơn và hành trình tiếp theo</a></li>
-                </ul>
-            </div>
-
-            <!-- Related Campaign -->
-            <div class="sidebar-campaign">
-                <div class="sidebar-campaign-thumb"></div>
-                <div class="sidebar-campaign-body">
-                    <div class="sidebar-campaign-cat"> Chiến dịch liên quan</div>
-                    <div class="sidebar-campaign-name">Hỗ trợ đồng bào lũ lụt miền Trung 2026</div>
-                    <div class="sidebar-progress">
-                        <div class="sidebar-progress-fill" style="width: 64%"></div>
-                    </div>
-                    <div class="sidebar-money-row">
-                        <span>Đã quyên góp: <strong>320 triệu đ</strong></span>
-                        <span style="font-weight:700; color: var(--mau-chinh)">64%</span>
-                    </div>
-                    <a href="/ChiTietChienDich.aspx?id=1" class="btn-sidebar-donate"> Quyên góp ngay</a>
-                </div>
-            </div>
-
-        </div>
-    </aside>
-
+    <h4>Nội dung bài viết</h4>
+    <ul class="toc-list" id="tocList"></ul>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -711,46 +671,45 @@
     <div class="related-grid">
 
         <!-- Related 1 -->
-        <a href="/ChiTietTinTuc.aspx?id=2" class="related-card reveal reveal-delay-1">
-            <div class="related-thumb">
-                
-                <span class="related-cat tag-cauchuy"> Câu chuyện</span>
-            </div>
-            <div class="related-body">
-                <div class="related-date">📅 20/02/2026 &nbsp;·&nbsp; 👁 3.6K</div>
-                <h3 class="related-title">Cậu bé 8 tuổi được cứu sống nhờ ca phẫu thuật tim từ quỹ từ thiện</h3>
-                <span class="related-link">Đọc tiếp →</span>
-            </div>
-        </a>
+        <asp:Repeater ID="rptRelated" runat="server">
+<ItemTemplate>
 
-        <!-- Related 2 -->
-        <a href="/ChiTietTinTuc.aspx?id=4" class="related-card reveal reveal-delay-2">
-            <div class="related-thumb">
-               
-                <span class="related-cat tag-cauchuy">❤ Câu chuyện</span>
-            </div>
-            <div class="related-body">
-                <div class="related-date">📅 15/02/2026 &nbsp;·&nbsp; 👁 2.8K</div>
-                <h3 class="related-title">Cô bé người Mông và ước mơ trở thành bác sĩ từ học bổng "Thắp sáng ước mơ"</h3>
-                <span class="related-link">Đọc tiếp →</span>
-            </div>
-        </a>
+<a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>' 
+   class="related-card reveal">
 
-        <!-- Related 3 -->
-        <a href="/ChiTietTinTuc.aspx?id=5" class="related-card reveal reveal-delay-3">
-            <div class="related-thumb">
-                🌿
-                <span class="related-cat tag-hoatdong"> Hoạt động</span>
-            </div>
-            <div class="related-body">
-                <div class="related-date">📅 25/02/2026 &nbsp;·&nbsp; 👁 1.6K</div>
-                <h3 class="related-title">Ra mắt chiến dịch trồng 10.000 cây xanh nhân ngày Môi trường Thế giới 2026</h3>
-                <span class="related-link">Đọc tiếp →</span>
-            </div>
-        </a>
+    <div class="related-thumb">
+        <img src='<%# Eval("AnhBia") %>' alt="" />
+
+        <span class="related-cat">
+            <%# Eval("TenDanhMuc") %>
+        </span>
+    </div>
+
+    <div class="related-body">
+
+        <div class="related-date">
+            <%# Eval("NgayDang","{0:dd/MM/yyyy}") %>
+            &nbsp;·&nbsp;
+            <%# Eval("LuotXem") %> lượt xem
+        </div>
+
+        <h3 class="related-title">
+            <%# Eval("TieuDe") %>
+        </h3>
+
+        <span class="related-link">
+            Đọc tiếp →
+        </span>
 
     </div>
-</section>
+
+</a>
+
+</ItemTemplate>
+</asp:Repeater>
+
+        <!-- Related 2 -->
+        
 
 <!-- ─────────────────────────────────────────────────────────── -->
 <script>

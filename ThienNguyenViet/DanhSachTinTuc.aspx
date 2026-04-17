@@ -420,18 +420,18 @@
         <div class="filter-divider"></div>
 
         <div class="category-pills" id="categoryPills">
-            <button class="cat-pill active" data-cat="all">📋 Tất cả</button>
-            <button class="cat-pill" data-cat="hoatdong">🤝 Hoạt động</button>
-            <button class="cat-pill" data-cat="cauchuy">❤️ Câu chuyện</button>
-            <button class="cat-pill" data-cat="thongbao">📢 Thông báo</button>
+            <button class="cat-pill active" data-cat="all">Tất cả</button>
+            <button class="cat-pill" data-cat="hoatdong">Hoạt động</button>
+            <button class="cat-pill" data-cat="cauchuy">Câu chuyện</button>
+            <button class="cat-pill" data-cat="thongbao">Thông báo</button>
         </div>
 
         <div class="filter-divider"></div>
 
         <select class="sort-select" id="sortSelect">
-            <option value="newest">📅 Mới nhất</option>
-            <option value="oldest">🕰️ Cũ nhất</option>
-            <option value="mostviewed">👁️ Xem nhiều nhất</option>
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="mostviewed">Xem nhiều nhất</option>
         </select>
     </div>
 </div>
@@ -451,87 +451,117 @@
 
         <!-- ── FEATURED ARTICLE (bài nổi bật — bài mới nhất) ── -->
         <asp:Panel ID="pnlFeatured" runat="server">
-            <div id="featuredSection">
-                <asp:Repeater ID="rptFeatured" runat="server">
-                    <ItemTemplate>
-                        <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
-                           class="news-featured-card"
-                           id="featuredCard"
-                           data-cat='<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'
-                           data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
-                           data-views='<%# Eval("LuotXem") %>'
-                           style="text-decoration:none; color:inherit">
+    <div id="featuredSection">
+        <asp:Repeater ID="rptFeatured" runat="server">
+            <ItemTemplate>
 
-                            <div class="featured-thumb">
-                                <%# string.IsNullOrEmpty(Eval("AnhBia") == DBNull.Value ? "" : Eval("AnhBia").ToString())
-                                    ? TinTucDAO.GetCatEmoji(Convert.ToInt32(Eval("MaDanhMuc")))
-                                    : "<img src=\"" + Eval("AnhBia") + "\" alt=\"\" />" %>
-                                <span class='featured-tag tag-<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'>
-                                    <%# TinTucDAO.GetCatIcon(Convert.ToInt32(Eval("MaDanhMuc"))) %>
-                                    <%# Eval("TenDanhMuc") %>
-                                </span>
-                                <span class="featured-pin-badge">⭐ Nổi bật</span>
-                            </div>
+                <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
+                   class="news-featured-card"
+                   data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
+                   data-views='<%# Eval("LuotXem") %>'
+                   style="text-decoration:none; color:inherit">
 
-                            <div class="featured-body">
-                                <div class="featured-meta">
-                                    <span>👤 <%# Eval("NguoiDang") %></span>
-                                    <span>📅 <%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
-                                    <span>👁 <%# Eval("LuotXem") %> lượt xem</span>
-                                </div>
-                                <h2 class="featured-title"><%# Eval("TieuDe") %></h2>
-                                <p class="featured-summary"><%# Eval("TomTat") %></p>
-                                <span class="btn-read-more">Đọc bài viết đầy đủ →</span>
-                            </div>
-                        </a>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </div>
-        </asp:Panel>
+                    <!-- ẢNH -->
+                    <div class="featured-thumb">
+                        <img src='<%# Eval("AnhBia") == DBNull.Value ? "/images/no-image.png" : Eval("AnhBia") %>' 
+                             alt="" />
+
+                        <!-- DANH MỤC (TEXT) -->
+                        <span class="featured-tag">
+                            <%# Eval("TenDanhMuc") %>
+                        </span>
+
+                        <!-- BADGE -->
+                        <span class="featured-pin-badge">Nổi bật</span>
+                    </div>
+
+                    <!-- NỘI DUNG -->
+                    <div class="featured-body">
+                        <div class="featured-meta">
+                            <span><%# Eval("NguoiDang") %></span>
+                            <span><%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
+                            <span><%# Eval("LuotXem") %> lượt xem</span>
+                        </div>
+
+                        <h2 class="featured-title">
+                            <%# Eval("TieuDe") %>
+                        </h2>
+
+                        <p class="featured-summary">
+                            <%# Eval("TomTat") %>
+                        </p>
+
+                        <span class="btn-read-more">
+                            Đọc bài viết đầy đủ →
+                        </span>
+                    </div>
+
+                </a>
+
+            </ItemTemplate>
+        </asp:Repeater>
+    </div>
+</asp:Panel>
 
         <!-- ── CARDS GRID ──────────────────────────────────────── -->
         <asp:Panel ID="pnlGrid" runat="server">
-            <div class="news-cards-grid" id="newsGrid">
-                <asp:Repeater ID="rptCards" runat="server">
-                    <ItemTemplate>
-                        <div class='news-card-item reveal <%# new[]{"reveal-delay-1","reveal-delay-2","reveal-delay-3"}[Container.ItemIndex % 3] %>'
-                             data-cat='<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'
-                             data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
-                             data-views='<%# Eval("LuotXem") %>'>
+    <div class="news-cards-grid" id="newsGrid">
+        <asp:Repeater ID="rptCards" runat="server">
+            <ItemTemplate>
 
-                            <div class="card-thumb">
-                                <%# string.IsNullOrEmpty(Eval("AnhBia") == DBNull.Value ? "" : Eval("AnhBia").ToString())
-                                    ? TinTucDAO.GetCatEmoji(Convert.ToInt32(Eval("MaDanhMuc")))
-                                    : "<img src=\"" + Eval("AnhBia") + "\" alt=\"\" />" %>
-                                <span class='card-cat-badge tag-<%# TinTucDAO.GetCatSlug(Convert.ToInt32(Eval("MaDanhMuc"))) %>'>
-                                    <%# TinTucDAO.GetCatIcon(Convert.ToInt32(Eval("MaDanhMuc"))) %>
-                                    <%# Eval("TenDanhMuc") %>
-                                </span>
-                            </div>
+                <div class='news-card-item reveal <%# new[]{"reveal-delay-1","reveal-delay-2","reveal-delay-3"}[Container.ItemIndex % 3] %>'
+                     data-date='<%# Convert.ToDateTime(Eval("NgayDang")).ToString("yyyyMMdd") %>'
+                     data-views='<%# Eval("LuotXem") %>'>
 
-                            <div class="card-body">
-                                <div class="card-meta">
-                                    <span>👤 <%# Eval("NguoiDang") %></span>
-                                    <span>📅 <%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
-                                </div>
-                                <h3 class="card-title"><%# Eval("TieuDe") %></h3>
-                                <p class="card-summary"><%# Eval("TomTat") %></p>
-                                <div class="card-footer">
-                                    <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
-                                       class="card-read-link">Đọc tiếp →</a>
-                                    <span class="card-views">👁 <%# Eval("LuotXem") %></span>
-                                </div>
-                            </div>
+                    <!-- ẢNH -->
+                    <div class="card-thumb">
+                        <img src='<%# Eval("AnhBia") == DBNull.Value ? "/images/no-image.png" : Eval("AnhBia") %>' 
+                             alt="" />
+
+                        <!-- DANH MỤC (TEXT ONLY) -->
+                        <span class="card-cat-badge">
+                            <%# Eval("TenDanhMuc") %>
+                        </span>
+                    </div>
+
+                    <!-- NỘI DUNG -->
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span><%# Eval("NguoiDang") %></span>
+                            <span><%# Convert.ToDateTime(Eval("NgayDang")).ToString("dd/MM/yyyy") %></span>
                         </div>
-                    </ItemTemplate>
-                </asp:Repeater>
-            </div>
-        </asp:Panel>
+
+                        <h3 class="card-title">
+                            <%# Eval("TieuDe") %>
+                        </h3>
+
+                        <p class="card-summary">
+                            <%# Eval("TomTat") %>
+                        </p>
+
+                        <div class="card-footer">
+                            <a href='/ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>'
+                               class="card-read-link">
+                                Đọc tiếp →
+                            </a>
+
+                            <span class="card-views">
+                                <%# Eval("LuotXem") %> lượt xem
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </ItemTemplate>
+        </asp:Repeater>
+    </div>
+</asp:Panel>
 
         <!-- ── EMPTY STATE ─────────────────────────────────────── -->
         <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
             <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
+                <div class="empty-state-icon"></div>
                 <h3>Chưa có bài viết nào</h3>
                 <p>Vui lòng quay lại sau.</p>
             </div>
@@ -539,7 +569,7 @@
 
         <!-- Empty state client-side (lọc JS không tìm thấy) -->
         <div class="empty-state" id="emptyState" style="display:none">
-            <div class="empty-state-icon">🔍</div>
+            <div class="empty-state-icon"></div>
             <h3>Không tìm thấy bài viết</h3>
             <p>Thử thay đổi từ khóa hoặc chọn danh mục khác.</p>
         </div>
