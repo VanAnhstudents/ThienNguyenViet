@@ -29,5 +29,20 @@ ORDER BY NgayDang DESC";
             return KetNoiDB.GetDataTable(sql, CommandType.Text,
                 KetNoiDB.P("@n", soLuong));
         }
+        public static DataRow LayChiTiet(int maTin)
+        {
+            string sql = @"
+        SELECT *
+        FROM dbo.TinTuc
+        WHERE MaTinTuc = @id AND TrangThai = 1";
+
+            DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text,
+                KetNoiDB.P("@id", maTin));
+
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0];
+
+            return null;
+        }
     }
 }

@@ -29,7 +29,7 @@
     min-height: 640px;
     display: flex;
     align-items: center;
-    background: url('/Content/images/banner.png') center/cover no-repeat;
+    background: url('https://res.cloudinary.com/dwzzfzxjh/image/upload/v1776450516/z7736959856691_2c1a304cf33c172680a2e2c5b8336111_nanuhg.jpg') center/cover no-repeat;
 }
 
     .hero::after {
@@ -452,10 +452,6 @@
         <p class="hero-sub">
             Mỗi đóng góp của bạn — dù nhỏ bé — đều có thể thay đổi cuộc đời của một người.
         </p>
-
-        <div class="hero-banner-img">
-            <img src="https://res.cloudinary.com/dwzzfzxjh/image/upload/v1776326569/chien-dich-quang-trung-3-642-8949jpg-17653061921601508835318.jpg" alt="Banner chiến dịch" />
-        </div>
     </div>
 </section>
 
