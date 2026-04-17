@@ -10,7 +10,7 @@
     <link href="Content/css/style.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server" />
-
+    
     <style>
         /* ═══════════════════════════════════════════════════════
            SITE-WIDE: HEADER
@@ -58,10 +58,15 @@
         .site-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.09); }
 
         .header-inner {
-            max-width: 1200px; margin: 0 auto; padding: 0 24px;
-            width: 100%;
-            display: flex; align-items: center; gap: 32px;
-        }
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
         /* Logo */
         .site-logo {
@@ -98,7 +103,12 @@
         .site-nav a.active { background: #EAF5EE; color: var(--mau-chinh); font-weight: 600; }
 
         /* Header actions */
-        .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
 
         .btn-header-login {
             height: 36px; padding: 0 18px;
@@ -253,43 +263,72 @@
 <body>
 <form id="form1" runat="server">
     <asp:ScriptManager runat="server"></asp:ScriptManager>
-
-    <%-- ══ Urgent Banner ══ --%>
-    <div class="urgent-banner" id="urgentBanner">
-        <span>🚨</span>
-        <span>Lũ lụt miền Trung: Khẩn cấp cần sự hỗ trợ của bạn!</span>
-        <a href="/DanhSachChienDich.aspx">Quyên góp ngay →</a>
-        <button class="urgent-close" onclick="document.getElementById('urgentBanner').remove()">✕</button>
-    </div>
-
     <%-- ══ Header ══ --%>
     <header class="site-header" id="siteHeader">
-        <div class="header-inner">
+    <div class="header-inner">
 
-            <a href="<%= ResolveUrl("~/TrangChu.aspx") %>" class="site-logo">
-                <div class="site-logo-icon">🌿</div>
-                <div class="site-logo-text">
-                    <strong>Thiện Nguyện Việt</strong>
-                    <span>Chung tay vì cộng đồng</span>
+        <!-- LOGO -->
+        <a href="/TrangChu.aspx" class="site-logo">
+            <div class="site-logo-icon">🌿</div>
+            <div class="site-logo-text">
+                <strong>Thiện Nguyện Việt</strong>
+                <span>Chung tay vì cộng đồng</span>
+            </div>
+        </a>
+
+        <!-- MENU -->
+        <ul class="site-nav">
+    <li><a id="menuTrangChu" runat="server" class="nav-item" href="/TrangChu.aspx">Trang chủ</a></li>
+    <li><a id="menuChienDich" runat="server" class="nav-item" href="/DanhSachChienDich.aspx">Chiến dịch</a></li>
+    <li><a id="menuTinTuc" runat="server" class="nav-item" href="/DanhSachTinTuc.aspx">Tin tức</a></li>
+    <li><a id="menuLienHe" runat="server" class="nav-item" href="/LienHe.aspx">Liên hệ</a></li>
+    <li><a id="menuHoSo" runat="server" class="nav-item" href="/HoSo.aspx">Hồ sơ</a></li>
+</ul>
+
+        <!-- ACTIONS (BÊN PHẢI) -->
+        <div class="header-actions">
+
+            <!-- Đăng nhập -->
+            <asp:HyperLink ID="lnkLogin" runat="server"
+                CssClass="btn-header-login"
+                Text="Đăng nhập"
+                NavigateUrl="~/DangNhap.aspx">
+            </asp:HyperLink>
+
+            <!-- Avatar -->
+            <asp:Panel ID="pnlUser" runat="server" Visible="false">
+                <div style="position:relative;">
+                    <div class="header-avatar" onclick="toggleUserMenu()">
+                        <asp:Literal ID="litAvatar" runat="server"></asp:Literal>
+                    </div>
+
+                    <div id="userMenu" style="
+                        display:none;
+                        position:absolute;
+                        right:0;
+                        top:45px;
+                        background:#fff;
+                        border:1px solid #eee;
+                        border-radius:10px;
+                        box-shadow:0 6px 20px rgba(0,0,0,.1);
+                        min-width:180px;
+                        overflow:hidden;
+                        z-index:999;">
+                        <a href="/HoSo.aspx" style="display:block;padding:10px 15px;">Hồ sơ</a>
+                        <a href="/DangXuat.aspx" style="display:block;padding:10px 15px;">Đăng xuất</a>
+                    </div>
                 </div>
+            </asp:Panel>
+
+            <!-- Quyên góp -->
+            <a href="<%= ResolveUrl("~/DanhSachChienDich.aspx") %>" class="btn-header-donate">
+                Quyên góp
             </a>
 
-            <ul class="site-nav">
-                <li><a href="<%= ResolveUrl("~/TrangChu.aspx") %>">Trang chủ</a></li>
-                <li><a href="<%= ResolveUrl("~/DanhSachChienDich.aspx") %>">Chiến dịch</a></li>
-                <li><a href="<%= ResolveUrl("~/DanhSachTinTuc.aspx") %>">Tin tức</a></li>
-                <li><a href="<%= ResolveUrl("~/GioiThieu.aspx") %>">Giới thiệu</a></li>
-                <li><a href="<%= ResolveUrl("~/LienHe.aspx") %>">Liên hệ</a></li>
-                <li><a href="<%= ResolveUrl("~/HoSo.aspx") %>">Hồ sơ</a></li>
-            </ul>
-
-            <div class="header-actions">
-                <a href="<%= ResolveUrl("~/DangNhap.aspx") %>" class="btn-header-login">Đăng nhập</a>
-                <a href="<%= ResolveUrl("~/DanhSachChienDich.aspx") %>" class="btn-header-donate">❤ Quyên góp</a>
-            </div>
-
         </div>
-    </header>
+
+    </div>
+</header>
 
     <%-- ══ Page Content ══ --%>
     <div class="page-content">
@@ -358,7 +397,7 @@
                     <button class="newsletter-btn" onclick="return false;">Đăng ký</button>
                 </div>
                 <p style="font-size:11px;margin-top:10px;color:rgba(255,255,255,.35)">
-                    🔒 Thông tin của bạn được bảo mật tuyệt đối
+                     Thông tin của bạn được bảo mật tuyệt đối
                 </p>
             </div>
 
@@ -379,26 +418,43 @@
 
     <%-- Global scripts --%>
     <script>
-        // Header scroll effect
-        window.addEventListener('scroll', function () {
-            var h = document.getElementById('siteHeader');
-            if (window.scrollY > 30) h.classList.add('scrolled');
-            else h.classList.remove('scrolled');
+        function toggleUserMenu() {
+            var menu = document.getElementById("userMenu");
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        }
 
-            var btn = document.getElementById('scrollTopBtn');
-            if (window.scrollY > 400) btn.classList.add('visible');
-            else btn.classList.remove('visible');
-        });
+        document.addEventListener("click", function (e) {
+            var avatar = document.querySelector(".header-avatar");
+            var menu = document.getElementById("userMenu");
 
-        // Active nav
-        (function () {
-            var path = window.location.pathname.toLowerCase();
-            document.querySelectorAll('.site-nav a').forEach(function (a) {
-                if (a.getAttribute('href') && path.includes(a.getAttribute('href').split('/').pop().toLowerCase().replace('.aspx', ''))) {
-                    a.classList.add('active');
+            if (avatar && menu) {
+                if (!avatar.contains(e.target) && !menu.contains(e.target)) {
+                    menu.style.display = "none";
                 }
-            });
-        })();
+            }
+        });
+</script>
+    <script>
+        function toggleUserMenu() {
+            var menu = document.getElementById("userMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+
+        // click ra ngoài thì đóng menu
+        document.addEventListener("click", function (e) {
+            var avatar = document.querySelector(".header-avatar");
+            var menu = document.getElementById("userMenu");
+
+            if (avatar && menu) {
+                if (!avatar.contains(e.target) && !menu.contains(e.target)) {
+                    menu.style.display = "none";
+                }
+            }
+        });
     </script>
 
 </form>

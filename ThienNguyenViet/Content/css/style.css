@@ -118,3 +118,37 @@ h4 {
     border-radius: var(--r-pill);
     transition: width .4s ease;
 }
+
+/* ===== HERO ===== */
+.hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 640px;
+    display: flex;
+    align-items: center;
+    background: url('/Content/images/banner.png') center/cover no-repeat;
+}
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+    }
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+.site-nav a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #2D3748;
+}
+
+    .site-nav a.active {
+        background: #E6F4EA;
+        color: #2D7A4F;
+        font-weight: 600;
+    }
