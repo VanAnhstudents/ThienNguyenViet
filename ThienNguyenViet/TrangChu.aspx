@@ -29,39 +29,22 @@
 /* ═══════════════════════════════════════════════════════════════
    1. HERO BANNER
 ═══════════════════════════════════════════════════════════════ */
-.hero {
-    position: relative; overflow: hidden;
-    min-height: 640px; display: flex; align-items: center;
-}
-
-/* Slides */
-.hero-slides { position: absolute; inset: 0; z-index: 0; }
-.hero-slide {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    opacity: 0; transition: opacity 1s ease;
-}
-.hero-slide.active { opacity: 1; }
-.hero-slide::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(105deg,
-        rgba(10,40,20,.82) 0%,
-        rgba(10,40,20,.5) 50%,
-        rgba(10,40,20,.2) 100%);
-}
-
-/* Slide 1: Green forest */
-.hero-slide:nth-child(1) {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%25" stop-color="%23143D20"/><stop offset="100%25" stop-color="%232D7A4F"/></linearGradient></defs><rect width="1400" height="700" fill="url(%23g1)"/><circle cx="200" cy="600" r="180" fill="%231A4D2A" opacity=".5"/><circle cx="900" cy="100" r="250" fill="%231A4D2A" opacity=".3"/><circle cx="1200" cy="500" r="120" fill="%23276749" opacity=".4"/></svg>');
-}
-.hero-slide:nth-child(2) {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700"><defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%25" stop-color="%23192A40"/><stop offset="100%25" stop-color="%232B6CB0"/></linearGradient></defs><rect width="1400" height="700" fill="url(%23g2)"/><circle cx="300" cy="400" r="200" fill="%231A365D" opacity=".5"/><circle cx="1100" cy="200" r="300" fill="%232C5282" opacity=".3"/></svg>');
-}
-.hero-slide:nth-child(3) {
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="700"><defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%25" stop-color="%23402010"/><stop offset="100%25" stop-color="%23C0651A"/></linearGradient></defs><rect width="1400" height="700" fill="url(%23g3)"/><circle cx="700" cy="700" r="300" fill="%23744210" opacity=".4"/><circle cx="100" cy="100" r="200" fill="%23C05621" opacity=".2"/></svg>');
-}
-
 /* Hero content */
+.hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 640px;
+    display: flex;
+    align-items: center;
+    background: url('/Content/images/banner.png') center/cover no-repeat;
+}
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+    }
 .hero-content {
     position: relative; z-index: 1;
     max-width: 1200px; margin: 0 auto; padding: 0 24px;
@@ -77,7 +60,7 @@
     margin-bottom: 20px;
     animation: heroFadeUp .8s ease both;
 }
-.hero-label::before { content: '●'; color: #4CAF50; animation: pulse 2s infinite; }
+.hero-label::before { content: '●'; color: #4CAF50 }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
 
 .hero h1 {
@@ -282,14 +265,6 @@
     transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
     position: relative; overflow: hidden;
 }
-.campaign-progress-fill::after {
-    content: ''; position: absolute; top: 0; right: 0; bottom: 0;
-    width: 40px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.4));
-    animation: shimmer 2s infinite;
-}
-@keyframes shimmer { from{transform:translateX(-40px)} to{transform:translateX(40px)} }
-
 .campaign-money-row {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 16px;
@@ -544,31 +519,23 @@
      1. HERO BANNER
 ═══════════════════════════════════════════════════════════════ -->
 <section class="hero">
-    <div class="hero-slides">
-        <div class="hero-slide active"></div>
-        <div class="hero-slide"></div>
-        <div class="hero-slide"></div>
-    </div>
 
     <div class="hero-content">
         <div class="hero-label">Đã hoạt động từ năm 2020</div>
-        <h1>Chung tay vì<br/><em>cộng đồng Việt</em></h1>
-        <p class="hero-sub">Mỗi đóng góp của bạn — dù nhỏ bé — đều có thể thay đổi cuộc đời của một người. Hãy cùng chúng tôi lan tỏa yêu thương.</p>
+
+        <h1>
+            Chung tay vì<br/>
+            <em>cộng đồng Việt</em>
+        </h1>
+
+        <p class="hero-sub">
+            Mỗi đóng góp của bạn — dù nhỏ bé — đều có thể thay đổi cuộc đời của một người.
+        </p>
+
         <div class="hero-ctas">
-            <a href="/DanhSachChienDich.aspx" class="hero-cta-main">🎯 Xem chiến dịch</a>
-            <a href="/DanhSachChienDich.aspx" class="hero-cta-donate">❤ Quyên góp ngay</a>
+            <a href="/DanhSachChienDich.aspx" class="hero-cta-main">Xem chiến dịch</a>
+            <a href="/DanhSachChienDich.aspx" class="hero-cta-donate">Quyên góp ngay</a>
         </div>
-    </div>
-
-    <div class="hero-dots">
-        <button class="hero-dot active" data-slide="0"></button>
-        <button class="hero-dot" data-slide="1"></button>
-        <button class="hero-dot" data-slide="2"></button>
-    </div>
-
-    <div class="hero-scroll">
-        <div class="hero-scroll-line"></div>
-        <span style="writing-mode:vertical-rl">Cuộn xuống</span>
     </div>
 </section>
 
@@ -578,34 +545,38 @@
 <section class="counter-section">
     <div class="container">
         <div class="counter-grid">
+
+            <!-- Tổng tiền -->
             <div class="counter-card">
-                <span class="counter-icon">💰</span>
+                <span class="counter-icon"></span>
                 <div class="counter-number">
-                    <span class="js-count" data-target="12400000000" data-suffix="đ" data-format="billion">0</span>
+                    <span class="js-count" 
+                          data-target="<%= TongTienRaw %>" 
+                          data-suffix="đ" 
+                          data-format="billion">0</span>
                 </div>
                 <div class="counter-label">Tổng tiền quyên góp</div>
             </div>
+
+            <!-- Chiến dịch -->
             <div class="counter-card">
-                <span class="counter-icon">🎯</span>
+                <span class="counter-icon"></span>
                 <div class="counter-number">
-                    <span class="js-count" data-target="128" data-suffix="+">0</span>
+                    <span class="js-count" 
+                          data-target="<%= TongChienDich %>" 
+                          data-suffix="" >0</span>
                 </div>
                 <div class="counter-label">Chiến dịch thành công</div>
             </div>
+
+            <!-- Người tham gia -->
             <div class="counter-card">
-                <span class="counter-icon">🤝</span>
+                <span class="counter-icon"></span>
                 <div class="counter-number">
-                    <span class="js-count" data-target="47000" data-suffix="+" data-format="k">0</span>
+                    <span class="js-count" 
+                          data-target="<%= TongNguoiThamGia %>">0</span>
                 </div>
                 <div class="counter-label">Người tham gia</div>
-            </div>
-            <div class="counter-card">
-                <span class="counter-icon">🗺️</span>
-                <div class="counter-number">
-                    <span class="js-count" data-target="52" data-suffix="">0</span>
-                </div>
-                <div class="counter-label">Tỉnh thành được hỗ trợ</div>
-            </div>
         </div>
     </div>
 </section>
@@ -618,7 +589,7 @@
 
         <div class="campaigns-header">
             <div class="reveal">
-                <div class="section-badge">🌟 Chiến dịch tiêu biểu</div>
+                <div class="section-badge">Chiến dịch tiêu biểu</div>
                 <h2 class="section-title">Những chiến dịch<br/>đang cần bạn</h2>
             </div>
             <a href="/DanhSachChienDich.aspx" class="view-all-link reveal">
@@ -628,84 +599,58 @@
 
         <div class="campaigns-grid">
 
-            <!-- Card 1: Lũ lụt miền Trung -->
-            <div class="campaign-card reveal reveal-delay-1">
+            <asp:Repeater ID="rptChienDich" runat="server">
+            <ItemTemplate>
+
+            <div class="campaign-card">
+
                 <div class="campaign-thumb">
-                    🌊
-                    <span class="campaign-cat-badge" style="background:rgba(229,62,62,.85);color:#fff">🚨 Cứu trợ thiên tai</span>
-                    <span class="campaign-urgent-badge">Khẩn cấp</span>
+                    <img src='<%# GetImage(Eval("AnhBia")) %>' />
                 </div>
+
                 <div class="campaign-body">
-                    <h3 class="campaign-name">Hỗ trợ đồng bào lũ lụt miền Trung 2026</h3>
-                    <p class="campaign-desc">Quyên góp hỗ trợ người dân miền Trung bị ảnh hưởng bởi đợt lũ lịch sử tháng 3/2026.</p>
+
+                    <div class="campaign-name">
+                        <%# Eval("TenChienDich") %>
+                    </div>
+
+                    <div class="campaign-desc">
+                        Chiến dịch đang được cập nhật...
+                    </div>
 
                     <div class="campaign-progress-bar">
-                        <div class="campaign-progress-fill js-progress" data-pct="64" style="width:0%"></div>
-                    </div>
-                    <div class="campaign-money-row">
-                        <div>
-                            <div class="campaign-raised">320 triệu đ</div>
-                            <div class="campaign-goal">/ 500 triệu mục tiêu</div>
+                        <div class="campaign-progress-fill"
+                             style='width:<%# Eval("PhanTram") %>%'>
                         </div>
-                        <div class="campaign-pct">64%</div>
                     </div>
 
-                    <a href="/ChiTietChienDich.aspx?id=1" class="btn-donate-card">❤ Góp ngay</a>
+                    <div class="campaign-money-row">
+                        <span class="campaign-raised">
+                            <%# String.Format("{0:N0}", Eval("SoTienDaQuyen")) %>đ
+                        </span>
+
+                        <span class="campaign-goal">
+                            / <%# String.Format("{0:N0}", Eval("MucTieu")) %>
+                        </span>
+
+                        <span class="campaign-pct">
+                            <%# Eval("PhanTram") %>%
+                        </span>
+                    </div>
+
+                    <a href="#" class="btn-donate-card">
+                        Quyên góp ngay
+                    </a>
+
                 </div>
+
             </div>
 
-            <!-- Card 2: Tim bẩm sinh -->
-            <div class="campaign-card reveal reveal-delay-2">
-                <div class="campaign-thumb">
-                    ❤️‍🩹
-                    <span class="campaign-cat-badge" style="background:rgba(214,158,46,.85);color:#fff">🏥 Y tế cộng đồng</span>
-                </div>
-                <div class="campaign-body">
-                    <h3 class="campaign-name">Phẫu thuật tim miễn phí cho trẻ em nghèo</h3>
-                    <p class="campaign-desc">Hỗ trợ chi phí phẫu thuật tim bẩm sinh cho 20 trẻ em có hoàn cảnh khó khăn tại ĐBSCL.</p>
-
-                    <div class="campaign-progress-bar">
-                        <div class="campaign-progress-fill js-progress" data-pct="48" style="width:0%"></div>
-                    </div>
-                    <div class="campaign-money-row">
-                        <div>
-                            <div class="campaign-raised">950 triệu đ</div>
-                            <div class="campaign-goal">/ 2 tỷ mục tiêu</div>
-                        </div>
-                        <div class="campaign-pct">48%</div>
-                    </div>
-
-                    <a href="/ChiTietChienDich.aspx?id=3" class="btn-donate-card">❤ Góp ngay</a>
-                </div>
-            </div>
-
-            <!-- Card 3: Học bổng -->
-            <div class="campaign-card reveal reveal-delay-3">
-                <div class="campaign-thumb">
-                    📚
-                    <span class="campaign-cat-badge" style="background:rgba(49,130,206,.85);color:#fff">🎓 Học bổng</span>
-                </div>
-                <div class="campaign-body">
-                    <h3 class="campaign-name">Học bổng "Thắp sáng ước mơ" cho học sinh vùng cao</h3>
-                    <p class="campaign-desc">Trao học bổng cho 50 học sinh dân tộc thiểu số có hoàn cảnh khó khăn tại miền núi phía Bắc.</p>
-
-                    <div class="campaign-progress-bar">
-                        <div class="campaign-progress-fill js-progress" data-pct="62" style="width:0%"
-                             style="background: linear-gradient(90deg, #3182CE, #63B3ED)"></div>
-                    </div>
-                    <div class="campaign-money-row">
-                        <div>
-                            <div class="campaign-raised">185 triệu đ</div>
-                            <div class="campaign-goal">/ 300 triệu mục tiêu</div>
-                        </div>
-                        <div class="campaign-pct">62%</div>
-                    </div>
-
-                    <a href="/ChiTietChienDich.aspx?id=2" class="btn-donate-card">❤ Góp ngay</a>
-                </div>
-            </div>
+            </ItemTemplate>
+            </asp:Repeater>
 
         </div>
+
     </div>
 </section>
 
@@ -715,7 +660,7 @@
 <section class="categories-section">
     <div class="container">
         <div style="text-align:center" class="reveal">
-            <div class="section-badge">📂 Danh mục</div>
+            <div class="section-badge">Danh mục</div>
             <h2 class="section-title">Chúng tôi hoạt động<br/>trong lĩnh vực nào?</h2>
             <p class="section-sub" style="margin:0 auto">Từ cứu trợ khẩn cấp đến giáo dục dài hạn — mỗi chiến dịch là một bước thay đổi cuộc sống.</p>
         </div>
@@ -723,28 +668,22 @@
         <div class="categories-grid">
 
             <a href="/DanhSachChienDich.aspx?danhmuc=1" class="category-card cat-red reveal reveal-delay-1">
-                <div class="category-icon-wrap">🌊</div>
                 <div class="category-name">Cứu trợ thiên tai</div>
                 <div class="category-desc">Hỗ trợ khẩn cấp đồng bào bị ảnh hưởng bởi bão lũ, hạn hán, dịch bệnh.</div>
                 <span class="category-count">12 chiến dịch</span>
             </a>
 
             <a href="/DanhSachChienDich.aspx?danhmuc=2" class="category-card cat-blue reveal reveal-delay-2">
-                <div class="category-icon-wrap">🎓</div>
-                <div class="category-name">Học bổng & Giáo dục</div>
                 <div class="category-desc">Trao học bổng, xây trường, hỗ trợ học sinh khó khăn vươn lên tương lai.</div>
                 <span class="category-count">28 chiến dịch</span>
             </a>
 
             <a href="/DanhSachChienDich.aspx?danhmuc=3" class="category-card cat-yellow reveal reveal-delay-3">
-                <div class="category-icon-wrap">🏥</div>
-                <div class="category-name">Y tế cộng đồng</div>
                 <div class="category-desc">Khám chữa bệnh miễn phí, phẫu thuật, hỗ trợ thuốc men cho người nghèo.</div>
                 <span class="category-count">19 chiến dịch</span>
             </a>
 
             <a href="/DanhSachChienDich.aspx?danhmuc=4" class="category-card cat-green reveal" style="transition-delay:.4s">
-                <div class="category-icon-wrap">🌱</div>
                 <div class="category-name">Môi trường & Cây xanh</div>
                 <div class="category-desc">Trồng rừng, bảo vệ nguồn nước, xây dựng môi trường sống bền vững.</div>
                 <span class="category-count">9 chiến dịch</span>
@@ -761,72 +700,59 @@
     <div class="container">
 
         <div style="text-align:center;margin-bottom:0" class="reveal">
-            <div class="section-badge">📰 Tin tức & Câu chuyện</div>
-            <h2 class="section-title">Những câu chuyện<br/>truyền cảm hứng</h2>
+            <div class="section-badge">Tin tức & Câu chuyện</div>
+            <h2 class="section-title">
+                Những câu chuyện<br/>truyền cảm hứng
+            </h2>
         </div>
 
         <div class="news-grid">
 
-            <div class="news-card reveal reveal-delay-1">
-                <div class="news-thumb">
-                    🤝
-                    <span class="news-cat" style="background:rgba(229,62,62,.85);color:#fff">Hoạt động</span>
-                </div>
-                <div class="news-body">
-                    <div class="news-meta">
-                        <span>👤 Admin</span>
-                        <span>📅 07/03/2026</span>
-                        <span>👁 1.2K</span>
-                    </div>
-                    <h3 class="news-title">Thiện Nguyện Việt trao 500 phần quà cho bà con miền Trung</h3>
-                    <p class="news-summary">Ngày 05/03/2026, đoàn thiện nguyện gồm 30 thành viên đã lên đường đến Quảng Bình để trao tận tay 500 phần quà cho người dân vùng lũ...</p>
-                    <a href="/ChiTietTinTuc.aspx?id=1" class="news-link">Đọc tiếp →</a>
-                </div>
-            </div>
+            <asp:Repeater ID="rptTinTuc" runat="server">
+            <ItemTemplate>
 
-            <div class="news-card reveal reveal-delay-2">
-                <div class="news-thumb">
-                    ❤️‍🩹
-                    <span class="news-cat" style="background:rgba(56,161,105,.85);color:#fff">Câu chuyện</span>
-                </div>
-                <div class="news-body">
-                    <div class="news-meta">
-                        <span>👤 Admin</span>
-                        <span>📅 20/02/2026</span>
-                        <span>👁 3.6K</span>
-                    </div>
-                    <h3 class="news-title">Cậu bé 8 tuổi được cứu sống nhờ ca phẫu thuật tim từ quỹ từ thiện</h3>
-                    <p class="news-summary">Em Nguyễn Văn Khôi (8 tuổi, Cần Thơ) mắc bệnh tim bẩm sinh từ nhỏ. Nhờ sự hỗ trợ của chương trình, em đã được phẫu thuật thành công...</p>
-                    <a href="/ChiTietTinTuc.aspx?id=2" class="news-link">Đọc tiếp →</a>
-                </div>
-            </div>
+                <div class="news-card reveal">
+                    <div class="news-thumb">
+                        <img src='<%# GetImage(Eval("AnhBia")) %>' 
+                             onerror="this.src='/Content/images/banner.png'" />
 
-            <div class="news-card reveal reveal-delay-3">
-                <div class="news-thumb">
-                    📢
-                    <span class="news-cat" style="background:rgba(49,130,206,.85);color:#fff">Thông báo</span>
-                </div>
-                <div class="news-body">
-                    <div class="news-meta">
-                        <span>👤 Admin</span>
-                        <span>📅 12/03/2026</span>
-                        <span>👁 892</span>
+                        <span class="news-cat">Tin tức</span>
                     </div>
-                    <h3 class="news-title">Mở đăng ký tình nguyện viên đợt 2 năm 2026</h3>
-                    <p class="news-summary">Thiện Nguyện Việt mở đăng ký tình nguyện viên cho các chuyến đi thiện nguyện dự kiến diễn ra trong tháng 4 và tháng 5/2026...</p>
-                    <a href="/ChiTietTinTuc.aspx?id=3" class="news-link">Đọc tiếp →</a>
+
+                    <div class="news-body">
+                        <div class="news-meta">
+                            <span>Admin</span>
+                            <span><%# Eval("NgayDang","{0:dd/MM/yyyy}") %></span>
+                            <span><%# Eval("LuotXem") %></span>
+                        </div>
+
+                        <h3 class="news-title">
+                            <%# Eval("TieuDe") %>
+                        </h3>
+                        <p class="news-summary">
+                            <%# Eval("TomTat") %>
+                        </p>
+
+                        <a href='ChiTietTinTuc.aspx?id=<%# Eval("MaTinTuc") %>' 
+                           class="news-link">
+                            Đọc tiếp →
+                        </a>
+                    </div>
                 </div>
-            </div>
+
+            </ItemTemplate>
+            </asp:Repeater>
 
         </div>
 
         <div class="news-footer reveal">
-            <a href="/DanhSachTinTuc.aspx" class="btn-view-all">📰 Xem tất cả tin tức</a>
+            <a href="/DanhSachTinTuc.aspx" class="btn-view-all">
+                Xem tất cả tin tức
+            </a>
         </div>
 
     </div>
 </section>
-
 <!-- ═══════════════════════════════════════════════════════════
      CTA BANNER
 ═══════════════════════════════════════════════════════════════ -->
@@ -835,151 +761,117 @@
         <h2>Bạn muốn tạo ra sự thay đổi?</h2>
         <p>Hãy cùng hàng nghìn người Việt đang chung tay xây dựng một cộng đồng tốt đẹp hơn.</p>
         <div class="cta-banner-btns">
-            <a href="/DanhSachChienDich.aspx" class="btn-cta-white">🎯 Xem chiến dịch</a>
-            <a href="/DangKy.aspx" class="btn-cta-outline">🤝 Đăng ký tình nguyện viên</a>
+            <a href="/DanhSachChienDich.aspx" class="btn-cta-white">Xem chiến dịch</a>
+            <a href="/DangKy.aspx" class="btn-cta-outline">Đăng ký tình nguyện viên</a>
         </div>
     </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     6. ĐỐI TÁC
-═══════════════════════════════════════════════════════════════ -->
-<section class="partners-section">
-    <div class="container">
-        <div class="partners-title reveal">Đối tác & Nhà tài trợ tin cậy</div>
-        <div class="partners-track">
-            <div class="partners-strip" id="partnersStrip">
-                <div class="partner-logo">Hội Chữ Thập Đỏ VN</div>
-                <div class="partner-logo">Quỹ Bảo trợ Trẻ em</div>
-                <div class="partner-logo">Vietcombank</div>
-                <div class="partner-logo">Bệnh Viện Nhi Đồng 1</div>
-                <div class="partner-logo">UNICEF Việt Nam</div>
-                <div class="partner-logo">Trung tâm BVMT Việt</div>
-                <div class="partner-logo">Bộ Lao động TBXH</div>
-                <div class="partner-logo">VietinBank</div>
-                <div class="partner-logo">Hội Thầy thuốc Trẻ</div>
-            </div>
-            <%-- Duplicate strip for infinite scroll --%>
-            <div class="partners-strip" aria-hidden="true">
-                <div class="partner-logo">Hội Chữ Thập Đỏ VN</div>
-                <div class="partner-logo">Quỹ Bảo trợ Trẻ em</div>
-                <div class="partner-logo">Vietcombank</div>
-                <div class="partner-logo">Bệnh Viện Nhi Đồng 1</div>
-                <div class="partner-logo">UNICEF Việt Nam</div>
-                <div class="partner-logo">Trung tâm BVMT Việt</div>
-                <div class="partner-logo">Bộ Lao động TBXH</div>
-                <div class="partner-logo">VietinBank</div>
-                <div class="partner-logo">Hội Thầy thuốc Trẻ</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
      SCRIPTS
 ═══════════════════════════════════════════════════════════════ -->
 <script>
-(function () {
+    (function () {
 
-    /* ── 1. Hero Slider ──────────────────────────────────────── */
-    var slides    = document.querySelectorAll('.hero-slide');
-    var dots      = document.querySelectorAll('.hero-dot');
-    var current   = 0;
-    var slideTimer;
+        /* ── 1. Hero Slider ──────────────────────────────────────── */
+        var slides = document.querySelectorAll('.hero-slide');
+        var dots = document.querySelectorAll('.hero-dot');
+        var current = 0;
+        var slideTimer;
 
-    function goToSlide(n) {
-        slides[current].classList.remove('active');
-        dots[current].classList.remove('active');
-        current = (n + slides.length) % slides.length;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
-    }
-
-    function autoSlide() {
-        slideTimer = setInterval(function () { goToSlide(current + 1); }, 5000);
-    }
-
-    dots.forEach(function (dot, i) {
-        dot.addEventListener('click', function () {
-            clearInterval(slideTimer);
-            goToSlide(i);
-            autoSlide();
-        });
-    });
-
-    autoSlide();
-
-    /* ── 2. Counter Animation ────────────────────────────────── */
-    function animateCount(el) {
-        var target   = parseFloat(el.dataset.target);
-        var format   = el.dataset.format || 'normal';
-        var suffix   = el.dataset.suffix || '';
-        var duration = 2200;
-        var startTime = null;
-
-        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var progress = Math.min((timestamp - startTime) / duration, 1);
-            var value    = Math.floor(easeOutCubic(progress) * target);
-
-            var display;
-            if (format === 'billion') {
-                display = (value / 1e9).toFixed(1) + ' tỷ';
-            } else if (format === 'k') {
-                display = (value >= 1000) ? (value / 1000).toFixed(0) + 'K' : value;
-            } else {
-                display = value.toLocaleString('vi-VN');
-            }
-
-            el.textContent = display + (progress < 1 ? '' : suffix);
-
-            if (progress < 1) requestAnimationFrame(step);
-            else el.textContent = (format === 'billion' ? (target / 1e9).toFixed(1) + ' tỷ' :
-                                   format === 'k' ? (target / 1000).toFixed(0) + 'K' :
-                                   target.toLocaleString('vi-VN')) + suffix;
+        function goToSlide(n) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (n + slides.length) % slides.length;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
         }
 
-        requestAnimationFrame(step);
-    }
+        function autoSlide() {
+            slideTimer = setInterval(function () { goToSlide(current + 1); }, 5000);
+        }
 
-    /* ── 3. Progress Bars ────────────────────────────────────── */
-    function animateProgress(el) {
-        var pct = el.dataset.pct;
-        setTimeout(function () { el.style.width = pct + '%'; }, 300);
-    }
-
-    /* ── 4. Intersection Observer ────────────────────────────── */
-    var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-
-            var el = entry.target;
-
-            // Reveal
-            if (el.classList.contains('reveal')) {
-                el.classList.add('visible');
-            }
-
-            // Counter
-            if (el.classList.contains('js-count')) {
-                animateCount(el);
-                io.unobserve(el);
-            }
-
-            // Progress
-            if (el.classList.contains('js-progress')) {
-                animateProgress(el);
-                io.unobserve(el);
-            }
+        dots.forEach(function (dot, i) {
+            dot.addEventListener('click', function () {
+                clearInterval(slideTimer);
+                goToSlide(i);
+                autoSlide();
+            });
         });
-    }, { threshold: 0.15 });
 
-    document.querySelectorAll('.reveal, .js-count, .js-progress').forEach(function (el) {
-        io.observe(el);
-    });
+        autoSlide();
 
-})();
+        /* ── 2. Counter Animation ────────────────────────────────── */
+        function animateCount(el) {
+            var target = parseFloat(el.dataset.target);
+            var format = el.dataset.format || 'normal';
+            var suffix = el.dataset.suffix || '';
+            var duration = 2200;
+            var startTime = null;
+
+            function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var progress = Math.min((timestamp - startTime) / duration, 1);
+                var value = Math.floor(easeOutCubic(progress) * target);
+
+                var display;
+                if (format === 'billion') {
+                    display = (value / 1e9).toFixed(1) + ' tỷ';
+                } else if (format === 'k') {
+                    display = (value >= 1000) ? (value / 1000).toFixed(0) + 'K' : value;
+                } else {
+                    display = value.toLocaleString('vi-VN');
+                }
+
+                el.textContent = display + (progress < 1 ? '' : suffix);
+
+                if (progress < 1) requestAnimationFrame(step);
+                else el.textContent = (format === 'billion' ? (target / 1e9).toFixed(1) + ' tỷ' :
+                    format === 'k' ? (target / 1000).toFixed(0) + 'K' :
+                        target.toLocaleString('vi-VN')) + suffix;
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        /* ── 3. Progress Bars ────────────────────────────────────── */
+        function animateProgress(el) {
+            var pct = el.dataset.pct;
+            setTimeout(function () { el.style.width = pct + '%'; }, 300);
+        }
+
+        /* ── 4. Intersection Observer ────────────────────────────── */
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+
+                var el = entry.target;
+
+                // Reveal
+                if (el.classList.contains('reveal')) {
+                    el.classList.add('visible');
+                }
+
+                // Counter
+                if (el.classList.contains('js-count')) {
+                    animateCount(el);
+                    io.unobserve(el);
+                }
+
+                // Progress
+                if (el.classList.contains('js-progress')) {
+                    animateProgress(el);
+                    io.unobserve(el);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal, .js-count, .js-progress').forEach(function (el) {
+            io.observe(el);
+        });
+
+    })();
 </script>
 </asp:Content>

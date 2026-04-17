@@ -82,6 +82,7 @@
     <Content Include="ChiTietTinTuc.aspx" />
     <Content Include="Content\css\admin.css" />
     <Content Include="Content\css\style.css" />
+    <Content Include="Content\images\banner.png" />
     <Content Include="DangKy.aspx" />
     <Content Include="DangNhap.aspx" />
     <Content Include="DangXuat.aspx" />

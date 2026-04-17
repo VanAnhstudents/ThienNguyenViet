@@ -76,6 +76,7 @@ ORDER BY NgayDang DESC";
 SELECT TOP (@n)
     MaChienDich,
     TenChienDich,
+    AnhBia,
     MucTieu,
     SoTienDaQuyen,
     CASE WHEN MucTieu = 0 THEN 0
