@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="QuyenGop.aspx.cs" Inherits="ThienNguyenViet.QuyenGop" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-   <style>
+  <style>
         /* Giữ nguyên phần CSS của bạn */
         .qg-page { background-color: #fcfdfc; padding-bottom: 80px; }
         .breadcrumb-bar { background: #F6FBF7; border-bottom: 1px solid var(--vien); padding: 12px 0; }
@@ -33,8 +33,8 @@
         .summary-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
         .summary-content { padding: 20px; }
         .summary-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 12px; line-height: 1.4; }
-        .progress-bar-wrap { background: #fff; height: 10px; border-radius: 6px; margin: 15px 0 8px; overflow: hidden; border: 1px solid #000; }
-        .progress-bar-fill { background: #2D7A4F; height: 100%; border-radius: 5px; }
+        .progress-bar-wrap { background: #edf2f7; height: 8px; border-radius: 99px; margin: 15px 0 8px; overflow: hidden; }
+        .progress-bar-fill { background: linear-gradient(90deg, var(--mau-chinh), var(--mau-chinh-hover)); height: 100%; border-radius: 99px; }
         .summary-stats { display: flex; justify-content: space-between; font-size: 13px; color: var(--chu-phu); }
         .summary-stats strong { color: var(--mau-chinh); }
         .stat-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 14px; color: var(--chu-than); }
@@ -48,7 +48,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-     <div class="qg-page">
+   <div class="qg-page">
 
         <div class="breadcrumb-bar">
             <div class="breadcrumb-inner">
