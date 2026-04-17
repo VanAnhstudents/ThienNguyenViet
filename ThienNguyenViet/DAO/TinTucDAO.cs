@@ -53,17 +53,19 @@ ORDER BY tt.NgayDang DESC";
         public static DataRow LayChiTiet(int maTin)
         {
             string sql = @"
-        SELECT *
-        FROM dbo.TinTuc
-        WHERE MaTinTuc = @id AND TrangThai = 1";
+    SELECT 
+        tt.*,
+        dm.TenDanhMuc,
+        nd.HoTen AS NguoiDang
+    FROM dbo.TinTuc tt
+    INNER JOIN dbo.DanhMucTinTuc dm ON tt.MaDanhMuc = dm.MaDanhMuc
+    INNER JOIN dbo.NguoiDung nd ON tt.MaNguoiDang = nd.MaNguoiDung
+    WHERE tt.MaTinTuc = @id AND tt.TrangThai = 1";
 
             DataTable dt = KetNoiDB.GetDataTable(sql, CommandType.Text,
                 KetNoiDB.P("@id", maTin));
 
-            if (dt.Rows.Count > 0)
-                return dt.Rows[0];
-
-            return null;
+            return dt.Rows.Count > 0 ? dt.Rows[0] : null;
         }
     }
 }
