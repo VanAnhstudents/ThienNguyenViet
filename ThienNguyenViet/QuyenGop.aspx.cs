@@ -60,7 +60,7 @@ namespace ThienNguyenViet
         protected void btnConfirm_Click(object sender, EventArgs e)
         {
             // Logic xử lý khi nhấn nút
-            string msg = "alert('Hệ thống đã ghi nhận thông tin chuyển khoản của bạn!'); window.location='Default.aspx';";
+            string msg = "alert('Hệ thống đã ghi nhận thông tin chuyển khoản của bạn!'); window.location='TrangChu.aspx';";
             ClientScript.RegisterStartupScript(this.GetType(), "alert", msg, true);
         }
     }

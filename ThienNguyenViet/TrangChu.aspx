@@ -208,15 +208,6 @@
 }
 
 /* Progress */
-.campaign-progress-bar {
-    height: 10px; background: #fff; border-radius: 6px;
-    overflow: hidden; margin-bottom: 10px;
-    border: 1px solid #000;
-}
-.campaign-progress-fill {
-    height: 100%; border-radius: 5px;
-    background: #2D7A4F;
-}
 .campaign-money-row {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 16px;
@@ -534,9 +525,9 @@
                         Chiến dịch đang được cập nhật...
                     </div>
 
-                    <div class="campaign-progress-bar">
-                        <div class="campaign-progress-fill"
-                             style='width:<%# Eval("PhanTram") %>%'>
+                    <div class="progress-nen">
+                        <div class="progress-thanh"
+                             style='width:<%# GetPhanTramCss(Eval("PhanTram")) %>%'>
                         </div>
                     </div>
 
@@ -550,11 +541,11 @@
                         </span>
 
                         <span class="campaign-pct">
-                            <%# Eval("PhanTram") %>%
+                            <%# GetPhanTramHienThi(Eval("PhanTram")) %>%
                         </span>
                     </div>
 
-                    <a href="#" class="btn-donate-card">
+                    <a href='QuyenGop.aspx?id=<%# Eval("MaChienDich") %>' class="btn-donate-card">
                         Quyên góp ngay
                     </a>
 

@@ -47,6 +47,26 @@ namespace ThienNguyenViet
             TongNguoiThamGia = nguoiTG != null ? Convert.ToInt32(nguoiTG) : 0;
         }
 
+        // ===== LẤY % CHO CSS (dùng dấu chấm, tối đa 100) =====
+        protected string GetPhanTramCss(object phanTram)
+        {
+            if (phanTram == null || phanTram == DBNull.Value) return "0";
+            decimal pt = Convert.ToDecimal(phanTram);
+            if (pt > 100) pt = 100;
+            if (pt < 0) pt = 0;
+            return pt.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        // ===== LẤY % ĐỂ HIỂN THỊ =====
+        protected string GetPhanTramHienThi(object phanTram)
+        {
+            if (phanTram == null || phanTram == DBNull.Value) return "0";
+            decimal pt = Convert.ToDecimal(phanTram);
+            if (pt > 100) pt = 100;
+            if (pt < 0) pt = 0;
+            return Math.Round(pt, 1).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         // ===== LẤY ẢNH =====
         protected string GetImage(object anhBia)
         {
