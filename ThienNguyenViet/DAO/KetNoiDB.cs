@@ -16,7 +16,7 @@ namespace ThienNguyenViet.DAO
     {
         // Lấy connection string từ Web.config
         private static readonly string _connStr =
-            ConfigurationManager.ConnectionStrings["db_vanhdev_ThienNguyenViet"].ConnectionString;
+            ConfigurationManager.ConnectionStrings["db_truc_ThienNguyenViet"].ConnectionString;
 
         /// <summary>Tạo và mở một SqlConnection mới.</summary>
         public static SqlConnection MoKetNoi()
